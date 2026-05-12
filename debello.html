@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debello AI</title>
+<style>
+:root {
+  --bg-deep:       #050508;
+  --glass-bg:      rgba(255,255,255,0.03);
+  --glass-border:  rgba(255,255,255,0.08);
+  --glass-blur:    blur(24px);
+
+  --neon-cyan:    #00f5ff;
+  --neon-mag:     #ff00ff;
+  --neon-purple:  #8b00ff;
+  --neon-green:   #00ff88;
+  --neon-orange:  #ff6600;
+  --neon-pink:    #ff0080;
+  --neon-blue:    #0080ff;
+  --neon-yellow:  #ffee00;
+
+  --notify-urgent: #ff0040;
+  --notify-high:   #ff6600;
+  --notify-med:    #ffee00;
+  --notify-low:    #00ff88;
+  --notify-info:   #00f5ff;
+
+  --neu-out: 6px 6px 14px rgba(0,0,0,0.85), -3px -3px 8px rgba(255,255,255,0.025);
+  --neu-in:  inset 4px 4px 10px rgba(0,0,0,0.85), inset -2px -2px 5px rgba(255,255,255,0.025);
+
+  --sq: min(88vw, 480px);
+  --r: 18px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-deep);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 40px;
+  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ─── ambient orbs ─── */
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); opacity: .07; pointer-events: none;
+  animation: drift 22s ease-in-out infinite;
+}
+.orb1 { width:500px;height:500px;background:var(--neon-purple);top:-150px;left:-150px; }
+.orb2 { width:350px;height:350px;background:var(--neon-cyan);bottom:-80px;right:-80px;animation-delay:-8s; }
+.orb3 { width:250px;height:250px;background:var(--neon-mag);top:45%;left:40%;animation-delay:-15s; }
+@keyframes drift {
+  0%,100%{transform:translate(0,0)scale(1)}
+  33%{transform:translate(40px,-30px)scale(1.12)}
+  66%{transform:translate(-25px,40px)scale(.9)}
+}
+
+/* ─── header ─── */
+.header {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; max-width: var(--sq);
+  margin-bottom: 22px;
+}
+.logo {
+  width: 46px; height: 46px; border-radius: 12px;
+  background: linear-gradient(135deg,var(--neon-purple),var(--neon-cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900;
+  box-shadow: 0 0 24px rgba(139,0,255,.55);
+}
+.brand {
+  font-size: 20px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg,var(--neon-cyan),var(--neon-mag));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ─── view switcher ─── */
+.switcher {
+  display: flex; gap: 8px;
+  margin-bottom: 22px;
+}
+.vbtn {
+  width: 60px; height: 60px; border-radius: 13px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  cursor: pointer; outline: none;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  color: rgba(255,255,255,.45);
+  font-size: 9px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase;
+  box-shadow: var(--neu-out);
+  transition: all .3s ease;
+}
+.vbtn .ico { font-size: 20px; }
+.vbtn:hover { color:var(--neon-cyan); border-color:rgba(0,245,255,.3); }
+.vbtn.on {
+  color: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  background: rgba(0,245,255,.06);
+  box-shadow: 0 0 20px rgba(0,245,255,.35), var(--neu-in);
+}
+
+/* ─── stage ─── */
+.stage { width: var(--sq); position: relative; }
+.view { display: none; }
+.view.on { display: flex; flex-direction: column; }
+
+/* ══════════════════════════════════════
+   DAY VIEW
+══════════════════════════════════════ */
+#vDay.on { display: block; }
+
+.sq-card {
+  width: var(--sq); height: var(--sq);
+  border-radius: var(--r);
+  background: rgba(10,10,20,.6);
+  backdrop-filter: blur(32px);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--neu-out);
+  position: relative; overflow: hidden;
+  transition: box-shadow .5s ease;
+}
+
+/* notification border ring */
+.sq-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--r);
+  pointer-events: none;
+  border: 2px solid transparent;
+  transition: border-color .5s ease, box-shadow .5s ease;
+  z-index: 10;
+}
+.sq-card.n-info::after   { border-color: var(--notify-info);   box-shadow: inset 0 0 12px rgba(0,245,255,.15), 0 0 28px rgba(0,245,255,.35); }
+.sq-card.n-low::after    { border-color: var(--notify-low);    box-shadow: inset 0 0 12px rgba(0,255,136,.15), 0 0 28px rgba(0,255,136,.35); }
+.sq-card.n-med::after    { border-color: var(--notify-med);    box-shadow: inset 0 0 12px rgba(255,238,0,.15),  0 0 28px rgba(255,238,0,.35); }
+.sq-card.n-high::after   { border-color: var(--notify-high);   box-shadow: inset 0 0 12px rgba(255,102,0,.15), 0 0 28px rgba(255,102,0,.4); }
+.sq-card.n-urgent::after { border-color: var(--notify-urgent); box-shadow: inset 0 0 14px rgba(255,0,64,.2),   0 0 34px rgba(255,0,64,.5); }
+
+/* glass shimmer overlay */
+.sq-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%,rgba(255,255,255,.02) 100%);
+  border-radius: var(--r);
+  pointer-events: none; z-index: 1;
+}
+
+/* ─── card pages ─── */
+.card-pages { position: absolute; inset: 0; z-index: 2; }
+.card-page {
+  position: absolute; inset: 0;
+  padding: 18px;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transform: translateX(60px);
+  transition: opacity .4s ease, transform .4s cubic-bezier(.4,0,.2,1);
+}
+.card-page.active {
+  opacity: 1; pointer-events: auto;
+  transform: translateX(0);
+}
+.card-page.exit-left  { opacity:0; transform:translateX(-60px); }
+.card-page.exit-right { opacity:0; transform:translateX(60px); }
+
+/* card header row */
+.card-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 10px;
+}
+.cdate-block {}
+.cday-name {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+.cday-num {
+  font-size: 44px; font-weight: 900; line-height: 1;
+  background: linear-gradient(180deg,#fff 40%,rgba(255,255,255,.4));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+.cmonth-yr { font-size: 10px; color: rgba(255,255,255,.35); letter-spacing: 1px; }
+
+/* page indicator - square dots stacked */
+.pdots {
+  display: flex; flex-direction: column; gap: 5px; padding-top: 4px;
+}
+.pdot {
+  width: 8px; height: 8px; border-radius: 2px;
+  background: rgba(255,255,255,.18);
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.pdot.on {
+  background: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* page label */
+.page-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,.3);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* ─── 13×13 grid ─── */
+.g13 {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(13,1fr);
+  grid-template-rows: repeat(13,1fr);
+  gap: 3px;
+}
+.gc {
+  border-radius: 3px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.045);
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  position: relative;
+}
+.gc:hover { transform: scale(1.2); z-index: 5; }
+
+/* cell colour states */
+.gc.s1 { background:rgba(139,0,255,.38); border-color:rgba(180,80,255,.6); box-shadow:0 0 5px rgba(139,0,255,.4); }
+.gc.s2 { background:rgba(0,245,255,.22); border-color:rgba(0,245,255,.55); box-shadow:0 0 5px rgba(0,245,255,.4); }
+.gc.s3 { background:rgba(255,0,64,.22);  border-color:rgba(255,0,64,.5);   box-shadow:0 0 5px rgba(255,0,64,.4); }
+.gc.s4 { background:rgba(0,255,136,.18); border-color:rgba(0,255,136,.45); box-shadow:0 0 5px rgba(0,255,136,.35); }
+.gc.s5 { background:rgba(255,238,0,.18); border-color:rgba(255,238,0,.45); box-shadow:0 0 5px rgba(255,238,0,.35); }
+.gc.s6 { background:rgba(255,102,0,.22); border-color:rgba(255,102,0,.5);  box-shadow:0 0 5px rgba(255,102,0,.4); }
+
+/* card footer */
+.card-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 10px;
+}
+.stats { display: flex; gap: 6px; flex-wrap: wrap; }
+.stat {
+  padding: 3px 9px; border-radius: 5px;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.stat.p { background:rgba(139,0,255,.2); color:#c060ff; border:1px solid rgba(139,0,255,.35); }
+.stat.e { background:rgba(0,245,255,.1);  color:var(--neon-cyan);  border:1px solid rgba(0,245,255,.25); }
+.stat.f { background:rgba(0,255,136,.1);  color:var(--neon-green); border:1px solid rgba(0,255,136,.25); }
+
+.nav-pair { display:flex; gap:5px; }
+.nsq {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: rgba(255,255,255,.55);
+  cursor: pointer; outline: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all .2s ease;
+  box-shadow: var(--neu-out);
+}
+.nsq:hover { border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow:0 0 12px rgba(0,245,255,.3); }
+
+
+/* ══════════════════════════════════════
+   WEEK VIEW
+══════════════════════════════════════ */
+.week-7 {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.wday {
+  aspect-ratio: 1; border-radius: 13px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--neu-out);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px; cursor: pointer;
+  transition: all .3s ease;
+  position: relative; overflow: hidden;
+}
+.wday::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.wday:hover { transform: scale(1.07); }
+.wday.today { border-color:var(--neon-cyan); box-shadow:0 0 18px rgba(0,245,255,.35); }
+.wday-name { font-size:8px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.35); }
+.wday-num  { font-size:17px; font-weight:900; }
+.wdots { display:flex; gap:2px; margin-top:3px; }
+.wdot  { width:4px; height:4px; border-radius:1px; }
+
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 7px;
+}
+.wsq {
+  aspect-ratio: 1; border-radius: 13px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--neu-out);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  cursor: pointer; transition: all .3s ease; overflow: hidden;
+  position: relative;
+}
+.wsq::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.05) 0%,transparent 60%);
+}
+.wsq:hover { transform:scale(1.06); }
+.wico { font-size:20px; }
+.wval { font-size:13px; font-weight:900; }
+.wlbl { font-size:8px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.4); }
+
+
+/* ══════════════════════════════════════
+   MONTH VIEW
+══════════════════════════════════════ */
+.month-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.month-name {
+  font-size: 20px; font-weight: 900;
+  background: linear-gradient(135deg,var(--neon-cyan),var(--neon-mag));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.mgrid {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 4px;
+}
+.mhdr {
+  height: 22px; display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:rgba(255,255,255,.28);
+}
+.mcell {
+  aspect-ratio:1; border-radius:9px;
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.04);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-start;
+  padding:4px 2px 2px;
+  cursor:pointer; transition:all .2s ease;
+  position: relative; overflow:hidden;
+}
+.mcell::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%);
+  pointer-events:none; border-radius:inherit;
+}
+.mcell:hover { background:rgba(0,245,255,.06); border-color:rgba(0,245,255,.25); }
+.mcell.today { border-color:var(--neon-cyan); box-shadow:0 0 14px rgba(0,245,255,.3); }
+.mcell.dim { opacity:.28; pointer-events:none; }
+.mnum { font-size:11px; font-weight:700; color:rgba(255,255,255,.8); line-height:1; }
+.mcell.today .mnum { color:var(--neon-cyan); text-shadow:0 0 8px var(--neon-cyan); }
+.mdots { display:flex; flex-wrap:wrap; gap:1.5px; margin-top:2px; justify-content:center; }
+.mdot  { width:3px; height:3px; border-radius:1px; }
+
+/* ─── scanlines glass texture ─── */
+.sq-card .scanlines {
+  position: absolute; inset:0; border-radius:var(--r);
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);
+  pointer-events:none; z-index:1; opacity:.6;
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- header -->
+<div class="header">
+  <div class="logo">D</div>
+  <div class="brand">Debello AI</div>
+</div>
+
+<!-- switcher -->
+<div class="switcher">
+  <button class="vbtn on" id="btnDay"   onclick="setView('day')">  <span class="ico">⬛</span><span>Day</span>  </button>
+  <button class="vbtn"    id="btnWeek"  onclick="setView('week')"> <span class="ico">▦</span><span>Week</span> </button>
+  <button class="vbtn"    id="btnMonth" onclick="setView('month')"><span class="ico">⊞</span><span>Month</span></button>
+</div>
+
+<!-- stage -->
+<div class="stage">
+
+  <!-- ── DAY ── -->
+  <div class="view on" id="vDay">
+    <div class="sq-card n-info" id="dayCard">
+      <div class="scanlines"></div>
+      <div class="card-pages" id="cardPages">
+
+        <!-- PAGE 0 · Schedule -->
+        <div class="card-page active" id="p0">
+          <div class="card-top">
+            <div class="cdate-block">
+              <div class="cday-name" id="dayName">Monday</div>
+              <div class="cday-num"  id="dayNum">12</div>
+              <div class="cmonth-yr" id="monthYr">May 2026</div>
+            </div>
+            <div class="pdots" id="pdots">
+              <div class="pdot on"  onclick="goPage(0)"></div>
+              <div class="pdot"     onclick="goPage(1)"></div>
+              <div class="pdot"     onclick="goPage(2)"></div>
+            </div>
+          </div>
+          <div class="page-label">Schedule · 13×13</div>
+          <div class="g13" id="grid0"></div>
+          <div class="card-foot">
+            <div class="stats">
+              <span class="stat p">8 Tasks</span>
+              <span class="stat e">3 Events</span>
+              <span class="stat f">5h Free</span>
+            </div>
+            <div class="nav-pair">
+              <button class="nsq" onclick="prevPage()">‹</button>
+              <button class="nsq" onclick="nextPage()">›</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 1 · Focus -->
+        <div class="card-page" id="p1">
+          <div class="card-top">
+            <div class="cdate-block">
+              <div class="cday-name" style="color:var(--neon-purple);text-shadow:0 0 10px var(--neon-purple)">Focus</div>
+              <div class="cday-num" id="dayNum2">12</div>
+              <div class="cmonth-yr">Deep work blocks</div>
+            </div>
+            <div class="pdots">
+              <div class="pdot"    onclick="goPage(0)"></div>
+              <div class="pdot on" onclick="goPage(1)"></div>
+              <div class="pdot"    onclick="goPage(2)"></div>
+            </div>
+          </div>
+          <div class="page-label">Focus Map · 13×13</div>
+          <div class="g13" id="grid1"></div>
+          <div class="card-foot">
+            <div class="stats">
+              <span class="stat" style="background:rgba(139,0,255,.2);color:#c060ff;border:1px solid rgba(139,0,255,.35)">3h 20m Focus</span>
+              <span class="stat" style="background:rgba(255,238,0,.1);color:var(--neon-yellow);border:1px solid rgba(255,238,0,.25)">2 Deep Slots</span>
+            </div>
+            <div class="nav-pair">
+              <button class="nsq" onclick="prevPage()">‹</button>
+              <button class="nsq" onclick="nextPage()">›</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2 · Energy -->
+        <div class="card-page" id="p2">
+          <div class="card-top">
+            <div class="cdate-block">
+              <div class="cday-name" style="color:var(--neon-green);text-shadow:0 0 10px var(--neon-green)">Energy</div>
+              <div class="cday-num" id="dayNum3">12</div>
+              <div class="cmonth-yr">Vitality curve</div>
+            </div>
+            <div class="pdots">
+              <div class="pdot"     onclick="goPage(0)"></div>
+              <div class="pdot"     onclick="goPage(1)"></div>
+              <div class="pdot on"  onclick="goPage(2)"></div>
+            </div>
+          </div>
+          <div class="page-label">Energy Grid · 13×13</div>
+          <div class="g13" id="grid2"></div>
+          <div class="card-foot">
+            <div class="stats">
+              <span class="stat" style="background:rgba(0,255,136,.12);color:var(--neon-green);border:1px solid rgba(0,255,136,.3)">Peak: 9–11am</span>
+              <span class="stat" style="background:rgba(255,0,64,.15);color:#ff4466;border:1px solid rgba(255,0,64,.3)">Dip: 2–3pm</span>
+            </div>
+            <div class="nav-pair">
+              <button class="nsq" onclick="prevPage()">‹</button>
+              <button class="nsq" onclick="nextPage()">›</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /card-pages -->
+    </div><!-- /sq-card -->
+  </div><!-- /vDay -->
+
+  <!-- ── WEEK ── -->
+  <div class="view" id="vWeek">
+    <div class="week-7"  id="week7"></div>
+    <div class="widgets" id="widgets"></div>
+  </div>
+
+  <!-- ── MONTH ── -->
+  <div class="view" id="vMonth">
+    <div class="month-head">
+      <button class="nsq" onclick="shiftMonth(-1)">‹</button>
+      <div class="month-name" id="mTitle"></div>
+      <button class="nsq" onclick="shiftMonth(1)">›</button>
+    </div>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+
+</div><!-- /stage -->
+
+<script>
+// ── constants ──
+const TODAY = new Date(2026,4,12);
+const DAY_NAMES  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAY_ABBR   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTH_NAMES= ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const NOTIFY_CLS = ['n-info','n-low','n-med','n-high','n-urgent'];
+
+const NEON = ['#00f5ff','#ff00ff','#8b00ff','#00ff88','#ff6600','#ff0080','#0080ff','#ffee00','#c060ff','#ff4466'];
+
+// ── state ──
+let curPage = 0;
+const N_PAGES = 3;
+let curMonth = { y:2026, m:4 };
+
+// ── 13×13 grid seed patterns (0=empty, 1-6=colour states) ──
+// each page gets a seeded layout
+function seedGrid(pageIdx) {
+  // deterministic pseudo-random per page
+  const rng = (seed) => { let x=seed; return ()=>{ x=(x*1664525+1013904223)&0xffffffff; return (x>>>0)/0xffffffff; }; };
+  const r = rng(pageIdx * 7919 + 42);
+
+  const palettes = [
+    [0,0,0,1,2,3,4],   // page 0: schedule
+    [0,0,0,0,1,5,6],   // page 1: focus (purple+yellow+orange)
+    [0,0,0,4,4,3,5],   // page 2: energy (green/red/yellow)
+  ][pageIdx];
+
+  return Array.from({length:169},()=>{
+    const v = r();
+    if(v<.52) return 0;
+    return palettes[Math.floor(r()*palettes.length)];
+  });
+}
+
+function buildGrid(id, pageIdx) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  const data = seedGrid(pageIdx);
+  const CLASSES = ['','s1','s2','s3','s4','s5','s6'];
+  data.forEach((v,i) => {
+    const c = document.createElement('div');
+    c.className = 'gc' + (v?' '+CLASSES[v]:'');
+    c.addEventListener('click', ()=>cycleCell(c));
+    el.appendChild(c);
+  });
+}
+
+function cycleCell(c) {
+  const cls = ['s1','s2','s3','s4','s5','s6'];
+  const cur = cls.findIndex(x=>c.classList.contains(x));
+  cls.forEach(x=>c.classList.remove(x));
+  if(cur < cls.length-1) c.classList.add(cls[cur+1]);
+}
+
+// ── pages ──
+function goPage(n, dir) {
+  if(n===curPage) return;
+  const prev = curPage;
+  const exitCls = n > prev ? 'exit-left' : 'exit-right';
+
+  const prevEl = document.getElementById('p'+prev);
+  const nextEl = document.getElementById('p'+n);
+
+  prevEl.classList.remove('active');
+  prevEl.classList.add(exitCls);
+
+  nextEl.style.transform = n>prev ? 'translateX(60px)' : 'translateX(-60px)';
+  nextEl.style.opacity = '0';
+
+  requestAnimationFrame(()=>{
+    nextEl.classList.add('active');
+    nextEl.style.transform = '';
+    nextEl.style.opacity = '';
+  });
+
+  setTimeout(()=>{ prevEl.classList.remove(exitCls); }, 420);
+
+  curPage = n;
+  document.querySelectorAll('.pdots .pdot').forEach((d,i)=>d.classList.toggle('on', i===curPage));
+}
+
+function nextPage(){ goPage(Math.min(curPage+1,N_PAGES-1)); }
+function prevPage(){ goPage(Math.max(curPage-1,0)); }
+
+// ── week ──
+function buildWeek() {
+  const w7 = document.getElementById('week7');
+  w7.innerHTML = '';
+  const start = new Date(TODAY);
+  start.setDate(TODAY.getDate()-TODAY.getDay());
+
+  const palettes = [
+    {bg:'rgba(139,0,255,.18)',color:'#c060ff',dots:['#c060ff','#00f5ff']},
+    {bg:'rgba(0,245,255,.1)', color:'#00f5ff',dots:['#00f5ff']},
+    {bg:'rgba(255,0,128,.15)',color:'#ff4499',dots:['#ff4499','#ff6600','#ffee00']},
+    {bg:'rgba(0,255,136,.1)', color:'#00ff88',dots:['#00ff88']},
+    {bg:'rgba(255,102,0,.15)',color:'#ff6600',dots:['#ff6600','#ff0040']},
+    {bg:'rgba(0,128,255,.1)', color:'#0088ff',dots:['#0088ff','#00f5ff']},
+    {bg:'rgba(255,238,0,.08)',color:'#ffee44',dots:[]},
+  ];
+
+  for(let i=0;i<7;i++){
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    const isToday = d.toDateString()===TODAY.toDateString();
+    const p = palettes[i];
+    const el = document.createElement('div');
+    el.className = 'wday'+(isToday?' today':'');
+    el.style.background = p.bg;
+    if(!isToday) el.style.borderColor = p.color+'44';
+
+    el.innerHTML = `
+      <div class="wday-name">${DAY_ABBR[i]}</div>
+      <div class="wday-num" style="color:${isToday?'var(--neon-cyan)':p.color};text-shadow:0 0 10px ${isToday?'var(--neon-cyan)':p.color}">${d.getDate()}</div>
+      <div class="wdots">${p.dots.map(c=>`<div class="wdot" style="background:${c};box-shadow:0 0 4px ${c}"></div>`).join('')}</div>
+    `;
+    el.addEventListener('click',()=>setView('day'));
+    w7.appendChild(el);
+  }
+
+  const wg = document.getElementById('widgets');
+  wg.innerHTML = '';
+  const wdata = [
+    {ico:'⚡',lbl:'Focus',val:'3h 20m',color:'#ffee00',bg:'rgba(255,238,0,.07)'},
+    {ico:'✓', lbl:'Done', val:'12',    color:'#00ff88',bg:'rgba(0,255,136,.07)'},
+    {ico:'⚔', lbl:'Tasks',val:'5 Left',color:'#ff4499',bg:'rgba(255,0,128,.07)'},
+    {ico:'◈', lbl:'Score',val:'87%',   color:'#c060ff',bg:'rgba(139,0,255,.07)'},
+  ];
+  wdata.forEach(w=>{
+    const el = document.createElement('div');
+    el.className='wsq';
+    el.style.background=w.bg;
+    el.style.borderColor=w.color+'44';
+    el.style.boxShadow=`0 0 18px ${w.color}1a`;
+    el.innerHTML=`
+      <div class="wico">${w.ico}</div>
+      <div class="wval" style="color:${w.color};text-shadow:0 0 10px ${w.color}">${w.val}</div>
+      <div class="wlbl">${w.lbl}</div>
+    `;
+    wg.appendChild(el);
+  });
+}
+
+// ── month ──
+function buildMonth(){
+  const {y,m} = curMonth;
+  document.getElementById('mTitle').textContent = MONTH_NAMES[m]+' '+y;
+  const mg = document.getElementById('mgrid');
+  mg.innerHTML = '';
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{
+    const h=document.createElement('div'); h.className='mhdr'; h.textContent=d; mg.appendChild(h);
+  });
+  const firstDay  = new Date(y,m,1).getDay();
+  const daysInMon = new Date(y,m+1,0).getDate();
+  const daysInPrv = new Date(y,m,0).getDate();
+
+  for(let i=firstDay-1;i>=0;i--) mg.appendChild(makeCell(daysInPrv-i,true));
+  for(let d=1;d<=daysInMon;d++){
+    const isT=(d===TODAY.getDate()&&m===TODAY.getMonth()&&y===TODAY.getFullYear());
+    mg.appendChild(makeCell(d,false,isT));
+  }
+  const rem=(7-((firstDay+daysInMon)%7))%7;
+  for(let d=1;d<=rem;d++) mg.appendChild(makeCell(d,true));
+}
+
+const DOT_COLORS = ['#c060ff','#00f5ff','#ff4499','#00ff88','#ff6600','#0088ff','#ffee44'];
+function makeCell(n,dim,isToday){
+  const el=document.createElement('div');
+  el.className='mcell'+(dim?' dim':'')+(isToday?' today':'');
+  const dotCount=dim?0:Math.floor(Math.random()*4);
+  const dots=Array.from({length:dotCount},()=>{
+    const c=DOT_COLORS[Math.floor(Math.random()*DOT_COLORS.length)];
+    return `<div class="mdot" style="background:${c};box-shadow:0 0 3px ${c}"></div>`;
+  }).join('');
+  el.innerHTML=`<div class="mnum">${n}</div><div class="mdots">${dots}</div>`;
+  if(!dim) el.addEventListener('click',()=>setView('day'));
+  return el;
+}
+
+function shiftMonth(d){
+  curMonth.m+=d;
+  if(curMonth.m<0){curMonth.m=11;curMonth.y--;}
+  if(curMonth.m>11){curMonth.m=0;curMonth.y++;}
+  buildMonth();
+}
+
+// ── view switch ──
+function setView(v){
+  ['day','week','month'].forEach(n=>{
+    document.getElementById('v'+n.charAt(0).toUpperCase()+n.slice(1)).classList.toggle('on',n===v);
+    document.getElementById('btn'+n.charAt(0).toUpperCase()+n.slice(1)).classList.toggle('on',n===v);
+  });
+  if(v==='week') buildWeek();
+  if(v==='month') buildMonth();
+}
+
+// ── init ──
+(function init(){
+  const dn = DAY_NAMES[TODAY.getDay()];
+  ['dayName'].forEach(id=>{ const e=document.getElementById(id); if(e)e.textContent=dn; });
+  ['dayNum','dayNum2','dayNum3'].forEach(id=>{ const e=document.getElementById(id); if(e)e.textContent=TODAY.getDate(); });
+
+  buildGrid('grid0',0);
+  buildGrid('grid1',1);
+  buildGrid('grid2',2);
+
+  // notification border cycling
+  let ni=0;
+  setInterval(()=>{
+    const card=document.getElementById('dayCard');
+    NOTIFY_CLS.forEach(c=>card.classList.remove(c));
+    card.classList.add(NOTIFY_CLS[ni%NOTIFY_CLS.length]);
+    ni++;
+  },2800);
+})();
+</script>
+</body>
+</html>
