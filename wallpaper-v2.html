@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wallpaper V2</title>
+<style>
+/* ══════════════════════════════════
+   TOKENS
+══════════════════════════════════ */
+:root {
+  --sq:88px; --gap:14px; --r:20px; --loop:24s;
+
+  --sh-base:
+    inset 0 1px 0 rgba(255,248,220,0.16),
+    0 10px 28px rgba(0,0,0,0.52),
+    0 3px 8px rgba(0,0,0,0.38);
+  --sh-amber:
+    inset 0 1px 0 rgba(255,240,190,0.30),
+    0 10px 28px rgba(0,0,0,0.52),
+    0 0 24px rgba(215,152,52,0.56),
+    0 0 54px rgba(198,130,40,0.26);
+  --sh-rose:
+    inset 0 1px 0 rgba(255,220,210,0.26),
+    0 10px 28px rgba(0,0,0,0.52),
+    0 0 22px rgba(210,90,78,0.50),
+    0 0 52px rgba(188,68,58,0.22);
+  --sh-press:
+    inset 0 5px 18px rgba(0,0,0,0.68),
+    inset 0 0 0 1px rgba(255,255,255,0.05),
+    0 2px 5px rgba(0,0,0,0.20);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:430px; height:932px; overflow:hidden; background:#0b0806; }
+
+/* ══════════════════════════════════
+   SCENE
+══════════════════════════════════ */
+.scene {
+  width:430px; height:932px;
+  position:relative; overflow:hidden;
+  background:radial-gradient(ellipse 150% 100% at 65% 30%,
+    #15100b 0%, #0d0905 55%, #070403 100%);
+  animation:scenePulse var(--loop) ease-in-out infinite;
+}
+@keyframes scenePulse {
+  0%,7%   { filter:brightness(1); }
+  11.7%   { filter:brightness(1.28); }
+  14.5%   { filter:brightness(1.04); }
+  100%    { filter:brightness(1); }
+}
+
+/* ══════════════════════════════════
+   AURORA — golden hour
+══════════════════════════════════ */
+.blobs { position:absolute; inset:-120px; }
+.b { position:absolute; border-radius:50%; will-change:transform; }
+
+.b1 { width:520px;height:440px;
+  background:radial-gradient(ellipse,rgba(195,85,52,0.28) 0%,transparent 68%);
+  filter:blur(92px); top:-70px;right:-100px;
+  animation:bl1 23s ease-in-out infinite alternate; }
+.b2 { width:500px;height:420px;
+  background:radial-gradient(ellipse,rgba(178,118,28,0.34) 0%,transparent 65%);
+  filter:blur(90px); bottom:-120px;left:-150px;
+  animation:bl2 29s ease-in-out infinite alternate; }
+.b3 { width:360px;height:300px;
+  background:radial-gradient(ellipse,rgba(105,46,118,0.22) 0%,transparent 65%);
+  filter:blur(80px); top:260px;right:-70px;
+  animation:bl3 18s ease-in-out infinite alternate; }
+.b4 { width:350px;height:270px;
+  background:radial-gradient(ellipse,rgba(205,138,42,0.20) 0%,transparent 65%);
+  filter:blur(72px); bottom:70px;left:-60px;
+  animation:bl4 27s ease-in-out infinite alternate; }
+.b5 { width:290px;height:250px;
+  background:radial-gradient(ellipse,rgba(160,58,48,0.16) 0%,transparent 65%);
+  filter:blur(68px); top:160px;left:90px;
+  animation:bl2 35s ease-in-out infinite alternate-reverse; }
+.b6 { width:270px;height:230px;
+  background:radial-gradient(ellipse,rgba(92,62,18,0.18) 0%,transparent 65%);
+  filter:blur(62px); top:520px;right:50px;
+  animation:bl1 40s ease-in-out infinite alternate; }
+
+@keyframes bl1 { from{transform:translate(0,0) scale(1)} to{transform:translate(-42px,56px) scale(1.10)} }
+@keyframes bl2 { from{transform:translate(0,0) scale(1)} to{transform:translate(50px,-40px) scale(1.09)} }
+@keyframes bl3 { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,50px) scale(1.13)} }
+@keyframes bl4 { from{transform:translate(0,0) scale(1)} to{transform:translate(-36px,-30px) scale(1.07)} }
+
+.top-edge {
+  position:absolute;top:0;left:0;right:0;height:230px;z-index:2;
+  background:linear-gradient(to bottom,rgba(215,135,52,0.07),transparent);
+  pointer-events:none;
+}
+.bot-edge {
+  position:absolute;bottom:0;left:0;right:0;height:200px;z-index:2;
+  background:linear-gradient(to top,rgba(125,42,36,0.10),transparent);
+  pointer-events:none;
+}
+
+/* ══════════════════════════════════
+   GRID OUTER
+   grid: 3×88 + 2×14 = 292px
+   left: (430-292)/2 = 69px
+   top:  264px
+══════════════════════════════════ */
+.grid-outer {
+  position:absolute; left:69px; top:264px;
+  width:292px; height:292px; z-index:5;
+  animation:gridReact var(--loop) ease-in-out infinite;
+}
+@keyframes gridReact {
+  0%,7%   { transform:translateY(0) scale(1); }
+  11.7%   { transform:translateY(5px) scale(0.981); }
+  14.5%   { transform:translateY(0) scale(1); }
+  100%    { transform:translateY(0) scale(1); }
+}
+
+.grid-halo {
+  position:absolute; inset:-55px;
+  background:radial-gradient(ellipse,
+    rgba(215,152,56,0.15) 0%,
+    rgba(185,72,58,0.08) 50%,
+    transparent 75%);
+  filter:blur(28px);
+  animation:
+    haloBreath 12s ease-in-out infinite,
+    haloReact var(--loop) ease-in-out infinite;
+}
+@keyframes haloBreath { 0%,100%{opacity:.78;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+@keyframes haloReact  { 0%,7%{opacity:1} 11.7%{opacity:1.6;filter:blur(16px)} 14.5%{opacity:1;filter:blur(28px)} 100%{opacity:1} }
+
+/* ══════════════════════════════════
+   CELLS
+══════════════════════════════════ */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,var(--sq));
+  grid-template-rows:   repeat(3,var(--sq));
+  gap:var(--gap); position:relative; z-index:1;
+}
+
+.cell {
+  width:var(--sq); height:var(--sq); border-radius:var(--r);
+  position:relative; overflow:hidden;
+  border-top:   1px solid rgba(255,248,220,0.22);
+  border-left:  1px solid rgba(255,248,220,0.13);
+  border-right: 1px solid rgba(255,248,220,0.06);
+  border-bottom:1px solid rgba(255,248,220,0.05);
+  box-shadow:var(--sh-base);
+  animation:breathe 11s ease-in-out infinite;
+}
+.cell::before {
+  content:''; position:absolute; inset:0; border-radius:var(--r);
+  background:linear-gradient(120deg,transparent 24%,rgba(255,255,255,0.08) 50%,transparent 76%);
+  transform:translateX(-160%);
+  animation:cellShimmer 10s ease-in-out infinite;
+}
+@keyframes breathe     { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.08)} }
+@keyframes cellShimmer { 0%{transform:translateX(-160%);opacity:0} 18%{opacity:1} 82%{opacity:1} 100%{transform:translateX(160%);opacity:0} }
+
+/* Tints — all warm palette, visible fills */
+.ta { background:linear-gradient(148deg,rgba(215,148,52,0.18) 0%,rgba(255,255,255,0.030) 100%); }
+.tr { background:linear-gradient(148deg,rgba(205,82,68,0.16)  0%,rgba(255,255,255,0.028) 100%); }
+.tg { background:linear-gradient(148deg,rgba(188,152,48,0.18) 0%,rgba(255,255,255,0.030) 100%); }
+.tn { background:linear-gradient(148deg,rgba(255,255,255,0.11) 0%,rgba(255,255,255,0.030) 100%); }
+
+/* ── HERO CELL: c2 = top-right (row0,col2) ── */
+.c2 {
+  animation:
+    heroCell var(--loop) cubic-bezier(.22,1,.36,1) infinite,
+    breathe 11s ease-in-out infinite -4s;
+  z-index:2;
+}
+@keyframes heroCell {
+  /* Idle breath baked */
+  0%    { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  4%    { transform:scale(1.014); box-shadow:var(--sh-base); }
+  7%    { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  /* PRESS */
+  8.3%  { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  11.7% { transform:scale(0.90);  box-shadow:var(--sh-press); }
+  /* Bounce + glow */
+  14%   { transform:scale(1.03);  box-shadow:var(--sh-amber); }
+  20.8% { transform:scale(1);     box-shadow:var(--sh-amber); opacity:1; }
+  /* Dim → vanish */
+  24%   { transform:scale(1);     box-shadow:var(--sh-base);  opacity:0.40; }
+  28%   { transform:scale(0.94);  opacity:0; }
+  /* Absent while card is risen */
+  68%   { transform:scale(0.94);  opacity:0; }
+  /* Reappear */
+  72%   { transform:scale(1);     box-shadow:var(--sh-base);  opacity:1; }
+  75%   { transform:scale(1.01);  box-shadow:var(--sh-amber); }
+  80%   { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%  { transform:scale(1);     box-shadow:var(--sh-base);  opacity:1; }
+}
+
+/* ── RIPPLE WAVES FROM c2 ──
+   Cell distances from c2 (row0,col2):
+   Wave 1 d=1:   c1(0,1) c5(1,2)   → t=2.8s 11.7%
+   Wave 2 d=√2:  c4(1,1)           → t=3.4s 14.2%
+   Wave 3 d=2:   c0(0,0) c8(2,2)   → t=3.9s 16.3%
+   Wave 4 d=√5:  c3(1,0) c7(2,1)   → t=4.4s 18.3%
+   Wave 5 d=2√2: c6(2,0) far crnr  → t=4.9s 20.4% */
+
+.c1,.c5 { animation:rW1 var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite; }
+@keyframes rW1 {
+  0%,11.7% { transform:scale(1);     box-shadow:var(--sh-base); }
+  14%      { transform:scale(1.035); box-shadow:var(--sh-amber); }
+  21%      { transform:scale(1);     box-shadow:var(--sh-amber); }
+  25%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  74%      { transform:scale(1.02);  box-shadow:var(--sh-amber); }
+  79%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);     box-shadow:var(--sh-base); }
+}
+
+.c4 { animation:rW2 var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite; }
+@keyframes rW2 {
+  0%,14.2% { transform:scale(1);     box-shadow:var(--sh-base); }
+  16%      { transform:scale(1.030); box-shadow:var(--sh-rose); }
+  21%      { transform:scale(1);     box-shadow:var(--sh-rose); }
+  25%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  74.5%    { transform:scale(1.02);  box-shadow:var(--sh-rose); }
+  79%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);     box-shadow:var(--sh-base); }
+}
+
+.c0,.c8 { animation:rW3 var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite; }
+@keyframes rW3 {
+  0%,16.3% { transform:scale(1);     box-shadow:var(--sh-base); }
+  18%      { transform:scale(1.025); box-shadow:var(--sh-amber); }
+  21%      { transform:scale(1);     box-shadow:var(--sh-amber); }
+  25%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  75%      { transform:scale(1.015); box-shadow:var(--sh-amber); }
+  79%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);     box-shadow:var(--sh-base); }
+}
+
+.c3,.c7 { animation:rW4 var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite; }
+@keyframes rW4 {
+  0%,18.3% { transform:scale(1);     box-shadow:var(--sh-base); }
+  20%      { transform:scale(1.022); box-shadow:var(--sh-rose); }
+  21%      { transform:scale(1);     box-shadow:var(--sh-rose); }
+  25%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  75.5%    { transform:scale(1.015); box-shadow:var(--sh-rose); }
+  79%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);     box-shadow:var(--sh-base); }
+}
+
+.c6 { animation:rW5 var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite; }
+@keyframes rW5 {
+  0%,20.4% { transform:scale(1);     box-shadow:var(--sh-base); }
+  22%      { transform:scale(1.020); box-shadow:var(--sh-amber); }
+  24%      { transform:scale(1);     box-shadow:var(--sh-amber); }
+  25.5%    { transform:scale(1);     box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  76%      { transform:scale(1.012); box-shadow:var(--sh-amber); }
+  79%      { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);     box-shadow:var(--sh-base); }
+}
+
+/* breathe delay offsets */
+.c0{animation-delay:0s,-1.0s} .c1{animation-delay:0s,-2.5s}
+.c3{animation-delay:0s,-0.5s} .c4{animation-delay:0s,-3.2s}
+.c5{animation-delay:0s,-5.0s} .c6{animation-delay:0s,-1.5s}
+.c7{animation-delay:0s,-3.8s} .c8{animation-delay:0s,-6.0s}
+
+/* ══════════════════════════════════
+   SVG CONNECTION LINES + PARTICLES
+   All lines radiate from c2 = (248, 44) in grid space
+══════════════════════════════════ */
+.connections {
+  position:absolute; top:0; left:0;
+  width:292px; height:292px;
+  pointer-events:none; z-index:3; overflow:visible;
+}
+
+.ll { fill:none; stroke-linecap:round; }
+
+/* Each line: --dl = dasharray length, --dd = draw delay */
+.ll {
+  stroke-dasharray:var(--dl,120);
+  stroke-dashoffset:var(--dl,120);
+  animation:drawLine var(--loop) ease-in-out infinite var(--dd,0s);
+}
+@keyframes drawLine {
+  0%,13%  { stroke-dashoffset:var(--dl,120); opacity:0; }
+  15%     { stroke-dashoffset:0;             opacity:1; }
+  22%     { stroke-dashoffset:0;             opacity:1; }
+  25%     { stroke-dashoffset:var(--dl,120); opacity:0; }
+  70%     { stroke-dashoffset:var(--dl,120); opacity:0; }
+  74%     { stroke-dashoffset:0;             opacity:.55; }
+  79%     { stroke-dashoffset:var(--dl,120); opacity:0; }
+  100%    { stroke-dashoffset:var(--dl,120); opacity:0; }
+}
+
+.lout {
+  stroke-dasharray:816; stroke-dashoffset:816;
+  animation:drawOuter var(--loop) ease-in-out infinite;
+}
+@keyframes drawOuter {
+  0%,21%   { stroke-dashoffset:816; opacity:0; }
+  23.5%    { stroke-dashoffset:0;   opacity:1; }
+  24.5%    { stroke-dashoffset:0;   opacity:1; }
+  26.5%    { stroke-dashoffset:816; opacity:0; }
+  100%     { stroke-dashoffset:816; opacity:0; }
+}
+
+/* Traveling particles — opacity gated by CSS, motioned by SMIL */
+.prt {
+  opacity:0;
+  animation:prtShow var(--loop) linear infinite var(--pd,0s);
+}
+@keyframes prtShow {
+  0%,16.5% { opacity:0; }
+  17.5%    { opacity:1; }
+  23%      { opacity:1; }
+  24.5%    { opacity:0; }
+  100%     { opacity:0; }
+}
+
+/* Node glow dots at cell centres */
+.node {
+  opacity:0;
+  animation:nodeGlow var(--loop) ease-out infinite var(--nd,0s);
+}
+@keyframes nodeGlow {
+  0%,14%   { opacity:0; transform:scale(1); }
+  15.5%    { opacity:1; transform:scale(1.6); }
+  22%      { opacity:.7; transform:scale(1); }
+  24.5%    { opacity:0; }
+  100%     { opacity:0; }
+}
+
+/* ══════════════════════════════════
+   SHOCKWAVE RINGS
+   c2 screen pos: x=69+248=317, y=264+44=308
+══════════════════════════════════ */
+.sw, .sw2 {
+  position:absolute;
+  left:317px; top:308px;
+  width:88px; height:88px; border-radius:50%;
+  margin-left:-44px; margin-top:-44px;
+  pointer-events:none; z-index:6;
+}
+.sw  { animation:swGo  var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+.sw2 { animation:swGo2 var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+
+@keyframes swGo {
+  0%,8.3%  { transform:scale(0); opacity:0; box-shadow:0 0 0 2px rgba(218,155,52,.96); }
+  11.7%    { transform:scale(1); opacity:1; }
+  20%      { transform:scale(5.7); opacity:0; box-shadow:0 0 0 1px rgba(218,155,52,0); }
+  100%     { transform:scale(5.7); opacity:0; }
+}
+@keyframes swGo2 {
+  0%,10%   { transform:scale(0); opacity:0; box-shadow:0 0 0 1px rgba(205,92,72,.72); }
+  12.5%    { transform:scale(1); opacity:.7; }
+  22%      { transform:scale(4.6); opacity:0; }
+  100%     { transform:scale(4.6); opacity:0; }
+}
+
+/* ══════════════════════════════════
+   HERO RISEN CARD
+   Positioned at screen visual-centre (215, 390).
+   When at grid-size: translate(102px, -82px) scale(.3143)
+     → appears centred at c2 (317, 308) ✓
+   When risen: translate(0,0) scale(1) at screen centre
+══════════════════════════════════ */
+.hero-risen {
+  position:absolute;
+  left:215px; top:390px;
+  width:280px; height:280px;
+  margin-left:-140px; margin-top:-140px;
+  border-radius:24px; overflow:hidden; z-index:20;
+  opacity:0; will-change:transform,opacity;
+  animation:heroRise var(--loop) cubic-bezier(.22,1,.36,1) infinite;
+}
+@keyframes heroRise {
+  /* Sitting at c2 position, invisible */
+  0%,26%  { opacity:0; transform:translate(102px,-82px) scale(.3143); border-radius:20px; }
+  /* Arc-travel to centre as it expands */
+  31%     { opacity:.55; transform:translate(55px,-45px) scale(.66); border-radius:22px; }
+  34.5%   { opacity:1;   transform:translate(0px,0px) scale(1); border-radius:24px; }
+  /* Hold editorial */
+  62%     { opacity:1;   transform:translate(0px,0px) scale(1); border-radius:24px; }
+  /* Arc back to c2 corner as it shrinks */
+  66%     { opacity:.4;  transform:translate(55px,-45px) scale(.62); border-radius:21px; }
+  68.5%   { opacity:0;   transform:translate(102px,-82px) scale(.3143); border-radius:20px; }
+  100%    { opacity:0;   transform:translate(102px,-82px) scale(.3143); border-radius:20px; }
+}
+
+/* Glass face */
+.risen-face {
+  position:absolute; inset:0; border-radius:24px;
+  background:linear-gradient(148deg,
+    rgba(255,255,255,0.10) 0%,
+    rgba(255,255,255,0.038) 60%,
+    rgba(210,150,48,0.048) 100%);
+  border:1px solid rgba(255,248,220,0.20);
+  border-top-color:rgba(255,248,220,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,248,220,0.26),
+    0 54px 100px rgba(0,0,0,0.60),
+    0  0   70px rgba(215,152,52,0.18),
+    0  0  140px rgba(192,74,60,0.10);
+  overflow:hidden;
+}
+/* Card shimmer sweep */
+.risen-face::before {
+  content:''; position:absolute; inset:0; border-radius:24px;
+  background:linear-gradient(118deg,transparent 18%,rgba(255,255,255,0.07) 50%,transparent 82%);
+  animation:rfSweep var(--loop) ease-in-out infinite;
+}
+@keyframes rfSweep {
+  0%,35%  { transform:translateX(-160%); opacity:0; }
+  39%     { transform:translateX(-55%);  opacity:1; }
+  57%     { transform:translateX(55%);   opacity:1; }
+  61%     { transform:translateX(160%);  opacity:0; }
+  100%    { transform:translateX(160%);  opacity:0; }
+}
+
+/* ══════════════════════════════════
+   EDITORIAL LAYOUT inside card
+   2 columns: left=128px (full height), right=120px (3 stacked)
+   gap=8px — total 256×248 — padding: l12 t16
+══════════════════════════════════ */
+.editorial {
+  position:absolute; left:12px; top:16px;
+  width:256px; height:248px;
+  opacity:0;
+  animation:editShow var(--loop) ease-in-out infinite;
+}
+@keyframes editShow {
+  0%,37%  { opacity:0; transform:scale(.90); }
+  41%     { opacity:1; transform:scale(1); }
+  61%     { opacity:1; }
+  64%     { opacity:0; transform:scale(.96); }
+  100%    { opacity:0; transform:scale(.90); }
+}
+
+/* Left tall panel */
+.ed-main {
+  position:absolute; left:0; top:0;
+  width:128px; height:248px; border-radius:14px;
+  background:linear-gradient(155deg,
+    rgba(218,152,52,0.48) 0%,
+    rgba(185,118,34,0.28) 55%,
+    rgba(160,90,28,0.18) 100%);
+  border:1px solid rgba(255,218,120,0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,170,0.30),
+    0 0 22px rgba(215,152,52,0.42);
+  animation:edMainFull var(--loop) cubic-bezier(.34,1.56,.64,1) infinite;
+}
+
+/* Right column panels */
+.ed-tr {
+  position:absolute; left:136px; top:0;
+  width:120px; height:78px; border-radius:14px;
+  background:linear-gradient(148deg,rgba(205,84,68,0.44),rgba(175,60,50,0.24));
+  border:1px solid rgba(255,168,148,0.38);
+  box-shadow:inset 0 1px 0 rgba(255,210,198,0.28), 0 0 16px rgba(205,84,68,0.36);
+  animation:edSide var(--loop) cubic-bezier(.34,1.56,.64,1) infinite 0.10s,
+            edReact var(--loop) ease-in-out infinite;
+}
+.ed-mr {
+  position:absolute; left:136px; top:86px;
+  width:120px; height:78px; border-radius:14px;
+  background:linear-gradient(148deg,rgba(190,152,52,0.40),rgba(162,124,36,0.22));
+  border:1px solid rgba(245,215,135,0.36);
+  box-shadow:inset 0 1px 0 rgba(255,238,180,0.26), 0 0 14px rgba(190,152,52,0.32);
+  animation:edSide var(--loop) cubic-bezier(.34,1.56,.64,1) infinite 0.20s,
+            edReact var(--loop) ease-in-out infinite 0.08s;
+}
+.ed-br {
+  position:absolute; left:136px; top:172px;
+  width:120px; height:76px; border-radius:14px;
+  background:linear-gradient(148deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));
+  border:1px solid rgba(255,248,220,0.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.15), 0 0 10px rgba(255,255,255,0.04);
+  animation:edSide var(--loop) cubic-bezier(.34,1.56,.64,1) infinite 0.30s,
+            edReact var(--loop) ease-in-out infinite 0.16s;
+}
+
+/* Ed-main: pop in + fractal press at t≈10s(41.7%) */
+@keyframes edMainFull {
+  0%,38%   { transform:scale(.62); opacity:0; }
+  42%      { transform:scale(1.06); opacity:1; }
+  45%      { transform:scale(1);    opacity:1; }
+  /* fractal press at t=10s → 41.7% but 42+1=43% offset */
+  48%      { transform:scale(.94);  box-shadow:inset 0 4px 12px rgba(0,0,0,0.55),0 0 8px rgba(215,152,52,.18); }
+  51%      { transform:scale(1.03); box-shadow:inset 0 1px 0 rgba(255,240,170,.30),0 0 28px rgba(215,152,52,.56); }
+  54%      { transform:scale(1);    box-shadow:inset 0 1px 0 rgba(255,240,170,.30),0 0 22px rgba(215,152,52,.42); }
+  61%      { transform:scale(1);    opacity:1; }
+  64%      { transform:scale(.62);  opacity:0; }
+  100%     { transform:scale(.62);  opacity:0; }
+}
+
+/* Side panels pop in */
+@keyframes edSide {
+  0%,39%   { transform:scale(.62); opacity:0; }
+  43%      { transform:scale(1.05); opacity:1; }
+  46%      { transform:scale(1); opacity:1; }
+  61%      { transform:scale(1); opacity:1; }
+  64%      { transform:scale(.62); opacity:0; }
+  100%     { transform:scale(.62); opacity:0; }
+}
+
+/* Side panels react to fractal press */
+@keyframes edReact {
+  0%,49%   { filter:brightness(1); transform:scale(1); }
+  51%      { filter:brightness(1.5); transform:scale(1.03); }
+  53%      { filter:brightness(1); transform:scale(1); }
+  100%     { filter:brightness(1); }
+}
+
+/* Mini shockwave inside card — emanates from centre of ed-main */
+/* ed-main centre: left=12+64=76, top=16+124=140 */
+.mini-shock {
+  position:absolute; left:76px; top:140px;
+  width:44px; height:44px; border-radius:50%;
+  margin-left:-22px; margin-top:-22px;
+  pointer-events:none; z-index:5;
+  animation:miniSW var(--loop) cubic-bezier(0,.55,.45,1) infinite;
+}
+@keyframes miniSW {
+  0%,47%   { transform:scale(0); opacity:0; box-shadow:0 0 0 1.5px rgba(218,158,56,.95); }
+  48.5%    { transform:scale(1); opacity:1; }
+  55%      { transform:scale(5); opacity:0; }
+  100%     { transform:scale(5); opacity:0; }
+}
+
+/* ══════════════════════════════════
+   VIGNETTE + GRAIN
+══════════════════════════════════ */
+.vignette {
+  position:absolute; inset:0; pointer-events:none; z-index:22;
+  background:radial-gradient(ellipse 112% 112% at 50% 50%,
+    transparent 40%, rgba(5,3,2,.70) 100%);
+}
+.grain {
+  position:absolute; inset:0; pointer-events:none; z-index:23; opacity:0.034;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:gd .9s steps(1) infinite;
+}
+@keyframes gd {
+  0%{background-position:0 0}20%{background-position:-52px -30px}
+  40%{background-position:40px 60px}60%{background-position:-70px 40px}80%{background-position:60px -50px}
+}
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <!-- Aurora -->
+  <div class="blobs">
+    <div class="b b1"></div><div class="b b2"></div><div class="b b3"></div>
+    <div class="b b4"></div><div class="b b5"></div><div class="b b6"></div>
+  </div>
+  <div class="top-edge"></div>
+  <div class="bot-edge"></div>
+
+  <!-- Grid -->
+  <div class="grid-outer">
+    <div class="grid-halo"></div>
+    <div class="grid">
+      <div class="cell c0 tn"></div>
+      <div class="cell c1 ta"></div>
+      <div class="cell c2 ta"></div><!-- HERO: top-right corner -->
+      <div class="cell c3 tr"></div>
+      <div class="cell c4 tg"></div>
+      <div class="cell c5 ta"></div>
+      <div class="cell c6 ta"></div>
+      <div class="cell c7 tr"></div>
+      <div class="cell c8 tn"></div>
+    </div>
+
+    <!-- Network lines: all radiate from c2 = (248,44) -->
+    <!-- Line lengths:
+         →c1(146,44): 102   →c0(44,44): 204
+         →c5(248,146): 102  →c4(146,146): 144
+         →c8(248,248): 204  →c3(44,146): 228
+         →c7(146,248): 228  →c6(44,248): 288  -->
+    <svg class="connections" viewBox="0 0 292 292">
+
+      <!-- GLOW layer -->
+      <line class="ll" x1="248" y1="44" x2="146" y2="44"  style="stroke:rgba(222,162,62,.22);stroke-width:5;filter:blur(3px);--dl:102;--dd:0s"/>
+      <line class="ll" x1="248" y1="44" x2="248" y2="146" style="stroke:rgba(222,162,62,.22);stroke-width:5;filter:blur(3px);--dl:102;--dd:-.15s"/>
+      <line class="ll" x1="248" y1="44" x2="146" y2="146" style="stroke:rgba(210,90,74,.18);stroke-width:5;filter:blur(3px);--dl:144;--dd:-.40s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="44"  style="stroke:rgba(205,148,52,.18);stroke-width:5;filter:blur(3px);--dl:204;--dd:-.30s"/>
+      <line class="ll" x1="248" y1="44" x2="248" y2="248" style="stroke:rgba(205,148,52,.16);stroke-width:5;filter:blur(3px);--dl:204;--dd:-.50s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="146" style="stroke:rgba(208,90,74,.16);stroke-width:5;filter:blur(3px);--dl:228;--dd:-.60s"/>
+      <line class="ll" x1="248" y1="44" x2="146" y2="248" style="stroke:rgba(200,148,52,.15);stroke-width:5;filter:blur(3px);--dl:228;--dd:-.70s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="248" style="stroke:rgba(198,140,48,.14);stroke-width:5;filter:blur(3px);--dl:288;--dd:-.90s"/>
+
+      <!-- CRISP layer -->
+      <line class="ll" x1="248" y1="44" x2="146" y2="44"  style="stroke:rgba(222,162,62,.80);stroke-width:.9;--dl:102;--dd:0s"/>
+      <line class="ll" x1="248" y1="44" x2="248" y2="146" style="stroke:rgba(218,158,58,.78);stroke-width:.9;--dl:102;--dd:-.15s"/>
+      <line class="ll" x1="248" y1="44" x2="146" y2="146" style="stroke:rgba(210,90,74,.72);stroke-width:.9;--dl:144;--dd:-.40s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="44"  style="stroke:rgba(205,148,52,.68);stroke-width:.9;--dl:204;--dd:-.30s"/>
+      <line class="ll" x1="248" y1="44" x2="248" y2="248" style="stroke:rgba(200,140,48,.65);stroke-width:.9;--dl:204;--dd:-.50s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="146" style="stroke:rgba(208,88,72,.68);stroke-width:.9;--dl:228;--dd:-.60s"/>
+      <line class="ll" x1="248" y1="44" x2="146" y2="248" style="stroke:rgba(200,140,48,.64);stroke-width:.9;--dl:228;--dd:-.70s"/>
+      <line class="ll" x1="248" y1="44" x2="44"  y2="248" style="stroke:rgba(195,135,44,.60);stroke-width:.9;--dl:288;--dd:-.90s"/>
+      <rect class="lout" x="44" y="44" width="204" height="204" rx="4" style="stroke:rgba(180,142,80,.30);fill:none;stroke-width:.8"/>
+
+      <!-- TRAVELING PARTICLES (SMIL motion + CSS opacity gate) -->
+      <circle r="2.4" fill="rgba(225,168,62,.96)" class="prt" style="--pd:0s">
+        <animateMotion dur=".74s" repeatCount="indefinite" path="M 248,44 L 146,44"/>
+      </circle>
+      <circle r="2.2" fill="rgba(220,160,56,.92)" class="prt" style="--pd:-.14s">
+        <animateMotion dur=".74s" repeatCount="indefinite" path="M 248,44 L 248,146"/>
+      </circle>
+      <circle r="2.2" fill="rgba(212,90,74,.88)" class="prt" style="--pd:-.40s">
+        <animateMotion dur=".92s" repeatCount="indefinite" path="M 248,44 L 146,146"/>
+      </circle>
+      <circle r="2.0" fill="rgba(205,148,52,.84)" class="prt" style="--pd:-.30s">
+        <animateMotion dur="1.22s" repeatCount="indefinite" path="M 248,44 L 44,44"/>
+      </circle>
+      <circle r="2.0" fill="rgba(200,138,48,.82)" class="prt" style="--pd:-.50s">
+        <animateMotion dur="1.22s" repeatCount="indefinite" path="M 248,44 L 248,248"/>
+      </circle>
+      <circle r="1.8" fill="rgba(208,88,72,.78)" class="prt" style="--pd:-.60s">
+        <animateMotion dur="1.38s" repeatCount="indefinite" path="M 248,44 L 44,146"/>
+      </circle>
+      <circle r="1.8" fill="rgba(195,132,44,.76)" class="prt" style="--pd:-.70s">
+        <animateMotion dur="1.38s" repeatCount="indefinite" path="M 248,44 L 146,248"/>
+      </circle>
+      <circle r="1.6" fill="rgba(190,128,42,.72)" class="prt" style="--pd:-.90s">
+        <animateMotion dur="1.72s" repeatCount="indefinite" path="M 248,44 L 44,248"/>
+      </circle>
+      <!-- Return particles on two key paths -->
+      <circle r="1.5" fill="rgba(210,90,72,.68)" class="prt" style="--pd:-.55s">
+        <animateMotion dur="1.05s" repeatCount="indefinite" path="M 146,146 L 248,44"/>
+      </circle>
+      <circle r="1.5" fill="rgba(218,155,52,.65)" class="prt" style="--pd:-.35s">
+        <animateMotion dur=".80s" repeatCount="indefinite" path="M 44,44 L 248,44"/>
+      </circle>
+
+      <!-- Node glow dots -->
+      <circle cx="248" cy="44"  r="4" fill="rgba(222,165,58,.0)" class="node" style="--nd:0s"/>
+      <circle cx="146" cy="44"  r="3" fill="rgba(222,165,58,.0)" class="node" style="--nd:-.1s"/>
+      <circle cx="248" cy="146" r="3" fill="rgba(218,158,52,.0)" class="node" style="--nd:-.15s"/>
+      <circle cx="146" cy="146" r="3" fill="rgba(210,88,72,.0)"  class="node" style="--nd:-.40s"/>
+      <circle cx="44"  cy="44"  r="3" fill="rgba(205,145,50,.0)" class="node" style="--nd:-.30s"/>
+      <circle cx="248" cy="248" r="3" fill="rgba(198,135,46,.0)" class="node" style="--nd:-.50s"/>
+      <circle cx="44"  cy="248" r="2" fill="rgba(192,128,42,.0)" class="node" style="--nd:-.90s"/>
+    </svg>
+  </div>
+
+  <!-- Shockwave rings -->
+  <div class="sw"></div>
+  <div class="sw2"></div>
+
+  <!-- Hero risen editorial card -->
+  <div class="hero-risen">
+    <div class="risen-face">
+      <div class="editorial">
+        <div class="ed-main"></div>
+        <div class="ed-tr"></div>
+        <div class="ed-mr"></div>
+        <div class="ed-br"></div>
+      </div>
+      <div class="mini-shock"></div>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+</div>
+</body>
+</html>

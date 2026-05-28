@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wallpaper V3</title>
+<style>
+/* ══════════════════════════════════
+   TOKENS — Bioluminescent Ocean
+══════════════════════════════════ */
+:root {
+  --sq:88px; --gap:14px; --r:20px; --loop:22s;
+
+  --sh-base:
+    inset 0 1px 0 rgba(160,240,230,0.14),
+    0 10px 28px rgba(0,0,0,0.55),
+    0 3px 8px rgba(0,0,0,0.40);
+  --sh-teal:
+    inset 0 1px 0 rgba(160,240,230,0.30),
+    0 10px 28px rgba(0,0,0,0.55),
+    0 0 22px rgba(0,210,190,0.55),
+    0 0 52px rgba(0,190,175,0.26);
+  --sh-sea:
+    inset 0 1px 0 rgba(180,255,240,0.26),
+    0 10px 28px rgba(0,0,0,0.55),
+    0 0 22px rgba(0,175,220,0.52),
+    0 0 52px rgba(0,150,200,0.24);
+  --sh-press:
+    inset 0 5px 18px rgba(0,0,0,0.68),
+    inset 0 0 0 1px rgba(160,240,230,0.06),
+    0 2px 5px rgba(0,0,0,0.22);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:430px; height:932px; overflow:hidden; background:#030a0f; }
+
+/* ══════════════════════════════════
+   SCENE
+══════════════════════════════════ */
+.scene {
+  width:430px; height:932px; position:relative; overflow:hidden;
+  background:radial-gradient(ellipse 150% 110% at 50% 45%,
+    #061420 0%, #040c18 50%, #020810 100%);
+  animation:scenePulse var(--loop) ease-in-out infinite;
+}
+@keyframes scenePulse {
+  0%,8%    { filter:brightness(1); }
+  11.4%    { filter:brightness(1.30); }
+  14%      { filter:brightness(1.04); }
+  100%     { filter:brightness(1); }
+}
+
+/* ══════════════════════════════════
+   AURORA — bioluminescent ocean
+══════════════════════════════════ */
+.blobs { position:absolute; inset:-120px; }
+.b { position:absolute; border-radius:50%; will-change:transform; }
+
+.b1 { width:520px;height:440px; background:radial-gradient(ellipse,rgba(0,160,155,0.26) 0%,transparent 68%); filter:blur(92px); top:-70px;right:-90px; animation:bl1 24s ease-in-out infinite alternate; }
+.b2 { width:500px;height:420px; background:radial-gradient(ellipse,rgba(0,80,160,0.32) 0%,transparent 65%); filter:blur(96px); bottom:-110px;left:-140px; animation:bl2 30s ease-in-out infinite alternate; }
+.b3 { width:380px;height:310px; background:radial-gradient(ellipse,rgba(0,175,130,0.22) 0%,transparent 65%); filter:blur(82px); top:280px;right:-80px; animation:bl3 20s ease-in-out infinite alternate; }
+.b4 { width:360px;height:280px; background:radial-gradient(ellipse,rgba(0,120,180,0.20) 0%,transparent 65%); filter:blur(74px); bottom:60px;left:-70px; animation:bl4 27s ease-in-out infinite alternate; }
+.b5 { width:300px;height:255px; background:radial-gradient(ellipse,rgba(0,200,180,0.14) 0%,transparent 65%); filter:blur(70px); top:160px;left:80px; animation:bl2 36s ease-in-out infinite alternate-reverse; }
+.b6 { width:270px;height:240px; background:radial-gradient(ellipse,rgba(40,90,160,0.18) 0%,transparent 65%); filter:blur(64px); top:520px;right:40px; animation:bl1 42s ease-in-out infinite alternate; }
+
+@keyframes bl1 { from{transform:translate(0,0) scale(1)} to{transform:translate(-42px,56px) scale(1.10)} }
+@keyframes bl2 { from{transform:translate(0,0) scale(1)} to{transform:translate(50px,-40px) scale(1.09)} }
+@keyframes bl3 { from{transform:translate(0,0) scale(1)} to{transform:translate(32px,50px) scale(1.13)} }
+@keyframes bl4 { from{transform:translate(0,0) scale(1)} to{transform:translate(-36px,-30px) scale(1.07)} }
+
+.top-edge { position:absolute;top:0;left:0;right:0;height:230px;z-index:2; background:linear-gradient(to bottom,rgba(0,160,155,0.06),transparent); pointer-events:none; }
+.bot-edge { position:absolute;bottom:0;left:0;right:0;height:200px;z-index:2; background:linear-gradient(to top,rgba(0,80,160,0.10),transparent); pointer-events:none; }
+
+/* ══════════════════════════════════
+   GRID OUTER
+══════════════════════════════════ */
+.grid-outer {
+  position:absolute; left:69px; top:264px;
+  width:292px; height:292px; z-index:5;
+  animation:gridReact var(--loop) ease-in-out infinite;
+}
+@keyframes gridReact {
+  0%,8%   { transform:translateY(0) scale(1); }
+  11.4%   { transform:translateY(5px) scale(0.981); }
+  14%     { transform:translateY(0) scale(1); }
+  100%    { transform:translateY(0) scale(1); }
+}
+
+.grid-halo {
+  position:absolute; inset:-55px;
+  background:radial-gradient(ellipse,rgba(0,210,190,0.16) 0%,rgba(0,130,190,0.08) 50%,transparent 75%);
+  filter:blur(28px);
+  animation:haloBreath 12s ease-in-out infinite, haloReact var(--loop) ease-in-out infinite;
+}
+@keyframes haloBreath { 0%,100%{opacity:.75;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+@keyframes haloReact  { 0%,8%{opacity:1} 11.4%{opacity:1.7;filter:blur(15px)} 14%{opacity:1;filter:blur(28px)} 100%{opacity:1} }
+
+/* ══════════════════════════════════
+   CELLS
+══════════════════════════════════ */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,var(--sq));
+  grid-template-rows:   repeat(3,var(--sq));
+  gap:var(--gap); position:relative; z-index:1;
+}
+
+.cell {
+  width:var(--sq); height:var(--sq);
+  border-radius:var(--r);
+  position:relative; overflow:hidden;
+  border-top:  1px solid rgba(160,240,230,0.20);
+  border-left: 1px solid rgba(160,240,230,0.12);
+  border-right:1px solid rgba(160,240,230,0.06);
+  border-bottom:1px solid rgba(160,240,230,0.05);
+  box-shadow:var(--sh-base);
+  animation:breathe 11s ease-in-out infinite;
+  transition: border-radius 0.6s cubic-bezier(.34,1.2,.64,1);
+}
+.cell::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(120deg,transparent 25%,rgba(160,240,230,0.08) 50%,transparent 75%);
+  transform:translateX(-160%);
+  animation:cellShimmer 10s ease-in-out infinite;
+}
+@keyframes breathe     { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.09)} }
+@keyframes cellShimmer { 0%{transform:translateX(-160%);opacity:0} 18%{opacity:1} 82%{opacity:1} 100%{transform:translateX(160%);opacity:0} }
+
+/* Tints — ocean palette */
+.tt { background:linear-gradient(148deg,rgba(0,200,185,0.18) 0%,rgba(160,240,230,0.028) 100%); }
+.ts { background:linear-gradient(148deg,rgba(0,175,210,0.16) 0%,rgba(160,240,230,0.026) 100%); }
+.te { background:linear-gradient(148deg,rgba(0,185,150,0.16) 0%,rgba(160,240,230,0.026) 100%); }
+.tn { background:linear-gradient(148deg,rgba(160,240,230,0.10) 0%,rgba(160,240,230,0.026) 100%); }
+
+/* ══════════════════════════════════
+   CELL STORY ANIMATIONS
+   Morph: border-radius 20px → 50% → 20px
+   c4=center hero, wave by distance
+══════════════════════════════════ */
+
+/* ── c4: Hero (center) — presses, morphs first, rises ── */
+.c4 {
+  animation:
+    c4Story var(--loop) cubic-bezier(.22,1,.36,1) infinite,
+    breathe 11s ease-in-out infinite -3s;
+  z-index:2;
+}
+@keyframes c4Story {
+  /* Idle */
+  0%     { transform:scale(1);    border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  5%     { transform:scale(1.015); }
+  8%     { transform:scale(1);    box-shadow:var(--sh-base); }
+  /* PRESS */
+  9.1%   { transform:scale(1);    border-radius:var(--r); box-shadow:var(--sh-base); }
+  11.4%  { transform:scale(0.90); border-radius:var(--r); box-shadow:var(--sh-press); }
+  /* MORPH: square → circle */
+  13.6%  { transform:scale(1.04); border-radius:38%; box-shadow:var(--sh-teal); }
+  16%    { transform:scale(1);    border-radius:50%; box-shadow:var(--sh-teal); }
+  /* Connected circle phase */
+  22.7%  { transform:scale(1);    border-radius:50%; box-shadow:var(--sh-teal); opacity:1; }
+  /* Dim → rise */
+  25%    { border-radius:50%; box-shadow:var(--sh-base); opacity:0.40; }
+  27.3%  { transform:scale(0.94); border-radius:50%; opacity:0; }
+  /* Absent */
+  59%    { transform:scale(0.94); border-radius:50%; opacity:0; }
+  /* RETURN as circle */
+  63.6%  { transform:scale(1);    border-radius:50%; box-shadow:var(--sh-teal); opacity:1; }
+  /* REVERSE MORPH: circle → square */
+  68.2%  { border-radius:32%; box-shadow:var(--sh-teal); }
+  72.7%  { border-radius:var(--r); box-shadow:var(--sh-base); }
+  77.3%  { transform:scale(1); border-radius:var(--r); }
+  100%   { transform:scale(1); border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+}
+
+/* ── Adjacent cells: c1,c3,c5,c7 (dist=1) ── */
+.c1,.c3,.c5,.c7 {
+  animation:adjStory var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite;
+}
+@keyframes adjStory {
+  /* idle squares */
+  0%,13.6%  { transform:scale(1);    border-radius:var(--r); box-shadow:var(--sh-base); }
+  /* MORPH wave 1 */
+  16%       { transform:scale(1.03); border-radius:38%; box-shadow:var(--sh-teal); }
+  18.2%     { transform:scale(1);    border-radius:50%; box-shadow:var(--sh-teal); }
+  /* hold as circles */
+  22.7%     { border-radius:50%; box-shadow:var(--sh-teal); }
+  25%       { border-radius:50%; box-shadow:var(--sh-base); }
+  /* RETURN circle phase */
+  63.6%     { border-radius:50%; box-shadow:var(--sh-base); }
+  /* REVERSE MORPH wave 1 — slightly after c4 */
+  65.9%     { border-radius:50%; box-shadow:var(--sh-teal); }
+  70.5%     { border-radius:32%; }
+  74%       { border-radius:var(--r); box-shadow:var(--sh-base); }
+  79.5%     { transform:scale(1); border-radius:var(--r); }
+  100%      { transform:scale(1); border-radius:var(--r); box-shadow:var(--sh-base); }
+}
+
+/* ── Diagonal cells: c0,c2,c6,c8 (dist=√2) ── */
+.c0,.c2,.c6,.c8 {
+  animation:diagStory var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite;
+}
+@keyframes diagStory {
+  0%,16%    { transform:scale(1);    border-radius:var(--r); box-shadow:var(--sh-base); }
+  /* MORPH wave 2 */
+  18.2%     { transform:scale(1.025);border-radius:38%; box-shadow:var(--sh-sea); }
+  20.5%     { transform:scale(1);    border-radius:50%; box-shadow:var(--sh-sea); }
+  /* hold circles */
+  22.7%     { border-radius:50%; box-shadow:var(--sh-sea); }
+  25%       { border-radius:50%; box-shadow:var(--sh-base); }
+  /* RETURN */
+  63.6%     { border-radius:50%; box-shadow:var(--sh-base); }
+  /* REVERSE MORPH wave 2 */
+  68.2%     { border-radius:50%; box-shadow:var(--sh-sea); }
+  72.7%     { border-radius:30%; }
+  76%       { border-radius:var(--r); box-shadow:var(--sh-base); }
+  81%       { transform:scale(1); border-radius:var(--r); }
+  100%      { transform:scale(1); border-radius:var(--r); box-shadow:var(--sh-base); }
+}
+
+/* breathe delays */
+.c0{animation-delay:0s,-1.0s} .c1{animation-delay:0s,-2.5s}
+.c2{animation-delay:0s,-4.0s} .c3{animation-delay:0s,-0.5s}
+.c5{animation-delay:0s,-5.0s} .c6{animation-delay:0s,-1.5s}
+.c7{animation-delay:0s,-3.8s} .c8{animation-delay:0s,-6.2s}
+
+/* ══════════════════════════════════
+   SVG — curved connections (circle phase)
+   All curves from c4(146,146), clockwise bow
+══════════════════════════════════ */
+.connections {
+  position:absolute; top:0; left:0;
+  width:292px; height:292px;
+  pointer-events:none; z-index:3; overflow:visible;
+}
+
+/* Curve timing: appears when cells are circles (t=4s→5.5s = 18.2%→25%) */
+.lc {
+  fill:none; stroke-linecap:round;
+  stroke-dasharray:var(--cl,115);
+  stroke-dashoffset:var(--cl,115);
+  animation:drawCurve var(--loop) ease-in-out infinite var(--cd,0s);
+}
+@keyframes drawCurve {
+  0%,18.2% { stroke-dashoffset:var(--cl,115); opacity:0; }
+  20.5%    { stroke-dashoffset:0; opacity:1; }
+  22.7%    { stroke-dashoffset:0; opacity:1; }
+  25.5%    { stroke-dashoffset:var(--cl,115); opacity:0; }
+  63%      { stroke-dashoffset:var(--cl,115); opacity:0; }
+  67%      { stroke-dashoffset:0; opacity:.55; }
+  72%      { stroke-dashoffset:var(--cl,115); opacity:0; }
+  100%     { stroke-dashoffset:var(--cl,115); opacity:0; }
+}
+
+/* Outer circle trace (circumscribed through corner centres, r≈144) */
+.outerCircle {
+  fill:none;
+  stroke-dasharray:905; stroke-dashoffset:905;
+  animation:drawOC var(--loop) ease-in-out infinite;
+}
+@keyframes drawOC {
+  0%,20.5%  { stroke-dashoffset:905; opacity:0; }
+  23%       { stroke-dashoffset:0;   opacity:1; }
+  24.5%     { stroke-dashoffset:0;   opacity:1; }
+  26%       { stroke-dashoffset:905; opacity:0; }
+  100%      { stroke-dashoffset:905; opacity:0; }
+}
+
+/* Particles */
+.prt { opacity:0; animation:prtOn var(--loop) linear infinite var(--pd,0s); }
+@keyframes prtOn {
+  0%,19.5%  { opacity:0; }
+  20.5%     { opacity:1; }
+  24%       { opacity:1; }
+  25.5%     { opacity:0; }
+  100%      { opacity:0; }
+}
+
+/* Node glow */
+.nd { opacity:0; animation:ndOn var(--loop) ease-out infinite var(--ndd,0s); }
+@keyframes ndOn {
+  0%,18.2%  { opacity:0; transform:scale(1); }
+  19.5%     { opacity:1; transform:scale(1.7); }
+  22.7%     { opacity:.7; transform:scale(1); }
+  25.5%     { opacity:0; }
+  100%      { opacity:0; }
+}
+
+/* ══════════════════════════════════
+   SHOCKWAVE
+   c4 screen pos: x=69+146=215, y=264+146=410
+══════════════════════════════════ */
+.sw,.sw2 {
+  position:absolute; left:215px; top:410px;
+  width:88px; height:88px; border-radius:50%;
+  margin-left:-44px; margin-top:-44px;
+  pointer-events:none; z-index:6;
+}
+.sw  { animation:swGo  var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+.sw2 { animation:swGo2 var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+
+@keyframes swGo {
+  0%,8.3%  { transform:scale(0); opacity:0; box-shadow:0 0 0 2px rgba(0,220,200,.95); }
+  11.4%    { transform:scale(1); opacity:1; }
+  20%      { transform:scale(5.7); opacity:0; }
+  100%     { transform:scale(5.7); opacity:0; }
+}
+@keyframes swGo2 {
+  0%,10%   { transform:scale(0); opacity:0; box-shadow:0 0 0 1px rgba(0,175,220,.7); }
+  12.5%    { transform:scale(1); opacity:.7; }
+  22%      { transform:scale(4.6); opacity:0; }
+  100%     { transform:scale(4.6); opacity:0; }
+}
+
+/* ══════════════════════════════════
+   HERO RISEN — circle card
+   c4 is at screen centre (215, 410).
+   260×260 circle, margin -130 each.
+   88/260 = 0.3385 → appears as grid cell.
+══════════════════════════════════ */
+.hero-risen {
+  position:absolute;
+  left:215px; top:410px;
+  width:260px; height:260px;
+  margin-left:-130px; margin-top:-130px;
+  border-radius:50%;                /* CIRCLE */
+  overflow:hidden; z-index:20;
+  opacity:0; will-change:transform,opacity;
+  animation:heroRise var(--loop) cubic-bezier(.22,1,.36,1) infinite;
+}
+@keyframes heroRise {
+  0%,25%    { opacity:0; transform:scale(.3385) translateY(0); }
+  30%       { opacity:.55; transform:scale(.70) translateY(-10px); }
+  31.8%     { opacity:1; transform:scale(1) translateY(-20px); }
+  54.5%     { opacity:1; transform:scale(1) translateY(-20px); }
+  58.5%     { opacity:.4; transform:scale(.65) translateY(-8px); }
+  61%       { opacity:0; transform:scale(.3385) translateY(0); }
+  100%      { opacity:0; transform:scale(.3385) translateY(0); }
+}
+
+/* Circular glass face */
+.risen-face {
+  position:absolute; inset:0; border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,
+    rgba(160,240,230,0.14) 0%,
+    rgba(0,200,185,0.07) 50%,
+    rgba(0,80,160,0.06) 100%);
+  border:1px solid rgba(160,240,230,0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(160,240,230,0.28),
+    inset 0 -1px 0 rgba(0,80,160,0.15),
+    0 52px 100px rgba(0,0,0,0.60),
+    0  0   70px rgba(0,210,190,0.20),
+    0  0  140px rgba(0,130,200,0.12);
+  overflow:hidden;
+}
+/* specular highlight */
+.risen-face::after {
+  content:''; position:absolute;
+  top:12%; left:20%; width:32%; height:22%;
+  background:radial-gradient(ellipse,rgba(200,255,250,0.22) 0%,transparent 70%);
+  filter:blur(4px); border-radius:50%;
+  animation:specPulse var(--loop) ease-in-out infinite;
+}
+@keyframes specPulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+
+/* ══════════════════════════════════
+   MINI 3×3 CIRCLE GRID (inside risen circle)
+   42px circles, 8px gap = 142×142px
+   Offset: (260-142)/2 = 59px each side
+══════════════════════════════════ */
+.comp-wrap {
+  position:absolute; left:59px; top:59px;
+  width:142px; height:142px;
+  opacity:0;
+  animation:compShow var(--loop) ease-in-out infinite;
+}
+@keyframes compShow {
+  0%,33%   { opacity:0; transform:scale(.88); }
+  37%      { opacity:1; transform:scale(1); }
+  54%      { opacity:1; }
+  57%      { opacity:0; transform:scale(.94); }
+  100%     { opacity:0; transform:scale(.88); }
+}
+
+.mini-grid {
+  display:grid;
+  grid-template-columns:repeat(3,42px);
+  grid-template-rows:   repeat(3,42px);
+  gap:8px;
+}
+
+.mc {
+  width:42px; height:42px;
+  border-radius:50%;          /* ALL CIRCLES */
+  position:relative;
+  animation:mcPop var(--loop) cubic-bezier(.34,1.56,.64,1) infinite;
+}
+.mc:nth-child(1){animation-delay:.00s} .mc:nth-child(2){animation-delay:.07s}
+.mc:nth-child(3){animation-delay:.14s} .mc:nth-child(4){animation-delay:.21s}
+.mc:nth-child(5){animation-delay:.28s} .mc:nth-child(6){animation-delay:.35s}
+.mc:nth-child(7){animation-delay:.42s} .mc:nth-child(8){animation-delay:.49s}
+.mc:nth-child(9){animation-delay:.56s}
+
+@keyframes mcPop {
+  0%,35%   { transform:scale(.6); opacity:0; }
+  39%      { transform:scale(1.08); opacity:1; }
+  42%      { transform:scale(1); }
+  54%      { transform:scale(1); opacity:1; }
+  57%      { transform:scale(.6); opacity:0; }
+  100%     { transform:scale(.6); opacity:0; }
+}
+
+/* Circle variants — teal heatmap */
+.mf  { background:radial-gradient(circle at 40% 35%, rgba(0,230,210,0.80), rgba(0,170,155,0.48)); border:1px solid rgba(0,240,220,0.55); box-shadow:0 0 14px rgba(0,220,200,0.55),inset 0 1px 0 rgba(200,255,248,0.40); }
+.mm  { background:radial-gradient(circle at 40% 35%, rgba(0,190,220,0.60), rgba(0,140,180,0.32)); border:1px solid rgba(0,210,240,0.42); box-shadow:0 0 10px rgba(0,190,220,0.38),inset 0 1px 0 rgba(180,240,255,0.28); }
+.ms  { background:radial-gradient(circle at 40% 35%, rgba(0,185,160,0.50), rgba(0,130,130,0.26)); border:1px solid rgba(0,200,180,0.38); box-shadow:0 0 8px rgba(0,185,160,0.30),inset 0 1px 0 rgba(160,240,228,0.22); }
+.md  { background:radial-gradient(circle at 40% 35%, rgba(160,240,230,0.10), rgba(160,240,230,0.04)); border:1px solid rgba(160,240,230,0.14); }
+
+/* ── Mini SVG connections inside circle ── */
+/* mini-circle centres (42px,8px gap):
+   (21,21)(71,21)(121,21)
+   (21,71)(71,71)(121,71)
+   (21,121)(71,121)(121,121) */
+.mini-conn {
+  position:absolute; inset:0;
+  width:142px; height:142px;
+  overflow:visible; pointer-events:none;
+  opacity:0;
+  animation:miniConnShow var(--loop) ease-in-out infinite;
+}
+@keyframes miniConnShow { 0%,40%{opacity:0} 44%{opacity:1} 54%{opacity:1} 57%{opacity:0} 100%{opacity:0} }
+
+.ml { fill:none; stroke-linecap:round; stroke-dasharray:200; stroke-dashoffset:200; animation:mlDraw var(--loop) ease-in-out infinite; }
+.ml:nth-of-type(1){stroke:rgba(0,230,210,.80);stroke-width:1;--ml:84; animation-delay:.00s}
+.ml:nth-of-type(2){stroke:rgba(0,190,220,.75);stroke-width:1;--ml:60; animation-delay:.12s}
+.ml:nth-of-type(3){stroke:rgba(0,210,190,.72);stroke-width:1;--ml:132;animation-delay:.24s}
+.ml:nth-of-type(4){stroke:rgba(0,185,160,.68);stroke-width:1;--ml:84; animation-delay:.36s}
+/* glow dupes */
+.ml:nth-of-type(5){stroke:rgba(0,240,220,.18);stroke-width:5;filter:blur(2.5px);--ml:84; animation-delay:.00s}
+.ml:nth-of-type(6){stroke:rgba(0,200,235,.15);stroke-width:5;filter:blur(2.5px);--ml:60; animation-delay:.12s}
+.ml:nth-of-type(7){stroke:rgba(0,225,200,.14);stroke-width:5;filter:blur(2.5px);--ml:132;animation-delay:.24s}
+.ml:nth-of-type(8){stroke:rgba(0,195,170,.13);stroke-width:5;filter:blur(2.5px);--ml:84; animation-delay:.36s}
+
+@keyframes mlDraw {
+  0%,41%   { stroke-dashoffset:200; opacity:0; }
+  45%      { stroke-dashoffset:0;   opacity:1; }
+  54%      { stroke-dashoffset:0;   opacity:1; }
+  56.5%    { stroke-dashoffset:200; opacity:0; }
+  100%     { stroke-dashoffset:200; opacity:0; }
+}
+
+/* ══════════════════════════════════
+   VIGNETTE + GRAIN
+══════════════════════════════════ */
+.vignette {
+  position:absolute; inset:0; pointer-events:none; z-index:22;
+  background:radial-gradient(ellipse 112% 112% at 50% 50%,transparent 40%,rgba(2,5,10,.72) 100%);
+}
+.grain {
+  position:absolute; inset:0; pointer-events:none; z-index:23; opacity:0.032;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:gd .9s steps(1) infinite;
+}
+@keyframes gd { 0%{background-position:0 0}20%{background-position:-52px -30px}40%{background-position:40px 60px}60%{background-position:-70px 40px}80%{background-position:60px -50px} }
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <!-- Aurora -->
+  <div class="blobs">
+    <div class="b b1"></div><div class="b b2"></div><div class="b b3"></div>
+    <div class="b b4"></div><div class="b b5"></div><div class="b b6"></div>
+  </div>
+  <div class="top-edge"></div>
+  <div class="bot-edge"></div>
+
+  <!-- Grid -->
+  <div class="grid-outer">
+    <div class="grid-halo"></div>
+    <div class="grid">
+      <div class="cell c0 ts"></div>
+      <div class="cell c1 tt"></div>
+      <div class="cell c2 ts"></div>
+      <div class="cell c3 te"></div>
+      <div class="cell c4 tt"></div><!-- HERO: center -->
+      <div class="cell c5 ts"></div>
+      <div class="cell c6 tn"></div>
+      <div class="cell c7 te"></div>
+      <div class="cell c8 ts"></div>
+    </div>
+
+    <!-- CURVED connections — all from c4(146,146), clockwise bow
+         c4→c1(146,44):  Q(168,95)    len≈108 → --cl:115
+         c4→c5(248,146): Q(197,168)   len≈108 → --cl:115
+         c4→c7(146,248): Q(124,197)   len≈108 → --cl:115
+         c4→c3(44,146):  Q(95,124)    len≈108 → --cl:115
+         c4→c2(248,44):  Q(215,80)    len≈150 → --cl:158
+         c4→c8(248,248): Q(212,212)   len≈150 → --cl:158
+         c4→c6(44,248):  Q(78,214)    len≈150 → --cl:158
+         c4→c0(44,44):   Q(80,78)     len≈150 → --cl:158  -->
+    <svg class="connections" viewBox="0 0 292 292">
+
+      <!-- GLOW pass -->
+      <path class="lc" d="M146,146 Q168,95  146,44"  style="stroke:rgba(0,220,200,.22);stroke-width:5;filter:blur(3px);--cl:115;--cd:0s"/>
+      <path class="lc" d="M146,146 Q197,168 248,146" style="stroke:rgba(0,210,190,.22);stroke-width:5;filter:blur(3px);--cl:115;--cd:-.15s"/>
+      <path class="lc" d="M146,146 Q124,197 146,248" style="stroke:rgba(0,200,220,.22);stroke-width:5;filter:blur(3px);--cl:115;--cd:-.30s"/>
+      <path class="lc" d="M146,146 Q95,124  44,146"  style="stroke:rgba(0,215,195,.22);stroke-width:5;filter:blur(3px);--cl:115;--cd:-.45s"/>
+      <path class="lc" d="M146,146 Q215,80  248,44"  style="stroke:rgba(0,180,210,.20);stroke-width:5;filter:blur(3px);--cl:158;--cd:-.40s"/>
+      <path class="lc" d="M146,146 Q212,212 248,248" style="stroke:rgba(0,175,215,.20);stroke-width:5;filter:blur(3px);--cl:158;--cd:-.55s"/>
+      <path class="lc" d="M146,146 Q78,214  44,248"  style="stroke:rgba(0,190,200,.18);stroke-width:5;filter:blur(3px);--cl:158;--cd:-.70s"/>
+      <path class="lc" d="M146,146 Q80,78   44,44"   style="stroke:rgba(0,200,195,.18);stroke-width:5;filter:blur(3px);--cl:158;--cd:-.85s"/>
+
+      <!-- CRISP pass -->
+      <path class="lc" d="M146,146 Q168,95  146,44"  style="stroke:rgba(0,228,208,.82);stroke-width:.9;--cl:115;--cd:0s"/>
+      <path class="lc" d="M146,146 Q197,168 248,146" style="stroke:rgba(0,218,198,.80);stroke-width:.9;--cl:115;--cd:-.15s"/>
+      <path class="lc" d="M146,146 Q124,197 146,248" style="stroke:rgba(0,208,228,.78);stroke-width:.9;--cl:115;--cd:-.30s"/>
+      <path class="lc" d="M146,146 Q95,124  44,146"  style="stroke:rgba(0,222,202,.78);stroke-width:.9;--cl:115;--cd:-.45s"/>
+      <path class="lc" d="M146,146 Q215,80  248,44"  style="stroke:rgba(0,185,215,.74);stroke-width:.9;--cl:158;--cd:-.40s"/>
+      <path class="lc" d="M146,146 Q212,212 248,248" style="stroke:rgba(0,180,220,.72);stroke-width:.9;--cl:158;--cd:-.55s"/>
+      <path class="lc" d="M146,146 Q78,214  44,248"  style="stroke:rgba(0,195,205,.70);stroke-width:.9;--cl:158;--cd:-.70s"/>
+      <path class="lc" d="M146,146 Q80,78   44,44"   style="stroke:rgba(0,205,200,.70);stroke-width:.9;--cl:158;--cd:-.85s"/>
+
+      <!-- Outer circle trace (r=144, centred 146,146) -->
+      <circle class="outerCircle" cx="146" cy="146" r="144"
+        style="stroke:rgba(0,200,185,.26);stroke-width:.8"/>
+
+      <!-- TRAVELING PARTICLES — follow the curves -->
+      <circle r="2.4" fill="rgba(0,235,215,.95)" class="prt" style="--pd:0s">
+        <animateMotion dur=".72s" repeatCount="indefinite" path="M146,146 Q168,95 146,44"/>
+      </circle>
+      <circle r="2.2" fill="rgba(0,225,205,.92)" class="prt" style="--pd:-.15s">
+        <animateMotion dur=".72s" repeatCount="indefinite" path="M146,146 Q197,168 248,146"/>
+      </circle>
+      <circle r="2.2" fill="rgba(0,215,230,.90)" class="prt" style="--pd:-.30s">
+        <animateMotion dur=".72s" repeatCount="indefinite" path="M146,146 Q124,197 146,248"/>
+      </circle>
+      <circle r="2.2" fill="rgba(0,228,210,.90)" class="prt" style="--pd:-.45s">
+        <animateMotion dur=".72s" repeatCount="indefinite" path="M146,146 Q95,124 44,146"/>
+      </circle>
+      <circle r="2.0" fill="rgba(0,190,220,.85)" class="prt" style="--pd:-.40s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q215,80 248,44"/>
+      </circle>
+      <circle r="2.0" fill="rgba(0,185,225,.82)" class="prt" style="--pd:-.55s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q212,212 248,248"/>
+      </circle>
+      <circle r="1.8" fill="rgba(0,200,210,.78)" class="prt" style="--pd:-.70s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q78,214 44,248"/>
+      </circle>
+      <circle r="1.8" fill="rgba(0,210,205,.78)" class="prt" style="--pd:-.85s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q80,78 44,44"/>
+      </circle>
+      <!-- Return particles -->
+      <circle r="1.5" fill="rgba(0,190,230,.65)" class="prt" style="--pd:-.35s">
+        <animateMotion dur=".90s" repeatCount="indefinite" path="M248,44 Q215,108 146,146"/>
+      </circle>
+      <circle r="1.5" fill="rgba(0,220,200,.62)" class="prt" style="--pd:-.60s">
+        <animateMotion dur=".90s" repeatCount="indefinite" path="M44,248 Q108,215 146,146"/>
+      </circle>
+
+      <!-- Node dots at each cell centre -->
+      <circle cx="146" cy="146" r="4.5" fill="rgba(0,235,215,0)" class="nd" style="--ndd:0s"/>
+      <circle cx="146" cy="44"  r="3.0" fill="rgba(0,228,208,0)" class="nd" style="--ndd:-.0s"/>
+      <circle cx="248" cy="146" r="3.0" fill="rgba(0,218,198,0)" class="nd" style="--ndd:-.15s"/>
+      <circle cx="146" cy="248" r="3.0" fill="rgba(0,208,228,0)" class="nd" style="--ndd:-.30s"/>
+      <circle cx="44"  cy="146" r="3.0" fill="rgba(0,222,202,0)" class="nd" style="--ndd:-.45s"/>
+      <circle cx="248" cy="44"  r="2.5" fill="rgba(0,185,215,0)" class="nd" style="--ndd:-.40s"/>
+      <circle cx="248" cy="248" r="2.5" fill="rgba(0,180,220,0)" class="nd" style="--ndd:-.55s"/>
+      <circle cx="44"  cy="248" r="2.5" fill="rgba(0,195,205,0)" class="nd" style="--ndd:-.70s"/>
+      <circle cx="44"  cy="44"  r="2.5" fill="rgba(0,205,200,0)" class="nd" style="--ndd:-.85s"/>
+    </svg>
+  </div>
+
+  <!-- Shockwave rings -->
+  <div class="sw"></div>
+  <div class="sw2"></div>
+
+  <!-- Hero risen CIRCLE -->
+  <div class="hero-risen">
+    <div class="risen-face">
+
+      <!-- 3×3 of mini circles inside the big circle -->
+      <div class="comp-wrap">
+        <div class="mini-grid">
+          <div class="mc mf"></div><!-- bright teal -->
+          <div class="mc md"></div><!-- dim -->
+          <div class="mc ms"></div><!-- seafoam -->
+          <div class="mc mm"></div><!-- mid blue -->
+          <div class="mc mf"></div><!-- brightest — center of center -->
+          <div class="mc md"></div><!-- dim -->
+          <div class="mc md"></div><!-- dim -->
+          <div class="mc ms"></div><!-- seafoam -->
+          <div class="mc mm"></div><!-- mid -->
+        </div>
+
+        <!-- Curved connections inside the circle card -->
+        <!-- Centres: (21,21)(71,21)(121,21)/(21,71)(71,71)(121,71)/(21,121)(71,121)(121,121) -->
+        <svg class="mini-conn" viewBox="0 0 142 142">
+          <!-- crisp -->
+          <path class="ml" d="M71,71 Q46,46 21,21"/>       <!-- centre→TL warm -->
+          <path class="ml" d="M71,71 Q71,46 71,21"/>        <!-- centre→top blue short -->
+          <path class="ml" d="M71,71 Q46,96 21,121"/>       <!-- centre→BL seafoam -->
+          <path class="ml" d="M21,21 Q71,46 121,71"/>       <!-- TL→mid-right warm diagonal -->
+          <!-- glow -->
+          <path class="ml" d="M71,71 Q46,46 21,21"/>
+          <path class="ml" d="M71,71 Q71,46 71,21"/>
+          <path class="ml" d="M71,71 Q46,96 21,121"/>
+          <path class="ml" d="M21,21 Q71,46 121,71"/>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+</div>
+</body>
+</html>

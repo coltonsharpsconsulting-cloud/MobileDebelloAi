@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motion Studies — 6×6 Grid Animations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ----- DESIGN TOKENS ----- */
+/* All colors, sizes, and timing live here so we can stay consistent
+   across ten animations and the user can retune the system in one place. */
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --surface: #1a1714;
+  --border: #2a2620;
+  --border-strong: #3a3429;
+  --text: #ede4d0;
+  --text-muted: #8a8275;
+  --text-faint: #4a4339;
+  --accent: #d97757;
+
+  /* The six square categories. Muted so the notification rings can pop. */
+  --cat-a: #d97757;  /* terracotta */
+  --cat-b: #7a9b87;  /* sage */
+  --cat-c: #c5996b;  /* sand */
+  --cat-d: #8e7a9c;  /* plum */
+  --cat-e: #6a8ca0;  /* slate-blue */
+  --cat-f: #b8a35f;  /* ochre */
+
+  /* The four notification ring colors — vivid, deliberately louder. */
+  --ring-pink:   #ff6b9d;
+  --ring-mint:   #5dd9c1;
+  --ring-gold:   #ffd84d;
+  --ring-violet: #a78bfa;
+
+  /* Grid sizing scales with viewport so the same code works on phone or desktop. */
+  --cell-size: clamp(28px, 4.8vw, 54px);
+  --cell-gap:  clamp(5px, 0.9vw, 9px);
+  --cell-radius: 9px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Geist', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* Atmospheric tint — two soft radial washes so the dark bg feels warm, not flat. */
+  background-image:
+    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(217, 119, 87, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 85% 90%, rgba(122, 155, 135, 0.04), transparent 60%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* ----- HEADER ----- */
+.site-header {
+  padding: clamp(60px, 10vw, 140px) clamp(20px, 5vw, 80px) clamp(40px, 6vw, 80px);
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--text-muted);
+}
+
+h1 {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(44px, 8vw, 96px);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  margin-bottom: 36px;
+  max-width: 920px;
+}
+h1 em { font-style: italic; color: var(--accent); }
+
+.subtitle {
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--text-muted);
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+/* ----- LEGEND ----- */
+.legend {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 50px clamp(20px, 5vw, 80px) 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 50px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+@media (max-width: 900px) {
+  .legend { grid-template-columns: 1fr; gap: 36px; }
+}
+
+.legend-section h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+
+.legend-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text);
+}
+.legend-list li { display: flex; align-items: center; gap: 14px; }
+.legend-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+.legend-ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: transparent;
+  border: 2.5px solid;
+  box-sizing: border-box;
+}
+
+.legend-preview-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.legend-preview {
+  display: grid;
+  grid-template-columns: repeat(6, 22px);
+  grid-template-rows: repeat(6, 22px);
+  gap: 4px;
+}
+.legend-preview .cell { width: 22px; height: 22px; border-radius: 4px; }
+.legend-preview .cell[data-notif]::before { inset: -3px; border-width: 1.5px; border-radius: 6px; }
+
+/* ----- EXAMPLES (the meat) ----- */
+.examples {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 80px);
+}
+
+.example {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(40px, 6vw, 100px);
+  padding: clamp(80px, 12vw, 140px) 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.example:last-child { border-bottom: none; }
+@media (max-width: 900px) {
+  .example { grid-template-columns: 1fr; gap: 50px; }
+}
+
+.example-meta { display: flex; flex-direction: column; gap: 22px; }
+
+.example-number {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(56px, 9vw, 110px);
+  line-height: 1;
+  color: var(--text-faint);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.example-number .slug {
+  font-family: 'JetBrains Mono', monospace;
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.example-title {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin-top: -4px;
+}
+.example-title em { font-style: italic; color: var(--accent); }
+
+.example-body { display: flex; flex-direction: column; gap: 22px; margin-top: 6px; }
+
+.spec-block .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.spec-block p { color: var(--text); font-size: 14.5px; line-height: 1.7; max-width: 50ch; }
+
+.example-controls { margin-top: 8px; }
+
+/* The Play / Reset button is now the only interaction surface on the page,
+   so it needs visual presence and clear state feedback. data-state drives
+   the fill: "off" = outlined (resting / start state shown), "on" = filled
+   accent (animated to end state held). The icon rotates between ▶ and ↺
+   forms when the label updates from JS — we don't rotate via CSS because
+   the glyph itself changes character. */
+.play-btn {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 130px;       /* prevents Play↔Reset label swap from jittering width */
+  justify-content: center;
+}
+.play-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.play-btn:active {
+  transform: translateY(0);
+}
+.play-btn[data-state="on"] {
+  background: rgba(217, 119, 87, 0.10);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.play-btn .icon {
+  display: inline-block;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* ----- THE GRID ----- */
+.grid-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(20px, 4vw, 40px);
+  position: relative;
+  /* A faint plate behind the grid gives it ground without being a hard card. */
+  background:
+    radial-gradient(ellipse at center, rgba(255, 240, 220, 0.02), transparent 70%);
+  border-radius: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, var(--cell-size));
+  grid-template-rows: repeat(6, var(--cell-size));
+  gap: var(--cell-gap);
+  position: relative;
+}
+
+/* Each cell carries CSS vars set by JS: --col, --row, --dist (chebyshev distance
+   from center), --dx/--dy (cluster target offsets), --target-bg (sorted gradient
+   target), --quad (0-3), --density (0-8). Animations consume these. */
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: var(--cell-radius);
+  position: relative;
+  /* Default transition — most animations interpolate from this base state. */
+  transition:
+    transform 0.7s var(--ease-out),
+    background-color 0.7s var(--ease-out),
+    opacity 0.6s var(--ease-out),
+    filter 0.6s var(--ease-out),
+    box-shadow 0.6s var(--ease-out);
+  will-change: transform, filter, background-color;
+}
+.cell[data-cat="A"] { background: var(--cat-a); }
+.cell[data-cat="B"] { background: var(--cat-b); }
+.cell[data-cat="C"] { background: var(--cat-c); }
+.cell[data-cat="D"] { background: var(--cat-d); }
+.cell[data-cat="E"] { background: var(--cat-e); }
+.cell[data-cat="F"] { background: var(--cat-f); }
+
+/* Notification rings sit just outside each cell via ::before.
+   Each color is its own attribute selector so the ring stays attached
+   to the data, not to a layout state. */
+.cell[data-notif]::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: calc(var(--cell-radius) + 4px);
+  border: 2px solid;
+  transition:
+    inherit,
+    border-color 0.5s var(--ease-out),
+    transform 0.7s var(--ease-out);
+  pointer-events: none;
+}
+.cell[data-notif="pink"]::before   { border-color: var(--ring-pink); }
+.cell[data-notif="mint"]::before   { border-color: var(--ring-mint); }
+.cell[data-notif="gold"]::before   { border-color: var(--ring-gold); }
+.cell[data-notif="violet"]::before { border-color: var(--ring-violet); }
+
+
+/* =========================================================
+   ANIMATION 01 — HEAT BLOOM
+   Cells nearer the grid center intensify; the periphery cools.
+   Driven entirely by the per-cell --dist variable set in JS.
+   ========================================================= */
+/* With --dist ∈ {1, 2, 3}: center ring scales up & warms; outer ring fades hard.
+   The arithmetic resolves to:
+     dist 1 (center): scale 1.13, brightness 1.20, saturate 1.25, ~18px glow
+     dist 2 (mid):    scale 1.01, brightness 0.90, saturate 0.90, ~12px glow
+     dist 3 (corner): scale 0.89, brightness 0.60, saturate 0.55, ~6px glow */
+.example[data-anim="bloom"].is-active .cell {
+  transform: scale(calc(1.25 - var(--dist) * 0.12));
+  filter: brightness(calc(1.5 - var(--dist) * 0.30))
+          saturate(calc(1.6 - var(--dist) * 0.35));
+  box-shadow: 0 0 calc((4 - var(--dist)) * 6px) rgba(217, 119, 87, calc(0.3 - var(--dist) * 0.08));
+}
+
+
+/* =========================================================
+   ANIMATION 02 — CLUSTER MIGRATION
+   Each cell physically slides to a new grid position so that
+   same-category cells end up contiguous. Targets are pre-computed
+   in JS and dropped onto each cell as --dx / --dy translations.
+   ========================================================= */
+.example[data-anim="cluster"].is-active .cell {
+  transform: translate(var(--dx, 0px), var(--dy, 0px));
+  transition: transform 1.4s var(--ease-in-out);
+}
+
+
+/* =========================================================
+   ANIMATION 03 — WAVE PROPAGATION
+   A diagonal pulse runs across the grid from top-left to bottom-right.
+   Each cell's animation-delay is set by (col + row) so the wave reads
+   as one motion, not 36 simultaneous flashes.
+   ========================================================= */
+@keyframes wavePulse {
+  0%   { transform: scale(1); filter: brightness(1) saturate(1); }
+  35%  { transform: scale(1.18); filter: brightness(1.5) saturate(1.4); }
+  100% { transform: scale(1); filter: brightness(1) saturate(1); }
+}
+.example[data-anim="wave"].is-active .cell {
+  animation: wavePulse 1.1s var(--ease-out) forwards;
+  animation-delay: calc((var(--col) + var(--row)) * 90ms);
+}
+
+
+/* =========================================================
+   ANIMATION 04 — DISTRIBUTION HISTOGRAM
+   The grid morphs in place into a bar chart. Each column becomes
+   one category; cells above the bar fade out, cells in the bar
+   re-color to that category's hue. --in-bar and --bar-cat are set in JS.
+   ========================================================= */
+.example[data-anim="histogram"].is-active .cell[data-in-bar="0"] {
+  opacity: 0.06;
+  transform: scale(0.7);
+  filter: saturate(0.2);
+}
+.example[data-anim="histogram"].is-active .cell[data-in-bar="0"]::before {
+  opacity: 0;
+}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="A"] { background: var(--cat-a); }
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="B"] { background: var(--cat-b); }
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="C"] { background: var(--cat-c); }
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="D"] { background: var(--cat-d); }
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="E"] { background: var(--cat-e); }
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="F"] { background: var(--cat-f); }
+.example[data-anim="histogram"].is-active .cell[data-in-bar="1"] {
+  filter: brightness(1.15);
+  /* Stagger each column's reveal slightly so the bars feel like they grow. */
+  transition-delay: calc(var(--col) * 80ms);
+}
+
+
+/* =========================================================
+   ANIMATION 05 — NOTIFICATION RIPPLE
+   Notification cells emit expanding concentric rings.
+   Implemented with a child <span class="ripple"> per notification cell
+   so we can run two staggered keyframe animations independently of
+   the static ::before ring.
+   ========================================================= */
+@keyframes rippleOut {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  100% { transform: scale(3.2); opacity: 0;   }
+}
+.ripple {
+  position: absolute;
+  inset: -5px;
+  border-radius: calc(var(--cell-radius) + 4px);
+  border: 2px solid;
+  pointer-events: none;
+  opacity: 0;
+}
+.cell[data-notif="pink"]   .ripple { border-color: var(--ring-pink); }
+.cell[data-notif="mint"]   .ripple { border-color: var(--ring-mint); }
+.cell[data-notif="gold"]   .ripple { border-color: var(--ring-gold); }
+.cell[data-notif="violet"] .ripple { border-color: var(--ring-violet); }
+
+.example[data-anim="ripple"].is-active .cell .ripple {
+  animation: rippleOut 1.8s var(--ease-out) infinite;
+}
+.example[data-anim="ripple"].is-active .cell .ripple.delayed {
+  animation-delay: 0.9s;
+}
+/* Background cells dim slightly so the ripples have somewhere to sit. */
+.example[data-anim="ripple"].is-active .cell:not([data-notif]) {
+  filter: brightness(0.7) saturate(0.7);
+}
+
+
+/* =========================================================
+   ANIMATION 06 — CATEGORY SPOTLIGHT
+   Filter focus: one category stays bright, the rest dim hard.
+   We spotlight category A here, but it could be parameterized.
+   ========================================================= */
+.example[data-anim="spotlight"].is-active .cell:not([data-cat="A"]) {
+  opacity: 0.12;
+  filter: saturate(0.3) brightness(0.7);
+}
+.example[data-anim="spotlight"].is-active .cell:not([data-cat="A"])::before {
+  opacity: 0.2;
+}
+.example[data-anim="spotlight"].is-active .cell[data-cat="A"] {
+  transform: scale(1.08);
+  filter: brightness(1.15) saturate(1.2);
+  box-shadow: 0 0 24px rgba(217, 119, 87, 0.45);
+  z-index: 2;
+}
+
+
+/* =========================================================
+   ANIMATION 07 — SORT TO GRADIENT
+   Every cell re-colors to a monotonic ramp based on its index.
+   The grid was scattered; sorted, it becomes legible as a gradient.
+   --target-bg is set in JS to an HSL value derived from position.
+   ========================================================= */
+.example[data-anim="gradient"].is-active .cell {
+  background: var(--target-bg) !important;
+  transition: background-color 1.2s var(--ease-in-out);
+  /* Stagger by reading order so it looks like sorting, not a global swap. */
+  transition-delay: calc((var(--col) + var(--row) * 6) * 25ms);
+}
+.example[data-anim="gradient"].is-active .cell::before {
+  /* Rings stay attached to their cells but fade slightly so the ramp dominates. */
+  opacity: 0.5;
+}
+
+
+/* =========================================================
+   ANIMATION 08 — QUADRANT SPLIT
+   Grid cleaves into four 3×3 chunks that drift apart with a visible gutter.
+   --quad-dx / --quad-dy are set in JS based on which quadrant the cell sits in.
+   ========================================================= */
+.example[data-anim="quadrants"].is-active .cell {
+  transform: translate(var(--quad-dx, 0), var(--quad-dy, 0));
+  transition: transform 1.1s var(--ease-in-out);
+}
+/* A subtle tint by quadrant — overlaid as a gradient so the category colors stay readable. */
+.example[data-anim="quadrants"].is-active .cell[data-quad="0"] { box-shadow: inset 0 0 0 100px rgba(217, 119, 87, 0.08); }
+.example[data-anim="quadrants"].is-active .cell[data-quad="1"] { box-shadow: inset 0 0 0 100px rgba(106, 140, 160, 0.10); }
+.example[data-anim="quadrants"].is-active .cell[data-quad="2"] { box-shadow: inset 0 0 0 100px rgba(184, 163, 95, 0.10); }
+.example[data-anim="quadrants"].is-active .cell[data-quad="3"] { box-shadow: inset 0 0 0 100px rgba(142, 122, 156, 0.10); }
+
+
+/* =========================================================
+   ANIMATION 09 — CONNECTION MESH
+   An SVG overlay draws lines between notification cells.
+   Lines stroke in via stroke-dashoffset. Background cells dim slightly.
+   ========================================================= */
+.mesh-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.mesh-line {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  fill: none;
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  opacity: 0;
+}
+.example[data-anim="mesh"].is-active .cell:not([data-notif]) {
+  filter: brightness(0.55) saturate(0.55);
+}
+.example[data-anim="mesh"].is-active .mesh-line {
+  animation: drawLine 1.4s var(--ease-out) forwards;
+  animation-delay: calc(var(--line-index) * 120ms);
+}
+@keyframes drawLine {
+  0%   { stroke-dashoffset: var(--len); opacity: 0; }
+  20%  { opacity: 0.85; }
+  100% { stroke-dashoffset: 0; opacity: 0.85; }
+}
+
+
+/* =========================================================
+   ANIMATION 10 — DENSITY STAGGER PULSE
+   Each cell pulses once, but timing and intensity scale with local density
+   (count of same-category neighbors). Tight clusters pulse early and hard;
+   isolated cells pulse late and soft. The ORDER reveals the structure.
+   ========================================================= */
+@keyframes densityPulse {
+  0%   { transform: scale(1); filter: brightness(1); }
+  40%  { transform: scale(calc(1 + var(--density) * 0.05));
+         filter: brightness(calc(1 + var(--density) * 0.12))
+                 saturate(calc(1 + var(--density) * 0.1)); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.example[data-anim="density"].is-active .cell {
+  animation: densityPulse 1.4s var(--ease-out) forwards;
+  /* Higher density = earlier pulse. Subtract from a base delay. */
+  animation-delay: calc((6 - var(--density)) * 130ms);
+}
+
+
+/* ----- FOOTER ----- */
+.site-footer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px clamp(20px, 5vw, 80px) 100px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.footer-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.footer-mark {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 24px;
+  color: var(--text-faint);
+}
+
+/* Respect reduced-motion users — collapse animations to a fade. */
+@media (prefers-reduced-motion: reduce) {
+  .cell, .ripple, .mesh-line {
+    animation: none !important;
+    transition: opacity 0.3s ease, background-color 0.3s ease !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="eyebrow">Motion Studies · v1</div>
+  <h1>Ten ways to <em>animate</em> a 6×6 grid of data.</h1>
+  <p class="subtitle">
+    A single starting grid — thirty-six rounded cells in six color categories,
+    seven of them carrying notification rings — read ten different ways through motion.
+    Each study triggers on scroll. The point is to compare: same input, different
+    visual argument about grouping, distribution, or intensity.
+  </p>
+</header>
+
+<section class="legend">
+  <div class="legend-section">
+    <h3>Categories</h3>
+    <ul class="legend-list">
+      <li><span class="legend-swatch" style="background:var(--cat-a)"></span>A — terracotta</li>
+      <li><span class="legend-swatch" style="background:var(--cat-b)"></span>B — sage</li>
+      <li><span class="legend-swatch" style="background:var(--cat-c)"></span>C — sand</li>
+      <li><span class="legend-swatch" style="background:var(--cat-d)"></span>D — plum</li>
+      <li><span class="legend-swatch" style="background:var(--cat-e)"></span>E — slate-blue</li>
+      <li><span class="legend-swatch" style="background:var(--cat-f)"></span>F — ochre</li>
+    </ul>
+  </div>
+  <div class="legend-section">
+    <h3>Notification rings</h3>
+    <ul class="legend-list">
+      <li><span class="legend-ring" style="border-color:var(--ring-pink)"></span>pink</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-mint)"></span>mint</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-gold)"></span>gold</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-violet)"></span>violet</li>
+    </ul>
+  </div>
+  <div class="legend-section">
+    <h3>Starting grid (shared)</h3>
+    <div class="legend-preview-wrap">
+      <div class="legend-preview" id="legend-preview"></div>
+    </div>
+  </div>
+</section>
+
+<main class="examples">
+
+  <!-- 01 BLOOM -->
+  <section class="example" data-anim="bloom">
+    <div class="example-meta">
+      <div class="example-number">01 <span class="slug">heat bloom</span></div>
+      <h2 class="example-title">A center that <em>radiates</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>A focal point of activity radiating outward — the pattern you get when one region draws disproportionate attention and its surroundings catch the heat. Useful for showing where a user's eye should land first, or where activity concentrates around a hub.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Cells near the center intensify and warm; peripheral cells desaturate and shrink slightly. The bloom should feel like heat spreading through metal, not like a hard spotlight. Notification rings should remain readable through the gradient.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 02 CLUSTER -->
+  <section class="example" data-anim="cluster">
+    <div class="example-meta">
+      <div class="example-number">02 <span class="slug">cluster migration</span></div>
+      <h2 class="example-title">Like seeks <em>like</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>Disordered categories self-organizing into contiguous regions. Imagine the same dataset before and after a grouping pass — the colors don't change, only where they sit. Useful for visualizing what clustering algorithms actually do to a layout.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Cells physically slide to new positions so same-category cells end up neighboring each other. Movement should feel inevitable, not random. Notification rings travel with their squares — the ring belongs to the cell, not the location.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 03 WAVE -->
+  <section class="example" data-anim="wave">
+    <div class="example-meta">
+      <div class="example-number">03 <span class="slug">wave propagation</span></div>
+      <h2 class="example-title">A signal <em>passes through</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>A signal, alert, or update traveling across the population over time. Notifications cascading from a hub. A status change rippling through dependent systems. Anything where time-of-arrival is the story.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>A diagonal wave of brightness sweeping from top-left to bottom-right. Each cell brightens, peaks, then settles back. The wavefront should read as one continuous motion, not as thirty-six separate flashes.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 04 HISTOGRAM -->
+  <section class="example" data-anim="histogram">
+    <div class="example-meta">
+      <div class="example-number">04 <span class="slug">distribution histogram</span></div>
+      <h2 class="example-title">Layout <em>collapses</em> into bars.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>The same 36-cell grid restated as a histogram. Each column becomes one category; bar height encodes how many cells belonged to it. The spatial arrangement gives way to the underlying distribution.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Cells outside the bars fade and shrink; cells inside the bars unify in color by column. The transformation should make the distribution legible — you should be able to "read" relative category sizes at a glance once the bars settle.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 05 RIPPLE -->
+  <section class="example" data-anim="ripple">
+    <div class="example-meta">
+      <div class="example-number">05 <span class="slug">notification ripple</span></div>
+      <h2 class="example-title">Each alert has a <em>radius</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>How a single alert reaches and influences its surroundings — proximity-based notification cascades, signal-to-neighbors patterns, blast radius. The notification isn't just a flag on one cell, it's an event that touches what's around it.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Concentric rings emanating from every notification cell, in the same color as that cell's static ring. Background cells dim so the ripples have somewhere to sit. Multiple ripples overlap and don't synchronize — they stagger so the grid feels alive.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 06 SPOTLIGHT -->
+  <section class="example" data-anim="spotlight">
+    <div class="example-meta">
+      <div class="example-number">06 <span class="slug">category spotlight</span></div>
+      <h2 class="example-title">Filter, don't <em>rearrange</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>Filtering by one attribute while keeping the spatial layout intact. The user isn't asking to re-sort — they're asking "where is X?" The answer should preserve their mental map of the grid.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Non-matching cells dim hard but don't move. Matching cells (category A here) stay vivid, scale up slightly, and gain a soft glow that lifts them forward. Their notification rings stay sharp; dimmed cells' rings fade with them.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 07 GRADIENT -->
+  <section class="example" data-anim="gradient">
+    <div class="example-meta">
+      <div class="example-number">07 <span class="slug">sort to gradient</span></div>
+      <h2 class="example-title">Chaos resolves into a <em>ramp</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>A re-ordering of the same data by intensity or value — turning a categorical scatter into a clean monotonic ramp. The shift from "what kind?" to "how much?", visualized in place.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Cells smoothly recolor into a gradient from dark to light, top-left to bottom-right. The transition staggers in reading order so it feels like sorting cards into a hand, not like flipping a single switch. Notification rings remain so you can still find the flagged items in the new order.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 08 QUADRANTS -->
+  <section class="example" data-anim="quadrants">
+    <div class="example-meta">
+      <div class="example-number">08 <span class="slug">quadrant split</span></div>
+      <h2 class="example-title">Two axes, four <em>rooms</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>A 2×2 analysis matrix carved out of the same data — splitting by two binary axes (high/low, active/inactive, urgent/not) to reveal which quadrant each cell belongs to. Useful for prioritization frameworks.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>The grid cleaves into four 3×3 chunks that drift apart with a visible gutter between them. Each quadrant picks up a subtle tint so the four rooms are distinguishable without losing the individual cells. The gap should breathe — wide enough to read as separation, narrow enough that the four still feel like one system.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 09 MESH -->
+  <section class="example" data-anim="mesh">
+    <div class="example-meta">
+      <div class="example-number">09 <span class="slug">connection mesh</span></div>
+      <h2 class="example-title">The grid is just <em>where</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>Relationships running underneath the spatial layout — who talks to whom, what depends on what. The grid layout is incidental; the real structure is the network. Useful when proximity in the grid doesn't equal proximity in the data.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>Background cells dim. Lines draw between notification cells, stroked in one segment at a time, in the accent color. Endpoints stay bright. The lines should ease in (not snap) and stagger so you can follow which connections appeared first.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+  <!-- 10 DENSITY -->
+  <section class="example" data-anim="density">
+    <div class="example-meta">
+      <div class="example-number">10 <span class="slug">density stagger</span></div>
+      <h2 class="example-title">Heat told through <em>timing</em>.</h2>
+      <div class="example-body">
+        <div class="spec-block">
+          <span class="label">What it represents</span>
+          <p>How densely categories pack across the grid — a heat map expressed through timing rather than color. Cells with many same-category neighbors pulse early and hard; isolated cells pulse late and soft. The order of pulses reveals the clusters before the colors do.</p>
+        </div>
+        <div class="spec-block">
+          <span class="label">What to look for</span>
+          <p>The animation should "read" the grid for you. A high-density patch lights up first as a group; outliers trail behind. The visual story is which cells <em>belong</em> together, even when the static colors give few hints.</p>
+        </div>
+      </div>
+      <div class="example-controls"><button class="play-btn" data-state="off" aria-label="Play animation"><span class="icon">▶</span><span class="label">Play</span></button></div>
+    </div>
+    <div class="grid-wrap"><div class="grid"></div></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-note">end of set · ten studies · same grid, ten readings</div>
+  <div class="footer-mark">Motion Studies</div>
+</footer>
+
+<script>
+// =============================================================================
+// CONFIG: the shared starting grid.
+// 36 cells, six categories (A–F), seven with notification rings.
+// Distribution counts: A=10, B=7, C=6, D=4, E=5, F=4. Hold this constant
+// across every animation so the user can compare like-for-like.
+// =============================================================================
+const STARTING_GRID = [
+  // row 0
+  { cat: 'A', notif: null    }, { cat: 'B', notif: null    }, { cat: 'B', notif: 'pink'   },
+  { cat: 'C', notif: null    }, { cat: 'A', notif: null    }, { cat: 'D', notif: null    },
+  // row 1
+  { cat: 'C', notif: null    }, { cat: 'A', notif: 'mint'  }, { cat: 'E', notif: null    },
+  { cat: 'B', notif: null    }, { cat: 'F', notif: null    }, { cat: 'A', notif: null    },
+  // row 2
+  { cat: 'B', notif: null    }, { cat: 'D', notif: null    }, { cat: 'A', notif: null    },
+  { cat: 'A', notif: 'gold'  }, { cat: 'C', notif: null    }, { cat: 'E', notif: null    },
+  // row 3
+  { cat: 'F', notif: null    }, { cat: 'C', notif: null    }, { cat: 'B', notif: 'violet'},
+  { cat: 'D', notif: null    }, { cat: 'E', notif: null    }, { cat: 'A', notif: null    },
+  // row 4
+  { cat: 'A', notif: null    }, { cat: 'E', notif: null    }, { cat: 'C', notif: null    },
+  { cat: 'F', notif: 'pink'  }, { cat: 'A', notif: null    }, { cat: 'B', notif: null    },
+  // row 5
+  { cat: 'D', notif: null    }, { cat: 'A', notif: null    }, { cat: 'F', notif: null    },
+  { cat: 'B', notif: null    }, { cat: 'C', notif: 'mint'  }, { cat: 'E', notif: null    },
+];
+
+const COLS = 6, ROWS = 6;
+
+// =============================================================================
+// HELPERS for the per-animation math.
+// We pre-compute everything CSS needs and stash it on each cell as inline vars.
+// =============================================================================
+
+// Chebyshev distance from grid center (used by Bloom).
+// Center sits at (2.5, 2.5). Raw chebyshev values for a 6×6 grid are 0.5, 1.5, 2.5;
+// we Math.ceil them to integers 1, 2, 3 so CSS gets clean steps. Using ceil instead
+// of floor matters — floor would collapse 0.5 and 1.5 to the same bucket and the
+// near-center "hottest" ring would have no visual lift over its neighbors.
+function distFromCenter(col, row) {
+  return Math.ceil(Math.max(Math.abs(col - 2.5), Math.abs(row - 2.5)));
+}
+
+// Cluster targets: assign each cell a new (col, row) so same-category cells
+// end up contiguous in reading order. Returns dx/dy in pixels for translate().
+function computeClusterTargets() {
+  const targets = new Array(36);
+  let writeIdx = 0;
+  ['A','B','C','D','E','F'].forEach(cat => {
+    STARTING_GRID.forEach((cell, i) => {
+      if (cell.cat === cat) {
+        targets[i] = writeIdx++;
+      }
+    });
+  });
+  return targets;
+}
+
+// Density: count how many same-category cells sit in the 8-neighborhood.
+// Returns an integer 0–8 used by Density Stagger's --density var.
+function densityAt(idx) {
+  const col = idx % COLS, row = (idx / COLS) | 0;
+  const myCat = STARTING_GRID[idx].cat;
+  let count = 0;
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const r = row + dr, c = col + dc;
+      if (r < 0 || r >= ROWS || c < 0 || c >= COLS) continue;
+      if (STARTING_GRID[r * COLS + c].cat === myCat) count++;
+    }
+  }
+  return count;
+}
+
+// Histogram bar layout: each column becomes one category, with bar height
+// proportional to that category's count. We then return per-cell metadata:
+// is this cell inside the bar? which category color should it become?
+function computeHistogramLayout() {
+  const counts = { A:0,B:0,C:0,D:0,E:0,F:0 };
+  STARTING_GRID.forEach(c => counts[c.cat]++);
+  const max = Math.max(...Object.values(counts));
+  const cats = ['A','B','C','D','E','F'];   // column 0..5 maps to these cats
+  const heights = cats.map(c => Math.round(counts[c] / max * 6));
+
+  const layout = new Array(36);
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const h = heights[c];
+      const inBar = r >= (6 - h);   // bars grow up from the bottom
+      layout[idx] = { inBar, cat: cats[c] };
+    }
+  }
+  return layout;
+}
+
+// Cell pixel size (so we can compute exact translate deltas for cluster + quadrants).
+// We read this from a real CSS-rendered cell once at startup.
+function getCellMetrics() {
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;width:var(--cell-size);height:var(--cell-size);visibility:hidden;';
+  document.body.appendChild(probe);
+  const size = probe.getBoundingClientRect().width;
+  document.body.removeChild(probe);
+  const gapStr = getComputedStyle(document.documentElement).getPropertyValue('--cell-gap').trim();
+  // Cell gap may be a clamp() — easier to just measure two probes spaced one grid step apart.
+  // But clamp resolves to a px value once read; parseFloat handles "8px" fine.
+  const gap = parseFloat(gapStr) || 7;
+  return { size, gap, step: size + gap };
+}
+
+// =============================================================================
+// RENDER: build the starting grid into every .example .grid container,
+// plus the legend preview. Each cell gets all the per-animation CSS vars
+// it might need; CSS will read whichever ones apply for its section.
+// =============================================================================
+
+const clusterTargets = computeClusterTargets();
+const histogramLayout = computeHistogramLayout();
+
+function buildCell(i, opts = {}) {
+  const seed = STARTING_GRID[i];
+  const col = i % COLS;
+  const row = (i / COLS) | 0;
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.dataset.cat = seed.cat;
+  if (seed.notif) cell.dataset.notif = seed.notif;
+
+  // Position metadata — used by Wave (col+row delay), Sort (reading order), etc.
+  cell.style.setProperty('--col', col);
+  cell.style.setProperty('--row', row);
+
+  // Bloom: chebyshev distance from center.
+  cell.style.setProperty('--dist', distFromCenter(col, row));
+
+  // Quadrant: 0=TL, 1=TR, 2=BL, 3=BR (each is a 3×3 chunk).
+  const quad = (col < 3 ? 0 : 1) + (row < 3 ? 0 : 2);
+  cell.dataset.quad = quad;
+
+  // Density value (0–8) for Density Stagger.
+  cell.style.setProperty('--density', densityAt(i));
+
+  // Sort-to-gradient target color. We use HSL so brightness ramps cleanly.
+  // Reading order is (row * 6 + col), 0..35. Map to lightness 18%..72%.
+  const order = row * 6 + col;
+  const lightness = 18 + (order / 35) * 54;
+  cell.style.setProperty('--target-bg', `hsl(28, 38%, ${lightness}%)`);
+
+  if (opts.skipExtras) return cell;
+
+  // Cluster: dx/dy in pixels to move from current index → target index.
+  const targetIdx = clusterTargets[i];
+  const tCol = targetIdx % COLS, tRow = (targetIdx / COLS) | 0;
+  const step = opts.step;
+  cell.style.setProperty('--dx', `${(tCol - col) * step}px`);
+  cell.style.setProperty('--dy', `${(tRow - row) * step}px`);
+
+  // Quadrant translation: each quadrant drifts diagonally outward.
+  const drift = 14;
+  const qx = (col < 3 ? -drift : drift);
+  const qy = (row < 3 ? -drift : drift);
+  cell.style.setProperty('--quad-dx', `${qx}px`);
+  cell.style.setProperty('--quad-dy', `${qy}px`);
+
+  // Histogram: tag which cells are "in the bar" and what color the bar is.
+  const hl = histogramLayout[i];
+  cell.dataset.inBar = hl.inBar ? '1' : '0';
+  cell.dataset.barCat = hl.cat;
+
+  // Ripple children — only for notification cells. Two staggered rings each.
+  if (seed.notif) {
+    const r1 = document.createElement('span');
+    r1.className = 'ripple';
+    const r2 = document.createElement('span');
+    r2.className = 'ripple delayed';
+    cell.appendChild(r1);
+    cell.appendChild(r2);
+  }
+
+  return cell;
+}
+
+function renderAllGrids() {
+  const metrics = getCellMetrics();
+  document.querySelectorAll('.example .grid').forEach(gridEl => {
+    gridEl.innerHTML = '';
+    for (let i = 0; i < 36; i++) {
+      gridEl.appendChild(buildCell(i, { step: metrics.step }));
+    }
+  });
+
+  // Legend preview (smaller cells, no extras needed).
+  const legendEl = document.getElementById('legend-preview');
+  if (legendEl) {
+    legendEl.innerHTML = '';
+    for (let i = 0; i < 36; i++) {
+      legendEl.appendChild(buildCell(i, { skipExtras: true }));
+    }
+  }
+}
+
+// =============================================================================
+// MESH: build the SVG overlay for animation 09.
+// Connect each notification cell to its nearest two neighbors so we get a
+// readable network without spaghetti.
+// =============================================================================
+function buildMeshOverlay() {
+  const meshSection = document.querySelector('.example[data-anim="mesh"]');
+  if (!meshSection) return;
+  const gridEl = meshSection.querySelector('.grid');
+  const metrics = getCellMetrics();
+  const step = metrics.step, size = metrics.size;
+
+  // Find notification cell indices.
+  const notifs = [];
+  STARTING_GRID.forEach((c, i) => { if (c.notif) notifs.push(i); });
+
+  // For each notification cell, connect to its 2 nearest notif neighbors.
+  const lines = [];
+  const seen = new Set();
+  notifs.forEach(a => {
+    const distances = notifs
+      .filter(b => b !== a)
+      .map(b => ({ b, d: Math.hypot((a%COLS)-(b%COLS), ((a/COLS)|0)-((b/COLS)|0)) }))
+      .sort((x, y) => x.d - y.d)
+      .slice(0, 2);
+    distances.forEach(({ b }) => {
+      const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        lines.push([a, b]);
+      }
+    });
+  });
+
+  // Cell centers in pixel space within the grid container.
+  function center(i) {
+    const c = i % COLS, r = (i / COLS) | 0;
+    return { x: c * step + size / 2, y: r * step + size / 2 };
+  }
+
+  // Build the SVG. We size it to the grid's bounding box.
+  const totalW = COLS * step - metrics.gap;
+  const totalH = ROWS * step - metrics.gap;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'mesh-svg');
+  svg.setAttribute('width', totalW);
+  svg.setAttribute('height', totalH);
+  svg.style.width = totalW + 'px';
+  svg.style.height = totalH + 'px';
+
+  lines.forEach(([a, b], idx) => {
+    const pa = center(a), pb = center(b);
+    const len = Math.hypot(pa.x - pb.x, pa.y - pb.y);
+    const ln = document.createElementNS(svgNS, 'line');
+    ln.setAttribute('class', 'mesh-line');
+    ln.setAttribute('x1', pa.x);
+    ln.setAttribute('y1', pa.y);
+    ln.setAttribute('x2', pb.x);
+    ln.setAttribute('y2', pb.y);
+    ln.style.setProperty('--len', len);
+    ln.style.setProperty('--line-index', idx);
+    svg.appendChild(ln);
+  });
+
+  gridEl.appendChild(svg);
+}
+
+// =============================================================================
+// TRIGGER: a single Play / Reset button per section, and nothing else.
+//
+// Two animation flavors need different handling:
+//
+//   1. STATEFUL — the animation transitions to a meaningfully different end
+//      state and holds there (bloom, cluster, histogram, spotlight, gradient,
+//      quadrants, mesh). For these, the button straightforwardly toggles
+//      between start and end.
+//
+//   2. ONE-SHOT — keyframe animations that play through and visually return
+//      to the starting state (wave, ripple, density). Holding the "active"
+//      class here would be a lie since the cells look identical to the start
+//      state once the keyframes finish. So we let the animation play, then
+//      auto-revert the class and button back to "Play" — the user can replay
+//      with a single click.
+// =============================================================================
+
+const ONE_SHOT_ANIMS = new Set(['wave', 'ripple', 'density']);
+
+// How long each one-shot animation takes to fully settle. Slightly larger than
+// the actual animation duration so the keyframes complete cleanly before we
+// strip the class (otherwise mid-animation cells snap back to start).
+const ONE_SHOT_DURATIONS = {
+  wave:    2300,  // 1.1s pulse + max stagger of (5+5)*90ms = 900ms ≈ 2000ms
+  ripple:  4000,  // two full 1.8s cycles + 0.9s delay on the second ring
+  density: 2400,  // 1.4s pulse + max delay of 6*130ms = 780ms ≈ 2180ms
+};
+
+// Track per-section timeouts so a fresh click cancels any in-flight auto-revert.
+const autoRevertTimers = new Map();
+
+function setButtonState(section, isOn) {
+  const button = section.querySelector('.play-btn');
+  if (!button) return;
+  button.dataset.state = isOn ? 'on' : 'off';
+  // We update both the icon glyph and the label text rather than rotating
+  // a fixed icon, because ▶ → ↺ is genuinely a different symbol and reads
+  // more clearly than a rotated triangle.
+  button.querySelector('.icon').textContent  = isOn ? '↺' : '▶';
+  button.querySelector('.label').textContent = isOn ? 'Reset' : 'Play';
+}
+
+function play(section) {
+  const anim = section.dataset.anim;
+
+  // The reflow trick: remove the class, force a layout read, then add it back.
+  // Without this, clicking Play while already at end state wouldn't replay
+  // CSS keyframe animations — the browser sees the class as continuously
+  // present and skips the animation. The void offsetWidth read is what flushes.
+  section.classList.remove('is-active');
+  void section.offsetWidth;
+  section.classList.add('is-active');
+  setButtonState(section, true);
+
+  // Cancel any pending auto-revert from a previous play so we don't get
+  // a stale timer flipping the button back mid-watch.
+  clearTimeout(autoRevertTimers.get(section));
+
+  // For transient animations, schedule the button + class to revert once
+  // the animation visibly completes. The cells are already back at start
+  // (their keyframes ended at the start values), so removing the class
+  // is purely a state-bookkeeping move — it lets the next click replay cleanly.
+  if (ONE_SHOT_ANIMS.has(anim)) {
+    const id = setTimeout(() => {
+      section.classList.remove('is-active');
+      setButtonState(section, false);
+      autoRevertTimers.delete(section);
+    }, ONE_SHOT_DURATIONS[anim]);
+    autoRevertTimers.set(section, id);
+  }
+}
+
+function reset(section) {
+  clearTimeout(autoRevertTimers.get(section));
+  autoRevertTimers.delete(section);
+  section.classList.remove('is-active');
+  setButtonState(section, false);
+}
+
+function setupButtons() {
+  document.querySelectorAll('.play-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const section = button.closest('.example');
+      if (section.classList.contains('is-active')) {
+        reset(section);
+      } else {
+        play(section);
+      }
+    });
+  });
+}
+
+// =============================================================================
+// BOOT
+// =============================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // Wait one frame so fonts have a chance to load and metrics are accurate
+  // when we measure cell pixel size for cluster + quadrant translations.
+  requestAnimationFrame(() => {
+    renderAllGrids();
+    buildMeshOverlay();
+    setupButtons();
+  });
+});
+
+// On resize, cell pixel size changes because --cell-size uses clamp() + vw.
+// We still need to recompute cluster + quadrant pixel offsets and rebuild
+// the mesh SVG so a future Play click translates cells the right amount.
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    // First reset any sections currently in their end state so we don't
+    // get half-animated cells stuck at stale pixel offsets after re-render.
+    document.querySelectorAll('.example.is-active').forEach(reset);
+    renderAllGrids();
+    const oldSvg = document.querySelector('.example[data-anim="mesh"] .mesh-svg');
+    if (oldSvg) oldSvg.remove();
+    buildMeshOverlay();
+  }, 200);
+});
+</script>
+
+</body>
+</html>

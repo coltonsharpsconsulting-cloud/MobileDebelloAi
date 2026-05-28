@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wallpaper V9 — The Enchantment</title>
+<style>
+/* ══════════════════════════════════
+   V9: "THE ENCHANTMENT"
+   Same implosion as V8 — but the cells
+   ROTATE 45° as they implode (becoming
+   diamonds mid-flight), a living aurora
+   breathes between events, and the
+   singularity erupts as a stained-glass
+   portal. Palette: Midnight / Gold / Plum.
+══════════════════════════════════ */
+:root {
+  --sq:88px; --gap:14px; --r:20px; --loop:28s;
+
+  --sq6:  polygon(0% 0%, 100% 0%, 100% 50%, 100% 100%, 0% 100%, 0% 50%);
+  --hex:  polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  --diam: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+
+  --sh-base:
+    inset 0 1px 0 rgba(255,228,140,0.13),
+    0 8px 24px rgba(0,0,0,0.56),
+    0 3px 8px rgba(0,0,0,0.38);
+  --sh-gold:
+    inset 0 1px 0 rgba(255,240,175,0.34),
+    0 0 24px rgba(218,160,32,0.62),
+    0 0 56px rgba(195,132,18,0.30);
+  --sh-violet:
+    inset 0 1px 0 rgba(235,205,255,0.30),
+    0 0 22px rgba(175,48,225,0.58),
+    0 0 52px rgba(145,22,200,0.28);
+  --sh-emerald:
+    inset 0 1px 0 rgba(165,255,210,0.28),
+    0 0 20px rgba(22,168,105,0.52),
+    0 0 48px rgba(14,140,82,0.26);
+  --sh-press:
+    inset 0 5px 18px rgba(0,0,0,0.74),
+    0 2px 5px rgba(0,0,0,0.24);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:430px; height:932px; overflow:hidden; background:#03030a; }
+
+/* ══════════════════════════════════
+   SCENE — golden flash at portal burst
+══════════════════════════════════ */
+.scene {
+  width:430px; height:932px; position:relative; overflow:hidden;
+  background:radial-gradient(ellipse 150% 120% at 50% 44%,
+    #0a0618 0%, #060412 55%, #030210 100%);
+  animation: scenePulse var(--loop) ease-in-out infinite;
+}
+@keyframes scenePulse {
+  0%,8%     { filter:brightness(1) saturate(1); }
+  10.5%     { filter:brightness(1.30) saturate(1.2); }
+  13%       { filter:brightness(0.68) saturate(0.8); }
+  17%       { filter:brightness(0.48) saturate(0.6); }
+  17.8%     { filter:brightness(3.40) saturate(2.0) hue-rotate(10deg); }
+  18.5%     { filter:brightness(1.10) saturate(1.2); }
+  100%      { filter:brightness(1) saturate(1); }
+}
+
+/* ══════════════════════════════════
+   AURORA — living Northern Lights
+   6 blobs: violet, emerald, gold, plum,
+            teal, deep indigo
+══════════════════════════════════ */
+.blobs { position:absolute; inset:-120px; }
+.b { position:absolute; border-radius:50%; will-change:transform; }
+
+.b1 { width:540px;height:450px; background:radial-gradient(ellipse,rgba(145,28,218,0.28) 0%,transparent 68%); filter:blur(92px); top:-70px;right:-90px; animation:bl1 24s ease-in-out infinite alternate; }
+.b2 { width:510px;height:430px; background:radial-gradient(ellipse,rgba(18,148,88,0.28) 0%,transparent 65%); filter:blur(96px); bottom:-120px;left:-150px; animation:bl2 31s ease-in-out infinite alternate; }
+.b3 { width:400px;height:330px; background:radial-gradient(ellipse,rgba(208,148,25,0.22) 0%,transparent 65%); filter:blur(84px); top:240px;right:-80px; animation:bl3 21s ease-in-out infinite alternate; }
+.b4 { width:375px;height:295px; background:radial-gradient(ellipse,rgba(195,42,148,0.20) 0%,transparent 65%); filter:blur(78px); bottom:60px;left:-70px; animation:bl4 28s ease-in-out infinite alternate; }
+.b5 { width:315px;height:260px; background:radial-gradient(ellipse,rgba(12,158,130,0.18) 0%,transparent 65%); filter:blur(72px); top:130px;left:75px; animation:bl2 38s ease-in-out infinite alternate-reverse; }
+.b6 { width:290px;height:250px; background:radial-gradient(ellipse,rgba(80,22,168,0.20) 0%,transparent 65%); filter:blur(68px); top:550px;right:40px; animation:bl1 46s ease-in-out infinite alternate; }
+
+/* Aurora sweeps during implosion — contracts then ERUPTS */
+.blobs { animation: blobMagic var(--loop) ease-in-out infinite; }
+@keyframes blobMagic {
+  0%,10%   { transform:scale(1) rotate(0deg);    opacity:1; filter:hue-rotate(0deg); }
+  17%      { transform:scale(0.45) rotate(8deg); opacity:0.4; filter:hue-rotate(40deg); }
+  17.8%    { transform:scale(1.65) rotate(0deg); opacity:1.8; filter:hue-rotate(90deg); }
+  20%      { transform:scale(1) rotate(0deg);    opacity:1; filter:hue-rotate(0deg); }
+  /* idle: slow hue cycle — the living aurora */
+  50%      { filter:hue-rotate(30deg); }
+  100%     { filter:hue-rotate(0deg); }
+}
+
+@keyframes bl1 { from{transform:translate(0,0)scale(1)} to{transform:translate(-42px,56px)scale(1.10)} }
+@keyframes bl2 { from{transform:translate(0,0)scale(1)} to{transform:translate(50px,-40px)scale(1.09)} }
+@keyframes bl3 { from{transform:translate(0,0)scale(1)} to{transform:translate(32px,50px)scale(1.13)} }
+@keyframes bl4 { from{transform:translate(0,0)scale(1)} to{transform:translate(-36px,-30px)scale(1.07)} }
+
+.top-edge { position:absolute;top:0;left:0;right:0;height:240px;z-index:2; background:linear-gradient(to bottom,rgba(145,28,218,0.07),transparent); pointer-events:none; }
+.bot-edge { position:absolute;bottom:0;left:0;right:0;height:200px;z-index:2; background:linear-gradient(to top,rgba(18,148,88,0.09),transparent); pointer-events:none; }
+
+/* ══════════════════════════════════
+   DRIFTING MAGICAL PARTICLES
+   Generated by JS at bottom.
+   These give the idle state a living,
+   enchanted quality — always present.
+══════════════════════════════════ */
+.spark-drift {
+  position:absolute; pointer-events:none; z-index:2;
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%); /* diamond sparkle */
+  background:radial-gradient(circle,rgba(255,240,160,0.90),rgba(215,155,30,0.40));
+  animation: driftUp linear infinite;
+  will-change:transform,opacity;
+}
+@keyframes driftUp {
+  0%   { transform:translateY(0) rotate(0deg) scale(1);   opacity:0; }
+  10%  { opacity:var(--max-op, 0.6); }
+  50%  { transform:translateY(var(--drift-y,-300px)) rotate(180deg) scale(var(--end-scale,0.5)); opacity:var(--max-op,0.6); }
+  90%  { opacity:0; }
+  100% { transform:translateY(var(--drift-y,-300px)) rotate(360deg) scale(0); opacity:0; }
+}
+
+/* ══════════════════════════════════
+   EXPLOSION SPARKLES
+   Pre-positioned diamonds that burst
+   from singularity at t=17.8%.
+   16 sparkles, 8 per ring.
+══════════════════════════════════ */
+.exspark {
+  position:absolute; pointer-events:none; z-index:8;
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  animation: exBurst var(--loop) cubic-bezier(.22,1,.36,1) infinite var(--es-delay,0s);
+}
+@keyframes exBurst {
+  0%,17.5%  { transform:translate(0,0) scale(0) rotate(0deg);                   opacity:0; }
+  17.8%     { transform:translate(0,0) scale(1.2) rotate(45deg);                 opacity:1; }
+  24%       { transform:translate(var(--ex,40px),var(--ey,-40px)) scale(0) rotate(180deg); opacity:0; }
+  100%      { transform:translate(var(--ex,40px),var(--ey,-40px)) scale(0);      opacity:0; }
+}
+
+/* ══════════════════════════════════
+   GRID OUTER
+══════════════════════════════════ */
+.grid-outer {
+  position:absolute; left:69px; top:264px;
+  width:292px; height:292px; z-index:5;
+  animation: gridMagic var(--loop) ease-in-out infinite;
+}
+@keyframes gridMagic {
+  0%,17.5% { transform:scale(1) rotate(0deg); }
+  17.8%    { transform:scale(1.14) rotate(2deg); }
+  19%      { transform:scale(0.96) rotate(-1deg); }
+  20.5%    { transform:scale(1) rotate(0deg); }
+  100%     { transform:scale(1) rotate(0deg); }
+}
+
+.grid-halo {
+  position:absolute; inset:-55px;
+  background:radial-gradient(ellipse,
+    rgba(215,152,28,0.17) 0%,
+    rgba(145,28,215,0.09) 50%,
+    transparent 75%);
+  filter:blur(28px);
+  animation: haloBreath 12s ease-in-out infinite, haloMagic var(--loop) ease-in-out infinite;
+}
+@keyframes haloBreath { 0%,100%{opacity:.72;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+@keyframes haloMagic  {
+  0%,10%   { opacity:1; filter:blur(28px); }
+  17%      { opacity:2.8; filter:blur(6px); }
+  17.8%    { opacity:3.2; filter:blur(4px); }
+  20%      { opacity:1;   filter:blur(28px); }
+  100%     { opacity:1;   filter:blur(28px); }
+}
+
+/* ══════════════════════════════════
+   CELLS — warm starlight glass
+══════════════════════════════════ */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,var(--sq));
+  grid-template-rows:   repeat(3,var(--sq));
+  gap:var(--gap); position:relative; z-index:1;
+}
+
+.cell {
+  width:var(--sq); height:var(--sq);
+  border-radius:var(--r);
+  position:relative; overflow:hidden;
+  border-top:   1px solid rgba(255,228,140,0.22);
+  border-left:  1px solid rgba(255,228,140,0.13);
+  border-right: 1px solid rgba(255,228,140,0.06);
+  border-bottom:1px solid rgba(255,228,140,0.05);
+  box-shadow:var(--sh-base);
+  animation: breathe 11s ease-in-out infinite;
+  will-change: transform, border-radius, clip-path, opacity;
+}
+.cell::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(122deg,transparent 22%,rgba(255,228,140,0.11) 50%,transparent 78%);
+  transform:translateX(-160%);
+  animation: cellShimmer 10s ease-in-out infinite;
+}
+@keyframes breathe     { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.10)} }
+@keyframes cellShimmer { 0%{transform:translateX(-160%);opacity:0}18%{opacity:1}82%{opacity:1}100%{transform:translateX(160%);opacity:0} }
+
+/* Tints */
+.tg { background:linear-gradient(148deg,rgba(218,155,28,0.20) 0%,rgba(255,228,120,0.028) 100%); }
+.tv { background:linear-gradient(148deg,rgba(175,48,225,0.17) 0%,rgba(230,200,255,0.026) 100%); }
+.te { background:linear-gradient(148deg,rgba(22,168,105,0.17) 0%,rgba(165,255,210,0.026) 100%); }
+.tn { background:linear-gradient(148deg,rgba(255,228,140,0.13) 0%,rgba(255,228,120,0.024) 100%); }
+
+/* ══════════════════════════════════
+   IMPLOSION + DIAMOND ROTATION
+   Cells rotate 45° AS they implode —
+   becomes diamond mid-flight.
+   On birth they un-rotate (origami unfold).
+
+   Implosion delta same as V8:
+   c0(+102,+102) c1(0,+102) c2(-102,+102)
+   c3(+102,0)    c4 center  c5(-102,0)
+   c6(+102,-102) c7(0,-102) c8(-102,-102)
+
+   Timing (28s loop):
+   8-10.5%  press
+   10.5-14% launch (rotate begins)
+   14-17%   approach singularity
+   17.8%    EXPLOSION
+   18-22%   cells born back (un-rotate)
+   22+      settle
+══════════════════════════════════ */
+
+/* ─── C4 CENTER — spins + collapses, born as circle ─── */
+.c4 {
+  animation: c4Magic var(--loop) cubic-bezier(.22,1,.36,1) infinite,
+             breathe 11s ease-in-out infinite -3s;
+  z-index:2;
+}
+@keyframes c4Magic {
+  0%,8%    { transform:scale(1) rotate(0deg);     border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  5%       { transform:scale(1.015) rotate(0deg); }
+  10.5%    { transform:scale(0.88) rotate(0deg);  border-radius:12px; box-shadow:var(--sh-press); }
+  14%      { transform:scale(0.55) rotate(135deg); border-radius:50%; box-shadow:var(--sh-gold); }
+  17%      { transform:scale(0.04) rotate(360deg); border-radius:50%; opacity:1; }
+  17.8%    { transform:scale(0) rotate(360deg);   opacity:0; }
+  /* Born back as circle, un-rotates to square */
+  18.5%    { transform:scale(1.18) rotate(45deg); border-radius:50%; box-shadow:var(--sh-gold); opacity:1; }
+  20.5%    { transform:scale(1) rotate(0deg);     border-radius:var(--r); box-shadow:var(--sh-base); }
+  23%      { transform:scale(1) rotate(0deg);     border-radius:var(--r); opacity:0.38; }
+  24.5%    { transform:scale(0.94);               opacity:0; }
+  64%      { transform:scale(0.94);               opacity:0; }
+  66%      { transform:scale(1) rotate(0deg);     border-radius:var(--r); box-shadow:var(--sh-gold); opacity:1; }
+  69%      { transform:scale(1);                  box-shadow:var(--sh-base); }
+  100%     { transform:scale(1) rotate(0deg);     border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+}
+
+/* ─── SHARED DIAMOND IMPLOSION for each cell ─── */
+/* Adjacent: rotate 45° → diamond */
+.c1 { animation: c1Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -2.5s; }
+@keyframes c1Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);          clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  14%       { transform:translate(0,32px) rotate(45deg) scale(0.62);    clip-path:none; border-radius:8%; box-shadow:var(--sh-gold); }
+  17%       { transform:translate(0,102px) rotate(90deg) scale(0);      clip-path:none; border-radius:50%; opacity:1; }
+  17.8%     { transform:translate(0,102px) rotate(90deg) scale(0);      opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(45deg) scale(1.20);       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-gold); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);           clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);           clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+}
+
+.c3 { animation: c3Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -0.5s; }
+@keyframes c3Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);          clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  14%       { transform:translate(32px,0) rotate(-45deg) scale(0.62);   clip-path:none; border-radius:8%; box-shadow:var(--sh-violet); }
+  17%       { transform:translate(102px,0) rotate(-90deg) scale(0);     clip-path:none; border-radius:50%; opacity:1; }
+  17.8%     { transform:translate(102px,0) rotate(-90deg) scale(0);     opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(-45deg) scale(1.20);      clip-path:none; border-radius:var(--r); box-shadow:var(--sh-violet); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);           clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);           clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+.c5 { animation: c5Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -5.0s; }
+@keyframes c5Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);           clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  14%       { transform:translate(-32px,0) rotate(45deg) scale(0.62);    clip-path:none; border-radius:8%; box-shadow:var(--sh-emerald); }
+  17%       { transform:translate(-102px,0) rotate(90deg) scale(0);      clip-path:none; border-radius:50%; opacity:1; }
+  17.8%     { transform:translate(-102px,0) rotate(90deg) scale(0);      opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(45deg) scale(1.20);        clip-path:none; border-radius:var(--r); box-shadow:var(--sh-emerald); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);            clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);            clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+.c7 { animation: c7Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -3.8s; }
+@keyframes c7Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);            clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  14%       { transform:translate(0,-32px) rotate(-45deg) scale(0.62);   clip-path:none; border-radius:8%; box-shadow:var(--sh-gold); }
+  17%       { transform:translate(0,-102px) rotate(-90deg) scale(0);     clip-path:none; border-radius:50%; opacity:1; }
+  17.8%     { transform:translate(0,-102px) rotate(-90deg) scale(0);     opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(-45deg) scale(1.20);       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-gold); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);            clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);            clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+/* Corners: rotate 180° (full flip), morph hex, translate diagonally */
+.c0 { animation: c0Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -1.0s; }
+@keyframes c0Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);                      clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  13%       { transform:translate(20px,20px) rotate(60deg) scale(0.75);             clip-path:var(--sq6); border-radius:0; box-shadow:var(--sh-violet); }
+  17%       { transform:translate(102px,102px) rotate(135deg) scale(0);             clip-path:var(--hex); border-radius:0; opacity:1; }
+  17.8%     { transform:translate(102px,102px) rotate(135deg) scale(0);             opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(90deg) scale(1.22);                   clip-path:none; border-radius:var(--r); box-shadow:var(--sh-violet); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+.c2 { animation: c2Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -4.0s; }
+@keyframes c2Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);                      clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  13%       { transform:translate(-20px,20px) rotate(-60deg) scale(0.75);           clip-path:var(--sq6); border-radius:0; box-shadow:var(--sh-gold); }
+  17%       { transform:translate(-102px,102px) rotate(-135deg) scale(0);           clip-path:var(--hex); border-radius:0; opacity:1; }
+  17.8%     { transform:translate(-102px,102px) rotate(-135deg) scale(0);           opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(-90deg) scale(1.22);                  clip-path:none; border-radius:var(--r); box-shadow:var(--sh-gold); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+.c6 { animation: c6Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -1.5s; }
+@keyframes c6Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);                      clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  13%       { transform:translate(20px,-20px) rotate(-60deg) scale(0.75);           clip-path:var(--sq6); border-radius:0; box-shadow:var(--sh-emerald); }
+  17%       { transform:translate(102px,-102px) rotate(-135deg) scale(0);           clip-path:var(--hex); border-radius:0; opacity:1; }
+  17.8%     { transform:translate(102px,-102px) rotate(-135deg) scale(0);           opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(-90deg) scale(1.22);                  clip-path:none; border-radius:var(--r); box-shadow:var(--sh-emerald); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+.c8 { animation: c8Magic var(--loop) ease-in-out infinite, breathe 11s ease-in-out infinite -6.2s; }
+@keyframes c8Magic {
+  0%,10.5%  { transform:translate(0,0) rotate(0deg) scale(1);                      clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); opacity:1; }
+  13%       { transform:translate(-20px,-20px) rotate(60deg) scale(0.75);           clip-path:var(--sq6); border-radius:0; box-shadow:var(--sh-gold); }
+  17%       { transform:translate(-102px,-102px) rotate(135deg) scale(0);           clip-path:var(--hex); border-radius:0; opacity:1; }
+  17.8%     { transform:translate(-102px,-102px) rotate(135deg) scale(0);           opacity:0; }
+  18.5%     { transform:translate(0,0) rotate(90deg) scale(1.22);                   clip-path:none; border-radius:var(--r); box-shadow:var(--sh-gold); opacity:1; }
+  21%       { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); box-shadow:var(--sh-base); }
+  100%      { transform:translate(0,0) rotate(0deg) scale(1);                       clip-path:none; border-radius:var(--r); opacity:1; }
+}
+
+/* ══════════════════════════════════
+   SVG CONNECTIONS — constellation style
+   Dashed golden lines, post-birth
+══════════════════════════════════ */
+.connections {
+  position:absolute; top:0; left:0; width:292px; height:292px;
+  pointer-events:none; z-index:3; overflow:visible;
+}
+.ll {
+  fill:none; stroke-linecap:round;
+  stroke-dasharray:var(--dl,105);
+  stroke-dashoffset:var(--dl,105);
+  animation: drawLine var(--loop) ease-in-out infinite var(--dd,0s);
+}
+@keyframes drawLine {
+  0%,20%   { stroke-dashoffset:var(--dl,105); opacity:0; }
+  22%      { stroke-dashoffset:0; opacity:1; }
+  25%      { stroke-dashoffset:0; opacity:1; }
+  26.5%    { stroke-dashoffset:var(--dl,105); opacity:0; }
+  64%      { stroke-dashoffset:var(--dl,105); opacity:0; }
+  67%      { stroke-dashoffset:0; opacity:.50; }
+  71%      { stroke-dashoffset:var(--dl,105); opacity:0; }
+  100%     { stroke-dashoffset:var(--dl,105); opacity:0; }
+}
+.lout {
+  stroke-dasharray:816; stroke-dashoffset:816;
+  animation: drawOut var(--loop) ease-in-out infinite;
+}
+@keyframes drawOut {
+  0%,23%   { stroke-dashoffset:816; opacity:0; }
+  25%      { stroke-dashoffset:0;   opacity:1; }
+  26%      { stroke-dashoffset:0;   opacity:1; }
+  27.5%    { stroke-dashoffset:816; opacity:0; }
+  100%     { stroke-dashoffset:816; opacity:0; }
+}
+.prt { opacity:0; animation: prtOn var(--loop) linear infinite var(--pd,0s); }
+@keyframes prtOn { 0%,21.5%{opacity:0} 22.5%{opacity:1} 25%{opacity:1} 26.5%{opacity:0} 100%{opacity:0} }
+
+/* ══════════════════════════════════
+   STAINED-GLASS PORTAL SINGULARITY
+   3 concentric rings, 3 colors,
+   screen pos: (215, 410)
+══════════════════════════════════ */
+.portal { position:absolute; left:215px; top:410px; z-index:9; pointer-events:none; }
+.portal-ring {
+  position:absolute; border-radius:50%;
+  animation: ringBuild var(--loop) ease-in-out infinite var(--pr-del,0s);
+}
+@keyframes ringBuild {
+  0%,13.5%  { width:0;   height:0;   margin:0;     opacity:0; box-shadow:none; }
+  15%       { width:10px;height:10px;margin:-5px;  opacity:.7; }
+  17%       { width:var(--rw,24px);height:var(--rh,24px);margin:var(--rm,-12px); opacity:1; box-shadow:var(--rb-shadow); }
+  17.6%     { width:2px; height:2px; margin:-1px;  opacity:1; } /* collapse to point */
+  17.8%     { width:0;   height:0;   margin:0;     opacity:0; }
+  100%      { opacity:0; }
+}
+.ring-v { --rw:32px;--rh:32px;--rm:-16px;--pr-del:0s;   --rb-shadow:0 0 40px 18px rgba(175,48,225,0.92),0 0 80px 40px rgba(145,22,195,0.50); background:rgba(185,58,235,0.05); border:1.5px solid rgba(195,68,245,0.80); }
+.ring-g { --rw:24px;--rh:24px;--rm:-12px;--pr-del:.4s;  --rb-shadow:0 0 30px 14px rgba(218,158,28,0.88),0 0 70px 35px rgba(195,132,18,0.46); background:rgba(218,158,28,0.05); border:1.5px solid rgba(228,168,38,0.76); }
+.ring-e { --rw:18px;--rh:18px;--rm:-9px; --pr-del:.8s;  --rb-shadow:0 0 24px 10px rgba(22,168,105,0.84),0 0 60px 28px rgba(14,138,80,0.42); background:rgba(22,168,105,0.05); border:1.5px solid rgba(32,178,115,0.72); }
+
+/* ══════════════════════════════════
+   SHOCKWAVES — 3 magical rings
+   Violet → Gold → Emerald
+══════════════════════════════════ */
+.sw,.sw2,.sw3 {
+  position:absolute; left:215px; top:410px;
+  width:88px; height:88px; border-radius:50%;
+  margin-left:-44px; margin-top:-44px;
+  pointer-events:none; z-index:7;
+}
+.sw  { animation: swV  var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+.sw2 { animation: swG  var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+.sw3 { animation: swE  var(--loop) cubic-bezier(0,.55,.45,1) infinite; }
+@keyframes swV { 0%,17.5%{transform:scale(0);opacity:0;box-shadow:0 0 0 3px rgba(195,72,255,.96)} 17.8%{transform:scale(1);opacity:1} 32%{transform:scale(7);opacity:0} 100%{transform:scale(7);opacity:0} }
+@keyframes swG { 0%,17.9%{transform:scale(0);opacity:0;box-shadow:0 0 0 2px rgba(228,168,35,.88)} 18.3%{transform:scale(1);opacity:.88} 35%{transform:scale(5.5);opacity:0} 100%{transform:scale(5.5);opacity:0} }
+@keyframes swE { 0%,18.4%{transform:scale(0);opacity:0;box-shadow:0 0 0 1.5px rgba(32,178,115,.72)} 18.9%{transform:scale(1);opacity:.72} 38%{transform:scale(4.2);opacity:0} 100%{transform:scale(4.2);opacity:0} }
+
+/* ══════════════════════════════════
+   HERO DIAMOND CARD — the gem portal
+   clip-path diamond, born from singularity.
+   270px, centred at (215, 390).
+══════════════════════════════════ */
+.hero-risen {
+  position:absolute; left:215px; top:390px;
+  width:270px; height:270px;
+  margin-left:-135px; margin-top:-135px;
+  clip-path:var(--diam);    /* ◇ DIAMOND */
+  overflow:hidden; z-index:20;
+  opacity:0; will-change:transform,opacity;
+  animation: heroMagic var(--loop) cubic-bezier(.22,1,.36,1) infinite;
+}
+@keyframes heroMagic {
+  0%,17.5%  { opacity:0;   transform:scale(.03) rotate(45deg) translateY(0); }
+  19%       { opacity:.60; transform:scale(.62) rotate(22deg) translateY(-12px); }
+  21%       { opacity:1;   transform:scale(1)   rotate(0deg)  translateY(-22px); }
+  63%       { opacity:1;   transform:scale(1)   rotate(0deg)  translateY(-22px); }
+  66%       { opacity:.40; transform:scale(.60) rotate(-18deg) translateY(-10px); }
+  68%       { opacity:0;   transform:scale(.03) rotate(-45deg) translateY(0); }
+  100%      { opacity:0;   transform:scale(.03) rotate(45deg)  translateY(0); }
+}
+
+/* Glass face — warm golden gradient inside diamond */
+.risen-face {
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 80% at 44% 38%,
+    rgba(255,240,165,0.17) 0%,
+    rgba(218,155,28,0.10) 35%,
+    rgba(175,48,225,0.07) 65%,
+    rgba(22,148,90,0.05) 90%,
+    transparent 100%);
+  overflow:hidden;
+}
+/* Prismatic sweep */
+.risen-face::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,
+    rgba(255,248,200,0.14) 0%,
+    rgba(235,192,80,0.09) 25%,
+    rgba(195,88,230,0.06) 50%,
+    rgba(30,175,110,0.05) 75%,
+    transparent 100%);
+  animation: prismSweep var(--loop) ease-in-out infinite;
+}
+@keyframes prismSweep { 0%,22%{opacity:0;transform:translateX(-120%)} 26%{opacity:1;transform:translateX(-30%)} 58%{opacity:1;transform:translateX(30%)} 62%{opacity:0;transform:translateX(120%)} 100%{opacity:0;transform:translateX(-120%)} }
+/* Diamond tip facet highlight */
+.risen-face::after {
+  content:''; position:absolute;
+  top:8%; left:35%; width:30%; height:16%;
+  background:radial-gradient(ellipse,rgba(255,248,200,0.32) 0%,transparent 70%);
+  filter:blur(4px);
+}
+
+/* ══════════════════════════════════
+   MINI GRID — golden constellation
+   3×3 circles, 32px, 7px gap = 110px
+   offset (270-110)/2 = 80px
+══════════════════════════════════ */
+.comp-wrap {
+  position:absolute; left:80px; top:80px;
+  width:110px; height:110px; opacity:0;
+  animation: compShow var(--loop) ease-in-out infinite;
+}
+@keyframes compShow { 0%,25%{opacity:0;transform:scale(.80) rotate(0deg)} 29%{opacity:1;transform:scale(1) rotate(0deg)} 62%{opacity:1} 65%{opacity:0;transform:scale(.92)} 100%{opacity:0;transform:scale(.80)} }
+
+.mini-grid {
+  display:grid;
+  grid-template-columns:repeat(3,32px);
+  grid-template-rows:   repeat(3,32px);
+  gap:7px;
+}
+
+.mc {
+  width:32px; height:32px; position:relative;
+  animation: mcPop var(--loop) cubic-bezier(.34,1.56,.64,1) infinite;
+}
+/* center = circle; adj = diamond; corners = hex */
+.mc-c { border-radius:50%; }
+.mc-d { clip-path:var(--diam); border-radius:0; }
+.mc-h { clip-path:var(--hex); border-radius:0; }
+
+.mc:nth-child(1){animation-delay:.00s}.mc:nth-child(2){animation-delay:.07s}
+.mc:nth-child(3){animation-delay:.14s}.mc:nth-child(4){animation-delay:.21s}
+.mc:nth-child(5){animation-delay:.28s}.mc:nth-child(6){animation-delay:.35s}
+.mc:nth-child(7){animation-delay:.42s}.mc:nth-child(8){animation-delay:.49s}
+.mc:nth-child(9){animation-delay:.56s}
+@keyframes mcPop { 0%,27%{transform:scale(.55);opacity:0} 31%{transform:scale(1.10);opacity:1} 34%{transform:scale(1)} 62%{transform:scale(1);opacity:1} 65%{transform:scale(.55);opacity:0} 100%{transform:scale(.55);opacity:0} }
+
+/* Fills */
+.mf  { background:radial-gradient(circle at 40% 36%,rgba(228,175,30,0.85),rgba(185,135,15,0.50)); box-shadow:0 0 10px rgba(222,168,28,0.62); }
+.mv  { background:radial-gradient(circle at 40% 36%,rgba(188,58,240,0.75),rgba(148,28,208,0.42)); box-shadow:0 0 8px rgba(180,52,235,0.50); }
+.me  { background:radial-gradient(circle at 40% 36%,rgba(28,175,110,0.72),rgba(16,140,82,0.38)); box-shadow:0 0 7px rgba(24,168,105,0.46); }
+.md  { background:radial-gradient(circle at 40% 36%,rgba(255,228,140,0.13),rgba(255,215,100,0.05)); }
+
+.mini-conn {
+  position:absolute; inset:0; width:110px; height:110px;
+  overflow:visible; pointer-events:none; opacity:0;
+  animation: mcShow var(--loop) ease-in-out infinite;
+}
+@keyframes mcShow { 0%,33%{opacity:0}37%{opacity:1}62%{opacity:1}65%{opacity:0}100%{opacity:0} }
+/* Centres: (16,16)(55,16)(94,16)/(16,55)(55,55)(94,55)/(16,94)(55,94)(94,94) */
+.mline { fill:none; stroke-linecap:round; stroke-dasharray:3 6; stroke-dashoffset:200; animation:mlDraw var(--loop) ease-in-out infinite; }
+.mline:nth-of-type(1){stroke:rgba(228,172,30,.86);stroke-width:1;animation-delay:.00s}
+.mline:nth-of-type(2){stroke:rgba(188,58,240,.80);stroke-width:1;animation-delay:.10s}
+.mline:nth-of-type(3){stroke:rgba(28,172,108,.78);stroke-width:1;animation-delay:.20s}
+.mline:nth-of-type(4){stroke:rgba(220,165,28,.74);stroke-width:1;animation-delay:.30s}
+/* glow dupes */
+.mline:nth-of-type(5){stroke:rgba(228,172,30,.18);stroke-width:5;filter:blur(2.5px);animation-delay:.00s}
+.mline:nth-of-type(6){stroke:rgba(188,58,240,.15);stroke-width:5;filter:blur(2.5px);animation-delay:.10s}
+@keyframes mlDraw { 0%,35%{stroke-dashoffset:200;opacity:0}39%{stroke-dashoffset:0;opacity:1}61%{stroke-dashoffset:0;opacity:1}64%{stroke-dashoffset:200;opacity:0}100%{stroke-dashoffset:200;opacity:0} }
+
+/* ══════════════════════════════════
+   VIGNETTE + GRAIN
+══════════════════════════════════ */
+.vignette { position:absolute;inset:0;pointer-events:none;z-index:22; background:radial-gradient(ellipse 112% 112% at 50% 50%,transparent 38%,rgba(3,2,8,.75) 100%); }
+.grain    { position:absolute;inset:0;pointer-events:none;z-index:23;opacity:0.028; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation:gd .9s steps(1) infinite; }
+@keyframes gd { 0%{background-position:0 0}20%{background-position:-52px -30px}40%{background-position:40px 60px}60%{background-position:-70px 40px}80%{background-position:60px -50px} }
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <div class="blobs">
+    <div class="b b1"></div><div class="b b2"></div><div class="b b3"></div>
+    <div class="b b4"></div><div class="b b5"></div><div class="b b6"></div>
+  </div>
+  <div class="top-edge"></div><div class="bot-edge"></div>
+
+  <div class="grid-outer">
+    <div class="grid-halo"></div>
+    <div class="grid">
+      <div class="cell c0 tv"></div>
+      <div class="cell c1 tg"></div>
+      <div class="cell c2 te"></div>
+      <div class="cell c3 te"></div>
+      <div class="cell c4 tn"></div><!-- HERO -->
+      <div class="cell c5 tg"></div>
+      <div class="cell c6 tg"></div>
+      <div class="cell c7 tv"></div>
+      <div class="cell c8 te"></div>
+    </div>
+
+    <!-- Constellation connections — dashed golden -->
+    <svg class="connections" viewBox="0 0 292 292">
+      <!-- GLOW -->
+      <path class="ll" d="M146,146 Q150,96 146,44"  style="stroke:rgba(228,170,30,.22);stroke-width:5;filter:blur(3px);--dl:106;--dd:0s"/>
+      <path class="ll" d="M146,146 Q96,142 44,146"  style="stroke:rgba(185,56,235,.22);stroke-width:5;filter:blur(3px);--dl:106;--dd:-.15s"/>
+      <path class="ll" d="M146,146 Q196,150 248,146" style="stroke:rgba(26,172,106,.22);stroke-width:5;filter:blur(3px);--dl:106;--dd:-.30s"/>
+      <path class="ll" d="M146,146 Q142,196 146,248" style="stroke:rgba(228,170,30,.22);stroke-width:5;filter:blur(3px);--dl:106;--dd:-.45s"/>
+      <path class="ll" d="M146,146 Q88,88 44,44"    style="stroke:rgba(185,56,235,.20);stroke-width:5;filter:blur(3px);--dl:149;--dd:-.40s"/>
+      <path class="ll" d="M146,146 Q204,88 248,44"   style="stroke:rgba(228,170,30,.20);stroke-width:5;filter:blur(3px);--dl:149;--dd:-.55s"/>
+      <path class="ll" d="M146,146 Q88,204 44,248"   style="stroke:rgba(26,172,106,.18);stroke-width:5;filter:blur(3px);--dl:149;--dd:-.70s"/>
+      <path class="ll" d="M146,146 Q204,204 248,248" style="stroke:rgba(185,56,235,.18);stroke-width:5;filter:blur(3px);--dl:149;--dd:-.85s"/>
+      <!-- CRISP dashed constellation -->
+      <path class="ll" d="M146,146 Q150,96 146,44"  style="stroke:rgba(232,175,32,.86);stroke-width:.9;stroke-dasharray:4 5;--dl:106;--dd:0s"/>
+      <path class="ll" d="M146,146 Q96,142 44,146"  style="stroke:rgba(188,60,238,.82);stroke-width:.9;stroke-dasharray:4 5;--dl:106;--dd:-.15s"/>
+      <path class="ll" d="M146,146 Q196,150 248,146" style="stroke:rgba(30,176,110,.80);stroke-width:.9;stroke-dasharray:4 5;--dl:106;--dd:-.30s"/>
+      <path class="ll" d="M146,146 Q142,196 146,248" style="stroke:rgba(232,175,32,.80);stroke-width:.9;stroke-dasharray:4 5;--dl:106;--dd:-.45s"/>
+      <path class="ll" d="M146,146 Q88,88 44,44"    style="stroke:rgba(188,60,238,.78);stroke-width:.9;stroke-dasharray:4 5;--dl:149;--dd:-.40s"/>
+      <path class="ll" d="M146,146 Q204,88 248,44"   style="stroke:rgba(232,175,32,.76);stroke-width:.9;stroke-dasharray:4 5;--dl:149;--dd:-.55s"/>
+      <path class="ll" d="M146,146 Q88,204 44,248"   style="stroke:rgba(30,176,110,.74);stroke-width:.9;stroke-dasharray:4 5;--dl:149;--dd:-.70s"/>
+      <path class="ll" d="M146,146 Q204,204 248,248" style="stroke:rgba(188,60,238,.72);stroke-width:.9;stroke-dasharray:4 5;--dl:149;--dd:-.85s"/>
+      <rect class="lout" x="44" y="44" width="204" height="204" rx="0" style="stroke:rgba(218,160,28,.24);fill:none;stroke-width:.8;stroke-dasharray:5 6"/>
+
+      <!-- Node star glyphs at cell centres -->
+      <circle r="2.4" fill="rgba(235,178,32,.95)" class="prt" style="--pd:0s">  <animateMotion dur=".74s" repeatCount="indefinite" path="M146,146 Q150,96 146,44"/></circle>
+      <circle r="2.2" fill="rgba(192,64,242,.92)" class="prt" style="--pd:-.15s"><animateMotion dur=".74s" repeatCount="indefinite" path="M146,146 Q96,142 44,146"/></circle>
+      <circle r="2.2" fill="rgba(34,180,112,.90)" class="prt" style="--pd:-.30s"><animateMotion dur=".74s" repeatCount="indefinite" path="M146,146 Q196,150 248,146"/></circle>
+      <circle r="2.2" fill="rgba(235,178,32,.90)" class="prt" style="--pd:-.45s"><animateMotion dur=".74s" repeatCount="indefinite" path="M146,146 Q142,196 146,248"/></circle>
+      <circle r="2.0" fill="rgba(192,64,242,.85)" class="prt" style="--pd:-.40s"><animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q88,88 44,44"/></circle>
+      <circle r="2.0" fill="rgba(235,178,32,.83)" class="prt" style="--pd:-.55s"><animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q204,88 248,44"/></circle>
+      <circle r="1.8" fill="rgba(34,180,112,.80)" class="prt" style="--pd:-.70s"><animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q88,204 44,248"/></circle>
+      <circle r="1.8" fill="rgba(192,64,242,.78)" class="prt" style="--pd:-.85s"><animateMotion dur="1.0s" repeatCount="indefinite" path="M146,146 Q204,204 248,248"/></circle>
+      <circle r="1.5" fill="rgba(235,178,32,.68)" class="prt" style="--pd:-.35s"><animateMotion dur=".90s" repeatCount="indefinite" path="M44,44 Q108,108 146,146"/></circle>
+      <circle r="1.5" fill="rgba(34,180,112,.65)" class="prt" style="--pd:-.62s"><animateMotion dur=".90s" repeatCount="indefinite" path="M248,248 Q184,184 146,146"/></circle>
+    </svg>
+  </div>
+
+  <!-- Stained-glass portal rings -->
+  <div class="portal">
+    <div class="portal-ring ring-v"></div>
+    <div class="portal-ring ring-g"></div>
+    <div class="portal-ring ring-e"></div>
+  </div>
+
+  <!-- 3 shockwave rings: violet, gold, emerald -->
+  <div class="sw"></div>
+  <div class="sw2"></div>
+  <div class="sw3"></div>
+
+  <!-- Explosion sparkles — 16 pre-positioned diamonds -->
+  <!-- Inner ring: 8 at ~80px radius; outer ring: 8 at ~155px radius -->
+  <div class="exspark" style="left:215px;top:410px;width:9px;height:9px;margin:-4.5px;background:rgba(228,175,32,1);--ex:-80px;--ey:-0px;--es-delay:0s"/>
+  <div class="exspark" style="left:215px;top:410px;width:8px;height:8px;margin:-4px;background:rgba(192,64,242,1);--ex:-56px;--ey:-56px;--es-delay:0.05s"/>
+  <div class="exspark" style="left:215px;top:410px;width:9px;height:9px;margin:-4.5px;background:rgba(34,180,112,1);--ex:0px;--ey:-80px;--es-delay:0.1s"/>
+  <div class="exspark" style="left:215px;top:410px;width:8px;height:8px;margin:-4px;background:rgba(228,175,32,1);--ex:56px;--ey:-56px;--es-delay:0.05s"/>
+  <div class="exspark" style="left:215px;top:410px;width:9px;height:9px;margin:-4.5px;background:rgba(192,64,242,1);--ex:80px;--ey:0px;--es-delay:0s"/>
+  <div class="exspark" style="left:215px;top:410px;width:8px;height:8px;margin:-4px;background:rgba(34,180,112,1);--ex:56px;--ey:56px;--es-delay:0.05s"/>
+  <div class="exspark" style="left:215px;top:410px;width:9px;height:9px;margin:-4.5px;background:rgba(228,175,32,1);--ex:0px;--ey:80px;--es-delay:0.1s"/>
+  <div class="exspark" style="left:215px;top:410px;width:8px;height:8px;margin:-4px;background:rgba(192,64,242,1);--ex:-56px;--ey:56px;--es-delay:0.05s"/>
+  <!-- Outer ring -->
+  <div class="exspark" style="left:215px;top:410px;width:6px;height:6px;margin:-3px;background:rgba(255,242,175,1);--ex:-155px;--ey:-10px;--es-delay:0.06s"/>
+  <div class="exspark" style="left:215px;top:410px;width:5px;height:5px;margin:-2.5px;background:rgba(210,120,255,1);--ex:-110px;--ey:-108px;--es-delay:0.12s"/>
+  <div class="exspark" style="left:215px;top:410px;width:6px;height:6px;margin:-3px;background:rgba(128,255,200,1);--ex:10px;--ey:-155px;--es-delay:0.08s"/>
+  <div class="exspark" style="left:215px;top:410px;width:5px;height:5px;margin:-2.5px;background:rgba(255,242,175,1);--ex:112px;--ey:-110px;--es-delay:0.14s"/>
+  <div class="exspark" style="left:215px;top:410px;width:6px;height:6px;margin:-3px;background:rgba(210,120,255,1);--ex:155px;--ey:8px;--es-delay:0.06s"/>
+  <div class="exspark" style="left:215px;top:410px;width:5px;height:5px;margin:-2.5px;background:rgba(128,255,200,1);--ex:108px;--ey:112px;--es-delay:0.12s"/>
+  <div class="exspark" style="left:215px;top:410px;width:6px;height:6px;margin:-3px;background:rgba(255,242,175,1);--ex:-10px;--ey:155px;--es-delay:0.08s"/>
+  <div class="exspark" style="left:215px;top:410px;width:5px;height:5px;margin:-2.5px;background:rgba(210,120,255,1);--ex:-110px;--ey:108px;--es-delay:0.14s"/>
+
+  <!-- Hero diamond card -->
+  <div class="hero-risen">
+    <div class="risen-face">
+      <div class="comp-wrap">
+        <div class="mini-grid">
+          <div class="mc mc-h mv"></div><!-- hex violet -->
+          <div class="mc mc-d mf"></div><!-- diamond gold -->
+          <div class="mc mc-h me"></div><!-- hex emerald -->
+          <div class="mc mc-d me"></div><!-- diamond emerald -->
+          <div class="mc mc-c mf"></div><!-- circle gold bright -->
+          <div class="mc mc-d mv"></div><!-- diamond violet -->
+          <div class="mc mc-h mf"></div><!-- hex gold -->
+          <div class="mc mc-d md"></div><!-- diamond dim -->
+          <div class="mc mc-h mv"></div><!-- hex violet -->
+        </div>
+        <svg class="mini-conn" viewBox="0 0 110 110">
+          <line class="mline" x1="55" y1="55" x2="55" y2="16"/>
+          <line class="mline" x1="55" y1="55" x2="16" y2="55"/>
+          <line class="mline" x1="55" y1="55" x2="94" y2="55"/>
+          <line class="mline" x1="55" y1="55" x2="55" y2="94"/>
+          <line class="mline" x1="55" y1="55" x2="16" y2="16"/>
+          <line class="mline" x1="55" y1="55" x2="94" y2="94"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+</div>
+
+<script>
+/* ── Idle magical drift particles ──
+   Generated at runtime so each run is unique.
+   Diamond shapes drifting upward like embers.       */
+const scene = document.querySelector('.scene');
+for (let i = 0; i < 38; i++) {
+  const d = document.createElement('div');
+  d.className = 'spark-drift';
+  const size    = Math.random() * 5 + 2;
+  const dur     = Math.random() * 16 + 10;
+  const delay   = Math.random() * -28;
+  const x       = Math.random() * 430;
+  const startY  = Math.random() * 932 + 200;
+  const driftY  = -(Math.random() * 500 + 200);
+  const endScl  = Math.random() * 0.3 + 0.1;
+  const maxOp   = Math.random() * 0.55 + 0.15;
+  /* color: mostly gold, some violet, some teal */
+  const r = Math.random();
+  const bg = r < 0.55
+    ? `radial-gradient(circle,rgba(255,238,140,0.92),rgba(218,160,28,0.45))`
+    : r < 0.8
+    ? `radial-gradient(circle,rgba(220,160,255,0.88),rgba(175,48,225,0.42))`
+    : `radial-gradient(circle,rgba(145,255,210,0.86),rgba(22,168,108,0.40))`;
+  d.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${x}px; top:${startY}px;
+    background:${bg};
+    --drift-y:${driftY}px;
+    --end-scale:${endScl};
+    --max-op:${maxOp};
+    animation-duration:${dur}s;
+    animation-delay:${delay}s;
+  `;
+  scene.appendChild(d);
+}
+</script>
+</body>
+</html>

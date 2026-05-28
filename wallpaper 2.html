@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wallpaper</title>
+<style>
+/* ════════════════════════════════════
+   TOKENS
+════════════════════════════════════ */
+:root {
+  --sq: 88px; --gap: 14px; --r: 20px;
+  --loop: 22s;
+
+  --sh-base:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    0 10px 30px rgba(0,0,0,0.46),
+    0 3px 8px  rgba(0,0,0,0.34);
+  --sh-warm:
+    inset 0 1px 0 rgba(255,255,255,0.26),
+    0 10px 30px rgba(0,0,0,0.46),
+    0 0 22px rgba(210,168,68,0.48),
+    0 0 48px rgba(200,148,50,0.22);
+  --sh-cool:
+    inset 0 1px 0 rgba(255,255,255,0.26),
+    0 10px 30px rgba(0,0,0,0.46),
+    0 0 22px rgba(72,150,224,0.48),
+    0 0 48px rgba(52,128,202,0.22);
+  --sh-press:
+    inset 0 4px 14px rgba(0,0,0,0.58),
+    inset 0 0 0 1px rgba(255,255,255,0.07),
+    0 3px 8px rgba(0,0,0,0.24);
+}
+
+/* ════════════════════════════════════
+   RESET + FRAME
+════════════════════════════════════ */
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:430px; height:932px; overflow:hidden; background:#060709; }
+
+.scene {
+  width:430px; height:932px;
+  position:relative; overflow:hidden;
+  background:radial-gradient(ellipse 140% 100% at 50% 40%, #0e1220 0%, #090b15 55%, #060709 100%);
+  animation: scenePulse var(--loop) ease-in-out infinite;
+}
+@keyframes scenePulse {
+  0%,8%    { filter:brightness(1); }
+  11.4%    { filter:brightness(1.22); }
+  14%      { filter:brightness(1.04); }
+  100%     { filter:brightness(1); }
+}
+
+/* ════════════════════════════════════
+   AURORA BLOBS
+════════════════════════════════════ */
+.blobs { position:absolute; inset:-120px; }
+.b {
+  position:absolute; border-radius:50%;
+  will-change:transform;
+}
+.b1 { width:480px;height:440px; background:radial-gradient(ellipse,rgba(195,133,44,0.28) 0%,transparent 68%); filter:blur(88px); top:-60px;right:-130px; animation:b1 24s ease-in-out infinite alternate; }
+.b2 { width:520px;height:420px; background:radial-gradient(ellipse,rgba(22,68,138,0.34) 0%,transparent 65%); filter:blur(100px); bottom:-110px;left:-160px; animation:b2 30s ease-in-out infinite alternate; }
+.b3 { width:380px;height:320px; background:radial-gradient(ellipse,rgba(14,108,118,0.20) 0%,transparent 65%); filter:blur(80px); top:320px;left:-100px; animation:b3 20s ease-in-out infinite alternate; }
+.b4 { width:360px;height:280px; background:radial-gradient(ellipse,rgba(165,108,34,0.18) 0%,transparent 65%); filter:blur(72px); bottom:80px;right:-90px; animation:b4 26s ease-in-out infinite alternate; }
+.b5 { width:300px;height:260px; background:radial-gradient(ellipse,rgba(78,48,140,0.14) 0%,transparent 65%); filter:blur(70px); top:200px;left:60px; animation:b3 34s ease-in-out infinite alternate-reverse; }
+
+@keyframes b1 { from{transform:translate(0,0) scale(1)} to{transform:translate(-44px,58px) scale(1.10)} }
+@keyframes b2 { from{transform:translate(0,0) scale(1)} to{transform:translate(52px,-42px) scale(1.09)} }
+@keyframes b3 { from{transform:translate(0,0) scale(1)} to{transform:translate(34px,52px) scale(1.13)} }
+@keyframes b4 { from{transform:translate(0,0) scale(1)} to{transform:translate(-38px,-32px) scale(1.07)} }
+
+.top-edge { position:absolute;top:0;left:0;right:0;height:220px;z-index:2; background:linear-gradient(to bottom,rgba(195,148,54,0.06),transparent); pointer-events:none; }
+.bot-edge { position:absolute;bottom:0;left:0;right:0;height:180px;z-index:2; background:linear-gradient(to top,rgba(20,55,120,0.10),transparent); pointer-events:none; }
+
+/* ════════════════════════════════════
+   GRID OUTER
+════════════════════════════════════ */
+/* 3×88+2×14 = 292. left=(430-292)/2=69. top visual center ≈264 */
+.grid-outer {
+  position:absolute; left:69px; top:264px;
+  width:292px; height:292px; z-index:5;
+  animation: gridReact var(--loop) ease-in-out infinite;
+}
+@keyframes gridReact {
+  0%,8%    { transform:translateY(0) scale(1); }
+  11.4%    { transform:translateY(4px) scale(0.983); }
+  14%      { transform:translateY(0) scale(1); }
+  100%     { transform:translateY(0) scale(1); }
+}
+
+.grid-halo {
+  position:absolute; inset:-55px;
+  background:radial-gradient(ellipse,rgba(210,170,78,0.13) 0%,rgba(60,120,200,0.07) 55%,transparent 75%);
+  filter:blur(28px);
+  animation:haloBreathe 11s ease-in-out infinite, haloReact var(--loop) ease-in-out infinite;
+}
+@keyframes haloBreathe { 0%,100%{opacity:.78;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+@keyframes haloReact   { 0%,8%{opacity:1} 11.4%{opacity:1.5;filter:blur(18px)} 14%{opacity:1;filter:blur(28px)} 100%{opacity:1} }
+
+/* ════════════════════════════════════
+   GRID
+════════════════════════════════════ */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,var(--sq));
+  grid-template-rows:   repeat(3,var(--sq));
+  gap:var(--gap);
+  position:relative; z-index:1;
+}
+
+/* ── Cell base ── */
+.cell {
+  width:var(--sq); height:var(--sq); border-radius:var(--r);
+  position:relative; overflow:hidden;
+  border-top:  1px solid rgba(255,255,255,0.25);
+  border-left: 1px solid rgba(255,255,255,0.14);
+  border-right:1px solid rgba(255,255,255,0.07);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  box-shadow:var(--sh-base);
+  animation: breathe 10s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.07)} }
+
+/* shimmer sweep */
+.cell::before {
+  content:''; position:absolute; inset:0; border-radius:var(--r);
+  background:linear-gradient(118deg,transparent 25%,rgba(255,255,255,0.09) 50%,transparent 75%);
+  transform:translateX(-160%);
+  animation:shimmer 9s ease-in-out infinite;
+}
+@keyframes shimmer { 0%{transform:translateX(-160%);opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{transform:translateX(160%);opacity:0} }
+
+/* Tint variants */
+.tw { background:linear-gradient(148deg,rgba(220,168,68,0.10) 0%,rgba(255,255,255,0.024) 100%); }
+.tc { background:linear-gradient(148deg,rgba(70,148,224,0.09) 0%,rgba(255,255,255,0.024) 100%); }
+.tt { background:linear-gradient(148deg,rgba(40,172,158,0.08) 0%,rgba(255,255,255,0.024) 100%); }
+.tn { background:linear-gradient(148deg,rgba(255,255,255,0.082) 0%,rgba(255,255,255,0.022) 100%); }
+
+/* ── Hero cell (c4 = center, row1 col1) ── */
+.c4 {
+  animation:
+    heroCell var(--loop) cubic-bezier(.22,1,.36,1) infinite,
+    breathe 10s ease-in-out infinite -3s;
+  z-index:2;
+}
+@keyframes heroCell {
+  /* idle breathe baked in */
+  0%     { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  5%     { transform:scale(1.016); }
+  9%     { transform:scale(1);     box-shadow:var(--sh-base); }
+  /* PRESS */
+  9.1%   { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  11.4%  { transform:scale(0.91);  box-shadow:var(--sh-press); }
+  /* bounce back + glow */
+  13.6%  { transform:scale(1.03);  box-shadow:var(--sh-warm); }
+  20.5%  { transform:scale(1);     box-shadow:var(--sh-warm); opacity:1; }
+  /* dim → vanish (rising copy takes over) */
+  25%    { transform:scale(1);     box-shadow:var(--sh-base); opacity:0.45; }
+  29.5%  { transform:scale(0.94);  box-shadow:var(--sh-base); opacity:0; }
+  /* absent */
+  68%    { transform:scale(0.94);  box-shadow:var(--sh-base); opacity:0; }
+  /* reappear */
+  72.7%  { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+  76%    { transform:scale(1.01);  box-shadow:var(--sh-warm); }
+  81%    { transform:scale(1);     box-shadow:var(--sh-base); }
+  100%   { transform:scale(1);     box-shadow:var(--sh-base); opacity:1; }
+}
+
+/* ── Adjacent cells (orthogonal): c1 c3 c5 c7 ── */
+.c1,.c3,.c5,.c7 {
+  animation:rippleAdj var(--loop) ease-in-out infinite, breathe 10s ease-in-out infinite;
+}
+@keyframes rippleAdj {
+  0%,12.7% { transform:scale(1);    box-shadow:var(--sh-base); }
+  15.9%    { transform:scale(1.03); box-shadow:var(--sh-cool); }
+  22.7%    { transform:scale(1);    box-shadow:var(--sh-cool); }
+  27.3%    { transform:scale(1);    box-shadow:var(--sh-base); }
+  70%      { transform:scale(1);    box-shadow:var(--sh-base); }
+  74%      { transform:scale(1.02); box-shadow:var(--sh-cool); }
+  79%      { transform:scale(1);    box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);    box-shadow:var(--sh-base); }
+}
+
+/* ── Diagonal cells: c0 c2 c6 c8 ── */
+.c0,.c2,.c6,.c8 {
+  animation:rippleDiag var(--loop) ease-in-out infinite, breathe 10s ease-in-out infinite;
+}
+@keyframes rippleDiag {
+  0%,15.9% { transform:scale(1);    box-shadow:var(--sh-base); }
+  18.2%    { transform:scale(1.02); box-shadow:var(--sh-warm); }
+  22.7%    { transform:scale(1);    box-shadow:var(--sh-warm); }
+  27.3%    { transform:scale(1);    box-shadow:var(--sh-base); }
+  74%      { transform:scale(1.015);box-shadow:var(--sh-warm); }
+  79%      { transform:scale(1);    box-shadow:var(--sh-base); }
+  100%     { transform:scale(1);    box-shadow:var(--sh-base); }
+}
+
+/* breathe offsets per cell */
+.c0{animation-delay:0s,-1.0s}
+.c1{animation-delay:0s,-2.5s}
+.c2{animation-delay:0s,-4.0s}
+.c3{animation-delay:0s,-0.5s}
+.c5{animation-delay:0s,-5.0s}
+.c6{animation-delay:0s,-1.5s}
+.c7{animation-delay:0s,-3.5s}
+.c8{animation-delay:0s,-6.0s}
+
+/* ════════════════════════════════════
+   CONNECTION LINES SVG
+════════════════════════════════════ */
+.connections {
+  position:absolute; top:0; left:0;
+  width:292px; height:292px;
+  pointer-events:none; z-index:3; overflow:visible;
+}
+
+/* cell centres in 292×292:
+   (44,44)  (146,44)  (248,44)
+   (44,146) (146,146) (248,146)
+   (44,248) (146,248) (248,248)  */
+
+.la { /* adj radial lines  ~102px */
+  fill:none; stroke:rgba(96,162,228,0.72); stroke-width:1;
+  stroke-dasharray:103; stroke-dashoffset:103;
+  animation:drawAdj var(--loop) ease-in-out infinite;
+}
+.ld { /* diag radial lines ~144px */
+  fill:none; stroke:rgba(210,160,65,0.68); stroke-width:1;
+  stroke-dasharray:145; stroke-dashoffset:145;
+  animation:drawDiag var(--loop) ease-in-out infinite;
+}
+.lo { /* outer rectangle  perimeter=816px */
+  fill:none; stroke:rgba(155,135,200,0.32); stroke-width:0.8;
+  stroke-dasharray:816; stroke-dashoffset:816;
+  animation:drawOuter var(--loop) ease-in-out infinite;
+}
+
+/* glow duplicates */
+.la-g { fill:none; stroke:rgba(120,180,240,0.18); stroke-width:4; filter:blur(2px);
+  stroke-dasharray:103; stroke-dashoffset:103; animation:drawAdj var(--loop) ease-in-out infinite; }
+.ld-g { fill:none; stroke:rgba(230,185,80,0.15);  stroke-width:4; filter:blur(2px);
+  stroke-dasharray:145; stroke-dashoffset:145; animation:drawDiag var(--loop) ease-in-out infinite; }
+
+@keyframes drawAdj {
+  0%,15.9% { stroke-dashoffset:103; opacity:0; }
+  18.2%    { stroke-dashoffset:0;   opacity:1; }
+  22.7%    { stroke-dashoffset:0;   opacity:1; }
+  27.3%    { stroke-dashoffset:103; opacity:0; }
+  70%      { stroke-dashoffset:103; opacity:0; }
+  74%      { stroke-dashoffset:0;   opacity:.55; }
+  79%      { stroke-dashoffset:103; opacity:0; }
+  100%     { stroke-dashoffset:103; opacity:0; }
+}
+@keyframes drawDiag {
+  0%,18.2% { stroke-dashoffset:145; opacity:0; }
+  20.5%    { stroke-dashoffset:0;   opacity:1; }
+  22.7%    { stroke-dashoffset:0;   opacity:1; }
+  27.3%    { stroke-dashoffset:145; opacity:0; }
+  70%      { stroke-dashoffset:145; opacity:0; }
+  74.5%    { stroke-dashoffset:0;   opacity:.55; }
+  79.5%    { stroke-dashoffset:145; opacity:0; }
+  100%     { stroke-dashoffset:145; opacity:0; }
+}
+@keyframes drawOuter {
+  0%,20.5% { stroke-dashoffset:816; opacity:0; }
+  23.5%    { stroke-dashoffset:0;   opacity:1; }
+  25%      { stroke-dashoffset:0;   opacity:1; }
+  27.3%    { stroke-dashoffset:816; opacity:0; }
+  100%     { stroke-dashoffset:816; opacity:0; }
+}
+
+/* ════════════════════════════════════
+   SHOCKWAVE RING
+════════════════════════════════════ */
+/* Center cell centre: x=69+146=215, y=264+146=410 */
+.shockwave {
+  position:absolute;
+  left:215px; top:410px;
+  width:88px; height:88px;
+  border-radius:50%;
+  margin-left:-44px; margin-top:-44px;
+  pointer-events:none; z-index:6;
+  animation: shockGo var(--loop) cubic-bezier(0,.55,.45,1) infinite;
+}
+@keyframes shockGo {
+  0%,9%    { transform:scale(0); opacity:0; box-shadow:0 0 0 2px rgba(212,172,68,0); }
+  11.4%    { transform:scale(1); opacity:1; box-shadow:0 0 0 2px rgba(212,172,68,.95); }
+  19%      { transform:scale(5.7); opacity:0; box-shadow:0 0 0 1px rgba(212,172,68,0); }
+  100%     { transform:scale(5.7); opacity:0; }
+}
+
+/* Second ring — slower, softer */
+.shockwave2 {
+  position:absolute;
+  left:215px; top:410px;
+  width:88px; height:88px;
+  border-radius:50%;
+  margin-left:-44px; margin-top:-44px;
+  pointer-events:none; z-index:6;
+  animation: shockGo2 var(--loop) cubic-bezier(0,.55,.45,1) infinite;
+}
+@keyframes shockGo2 {
+  0%,10.5%  { transform:scale(0); opacity:0; box-shadow:0 0 0 1px rgba(120,180,240,0); }
+  12.5%     { transform:scale(1); opacity:.7; box-shadow:0 0 0 1px rgba(120,180,240,.7); }
+  22%       { transform:scale(4.5); opacity:0; box-shadow:0 0 0 1px rgba(120,180,240,0); }
+  100%      { transform:scale(4.5); opacity:0; }
+}
+
+/* ════════════════════════════════════
+   HERO RISEN — the editorial card
+════════════════════════════════════ */
+/* Base size 280×280, centered at cell centre (215,410).
+   scale(88/280)=scale(0.3143) makes it appear as the grid cell */
+.hero-risen {
+  position:absolute;
+  left:215px; top:410px;
+  width:280px; height:280px;
+  margin-left:-140px; margin-top:-140px;
+  border-radius:24px;
+  overflow:hidden; z-index:20;
+  opacity:0; will-change:transform,opacity;
+  animation: heroRise var(--loop) cubic-bezier(.22,1,.36,1) infinite;
+}
+@keyframes heroRise {
+  0%,28%   { opacity:0; transform:scale(.3143) translateY(0); }
+  33%      { opacity:.5; transform:scale(.65) translateY(-10px); }
+  36.4%    { opacity:1; transform:scale(1) translateY(-22px); }
+  64%      { opacity:1; transform:scale(1) translateY(-22px); }
+  69%      { opacity:.4; transform:scale(.6) translateY(-8px); }
+  71%      { opacity:0; transform:scale(.3143) translateY(0); }
+  100%     { opacity:0; transform:scale(.3143) translateY(0); }
+}
+
+/* Glass face of the card */
+.risen-face {
+  position:absolute; inset:0; border-radius:24px;
+  background:linear-gradient(148deg,
+    rgba(255,255,255,0.10) 0%,
+    rgba(255,255,255,0.04) 60%,
+    rgba(210,160,58,0.045) 100%);
+  border:1px solid rgba(255,255,255,0.22);
+  border-top-color:rgba(255,255,255,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.26),
+    0 48px 90px rgba(0,0,0,0.55),
+    0  0  64px rgba(210,162,62,0.14),
+    0  0 120px rgba(60,120,210,0.10);
+  overflow:hidden;
+}
+/* risen-face shimmer */
+.risen-face::before {
+  content:''; position:absolute; inset:0; border-radius:24px;
+  background:linear-gradient(118deg,transparent 18%,rgba(255,255,255,0.07) 50%,transparent 82%);
+  animation:risenShimmer var(--loop) ease-in-out infinite;
+}
+@keyframes risenShimmer {
+  0%,36%  { transform:translateX(-150%); opacity:0; }
+  40%     { transform:translateX(-50%); opacity:1; }
+  56%     { transform:translateX(50%);  opacity:1; }
+  60%     { transform:translateX(150%); opacity:0; }
+  100%    { transform:translateX(150%); opacity:0; }
+}
+
+/* ── Mini grid inside risen card ── */
+/* 3×52 + 2×7 = 170. offset = (280−170)/2 = 55 */
+.comp-wrap {
+  position:absolute;
+  left:55px; top:55px;
+  width:170px; height:170px;
+  opacity:0;
+  animation:compReveal var(--loop) ease-in-out infinite;
+}
+@keyframes compReveal {
+  0%,39%   { opacity:0; transform:scale(.90); }
+  43%      { opacity:1; transform:scale(1); }
+  63%      { opacity:1; transform:scale(1); }
+  66%      { opacity:0; transform:scale(.94); }
+  100%     { opacity:0; transform:scale(.90); }
+}
+
+.mini-grid {
+  display:grid;
+  grid-template-columns:repeat(3,52px);
+  grid-template-rows:   repeat(3,52px);
+  gap:7px;
+}
+
+/* Mini cell variants */
+.mc {
+  width:52px; height:52px; border-radius:12px;
+  position:relative; overflow:hidden;
+  animation:mcPop var(--loop) cubic-bezier(.34,1.56,.64,1) infinite;
+}
+.mc:nth-child(1){animation-delay:.00s} .mc:nth-child(2){animation-delay:.07s}
+.mc:nth-child(3){animation-delay:.14s} .mc:nth-child(4){animation-delay:.21s}
+.mc:nth-child(5){animation-delay:.28s} .mc:nth-child(6){animation-delay:.35s}
+.mc:nth-child(7){animation-delay:.42s} .mc:nth-child(8){animation-delay:.49s}
+.mc:nth-child(9){animation-delay:.56s}
+@keyframes mcPop {
+  0%,40%  { transform:scale(.65); opacity:0; }
+  44%     { transform:scale(1.06); opacity:1; }
+  47%     { transform:scale(1); }
+  63%     { transform:scale(1); opacity:1; }
+  66%     { transform:scale(.65); opacity:0; }
+  100%    { transform:scale(.65); opacity:0; }
+}
+
+/* Heatmap weights */
+.mf  { background:linear-gradient(148deg,rgba(220,168,68,.58),rgba(198,138,44,.28)); border:1px solid rgba(255,220,128,.46); box-shadow:0 0 14px rgba(210,164,58,.44), inset 0 1px 0 rgba(255,240,180,.32); }
+.mc2 { background:linear-gradient(148deg,rgba(70,148,224,.40),rgba(40,98,180,.20));  border:1px solid rgba(118,178,255,.36); box-shadow:0 0 12px rgba(80,152,222,.32), inset 0 1px 0 rgba(180,220,255,.26); }
+.mt  { background:linear-gradient(148deg,rgba(38,170,156,.42),rgba(18,128,118,.22)); border:1px solid rgba(78,198,184,.36); box-shadow:0 0 12px rgba(38,170,156,.32), inset 0 1px 0 rgba(140,220,210,.26); }
+.mn  { background:linear-gradient(148deg,rgba(255,255,255,.085),rgba(255,255,255,.022)); border:1px solid rgba(255,255,255,.20); box-shadow:0 0 6px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.18); }
+.md  { background:linear-gradient(148deg,rgba(255,255,255,.038),rgba(255,255,255,.010)); border:1px solid rgba(255,255,255,.08); }
+
+/* ── Mini connection SVG ── */
+/* Mini cell centres (52px sq, 7px gap):
+   (26,26)(85,26)(144,26)
+   (26,85)(85,85)(144,85)
+   (26,144)(85,144)(144,144) */
+.mini-conn {
+  position:absolute; left:0; top:0;
+  width:170px; height:170px;
+  overflow:visible; pointer-events:none;
+  opacity:0;
+  animation:miniConnShow var(--loop) ease-in-out infinite;
+}
+@keyframes miniConnShow {
+  0%,44%  { opacity:0; }
+  48%     { opacity:1; }
+  63%     { opacity:1; }
+  66%     { opacity:0; }
+  100%    { opacity:0; }
+}
+.ml { fill:none; stroke-width:1; stroke-dasharray:200; stroke-dashoffset:200; animation:mlDraw var(--loop) ease-in-out infinite; }
+.ml:nth-of-type(1) { stroke:rgba(210,163,65,.78); stroke-dasharray:84;  animation-delay:.0s; }
+.ml:nth-of-type(2) { stroke:rgba(80,150,222,.72);  stroke-dasharray:60;  animation-delay:.12s; }
+.ml:nth-of-type(3) { stroke:rgba(40,170,156,.70);  stroke-dasharray:132; animation-delay:.24s; }
+.ml:nth-of-type(4) { stroke:rgba(200,160,65,.65);  stroke-dasharray:84;  animation-delay:.36s; }
+/* glow dupes */
+.mlg { fill:none; stroke-width:4; filter:blur(2px); stroke-dasharray:200; stroke-dashoffset:200; animation:mlDraw var(--loop) ease-in-out infinite; }
+.mlg:nth-of-type(5) { stroke:rgba(220,180,70,.18); stroke-dasharray:84;  animation-delay:.0s; }
+.mlg:nth-of-type(6) { stroke:rgba(100,170,240,.15);stroke-dasharray:60;  animation-delay:.12s; }
+.mlg:nth-of-type(7) { stroke:rgba(60,190,175,.14); stroke-dasharray:132; animation-delay:.24s; }
+.mlg:nth-of-type(8) { stroke:rgba(220,175,70,.14); stroke-dasharray:84;  animation-delay:.36s; }
+
+@keyframes mlDraw {
+  0%,46%   { stroke-dashoffset:200; opacity:0; }
+  50%      { stroke-dashoffset:0;   opacity:1; }
+  63%      { stroke-dashoffset:0;   opacity:1; }
+  65.5%    { stroke-dashoffset:200; opacity:0; }
+  100%     { stroke-dashoffset:200; opacity:0; }
+}
+
+/* ════════════════════════════════════
+   VIGNETTE + GRAIN
+════════════════════════════════════ */
+.vignette {
+  position:absolute; inset:0; pointer-events:none; z-index:22;
+  background:radial-gradient(ellipse 110% 110% at 50% 50%,transparent 42%,rgba(4,5,9,.65) 100%);
+}
+.grain {
+  position:absolute; inset:0; pointer-events:none; z-index:23;
+  opacity:0.036;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainDrift .9s steps(1) infinite;
+}
+@keyframes grainDrift {
+  0%{background-position:0 0} 20%{background-position:-52px -30px}
+  40%{background-position:40px 60px} 60%{background-position:-70px 40px}
+  80%{background-position:60px -50px}
+}
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <!-- ── Aurora ── -->
+  <div class="blobs">
+    <div class="b b1"></div><div class="b b2"></div>
+    <div class="b b3"></div><div class="b b4"></div><div class="b b5"></div>
+  </div>
+  <div class="top-edge"></div>
+  <div class="bot-edge"></div>
+
+  <!-- ── Grid ── -->
+  <div class="grid-outer">
+    <div class="grid-halo"></div>
+
+    <div class="grid">
+      <div class="cell c0 tw"></div>
+      <div class="cell c1 tn"></div>
+      <div class="cell c2 tc"></div>
+      <div class="cell c3 tc"></div>
+      <div class="cell c4 tw"></div><!-- HERO -->
+      <div class="cell c5 tt"></div>
+      <div class="cell c6 tn"></div>
+      <div class="cell c7 tt"></div>
+      <div class="cell c8 tw"></div>
+    </div>
+
+    <!-- SVG network lines -->
+    <svg class="connections" viewBox="0 0 292 292">
+      <!-- glow pass -->
+      <line class="la-g" x1="146" y1="146" x2="146" y2="44"   style="animation-delay:.00s"/>
+      <line class="la-g" x1="146" y1="146" x2="44"  y2="146"  style="animation-delay:-.25s"/>
+      <line class="la-g" x1="146" y1="146" x2="248" y2="146"  style="animation-delay:-.50s"/>
+      <line class="la-g" x1="146" y1="146" x2="146" y2="248"  style="animation-delay:-.75s"/>
+      <line class="ld-g" x1="146" y1="146" x2="44"  y2="44"   style="animation-delay:.00s"/>
+      <line class="ld-g" x1="146" y1="146" x2="248" y2="44"   style="animation-delay:-.35s"/>
+      <line class="ld-g" x1="146" y1="146" x2="44"  y2="248"  style="animation-delay:-.70s"/>
+      <line class="ld-g" x1="146" y1="146" x2="248" y2="248"  style="animation-delay:-1.05s"/>
+      <!-- crisp pass -->
+      <line class="la" x1="146" y1="146" x2="146" y2="44"   style="animation-delay:.00s"/>
+      <line class="la" x1="146" y1="146" x2="44"  y2="146"  style="animation-delay:-.25s"/>
+      <line class="la" x1="146" y1="146" x2="248" y2="146"  style="animation-delay:-.50s"/>
+      <line class="la" x1="146" y1="146" x2="146" y2="248"  style="animation-delay:-.75s"/>
+      <line class="ld" x1="146" y1="146" x2="44"  y2="44"   style="animation-delay:.00s"/>
+      <line class="ld" x1="146" y1="146" x2="248" y2="44"   style="animation-delay:-.35s"/>
+      <line class="ld" x1="146" y1="146" x2="44"  y2="248"  style="animation-delay:-.70s"/>
+      <line class="ld" x1="146" y1="146" x2="248" y2="248"  style="animation-delay:-1.05s"/>
+      <rect class="lo" x="44" y="44" width="204" height="204" rx="4"/>
+    </svg>
+  </div>
+
+  <!-- ── Shockwave rings ── -->
+  <div class="shockwave"></div>
+  <div class="shockwave2"></div>
+
+  <!-- ── Hero risen editorial card ── -->
+  <div class="hero-risen">
+    <div class="risen-face">
+      <div class="comp-wrap">
+
+        <!-- 3×3 visual heatmap -->
+        <div class="mini-grid">
+          <div class="mc mf"></div>  <!-- bright warm  -->
+          <div class="mc md"></div>  <!-- dim          -->
+          <div class="mc mc2"></div> <!-- cool         -->
+          <div class="mc mc2"></div> <!-- cool         -->
+          <div class="mc mf"></div>  <!-- bright warm  -->
+          <div class="mc md"></div>  <!-- dim          -->
+          <div class="mc md"></div>  <!-- dim          -->
+          <div class="mc mt"></div>  <!-- teal         -->
+          <div class="mc mc2"></div> <!-- cool         -->
+        </div>
+
+        <!-- Connection constellation inside card -->
+        <!-- centres: (26,26)(85,26)(144,26) / (26,85)(85,85)(144,85) / (26,144)(85,144)(144,144) -->
+        <svg class="mini-conn" viewBox="0 0 170 170">
+          <!-- glow pass -->
+          <line class="mlg" x1="26"  y1="26"  x2="85"  y2="85" /><!-- (0,0)→(1,1) warm -->
+          <line class="mlg" x1="85"  y1="85"  x2="85"  y2="144"/><!-- (1,1)→(2,1) teal -->
+          <line class="mlg" x1="26"  y1="26"  x2="85"  y2="144"/><!-- (0,0)→(2,1) cool long -->
+          <line class="mlg" x1="144" y1="26"  x2="85"  y2="85" /><!-- (0,2)→(1,1) warm -->
+          <!-- crisp pass -->
+          <line class="ml"  x1="26"  y1="26"  x2="85"  y2="85" />
+          <line class="ml"  x1="85"  y1="85"  x2="85"  y2="144"/>
+          <line class="ml"  x1="26"  y1="26"  x2="85"  y2="144"/>
+          <line class="ml"  x1="144" y1="26"  x2="85"  y2="85" />
+        </svg>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Finish ── -->
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+</div>
+</body>
+</html>

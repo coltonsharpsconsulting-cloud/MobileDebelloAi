@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motion Studies — Twelve Grid Animations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0d0b;--surface:#1a1714;--surface-2:#221d17;
+  --border:#2a2620;--border-strong:#3a3429;
+  --text:#ede4d0;--text-muted:#8a8275;--text-faint:#4a4339;
+  --accent:#d97757;
+  --cat-a:#d97757;--cat-b:#7a9b87;--cat-c:#c5996b;
+  --cat-d:#8e7a9c;--cat-e:#6a8ca0;--cat-f:#b8a35f;
+  --ring-pink:#ff6b9d;--ring-mint:#5dd9c1;--ring-gold:#ffd84d;--ring-violet:#a78bfa;
+  --cell-size:clamp(26px,4.6vw,50px);
+  --cell-gap:clamp(5px,0.85vw,9px);
+  --cell-radius:8px;
+  --ease-out:cubic-bezier(0.22,1,0.36,1);
+  --ease-in-out:cubic-bezier(0.65,0,0.35,1);
+  --grid-stage:clamp(360px,52vw,500px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Geist',sans-serif;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(ellipse 60% 50% at 15% 10%,rgba(217,119,87,0.06),transparent 60%),radial-gradient(ellipse 60% 60% at 85% 90%,rgba(122,155,135,0.04),transparent 60%);
+  background-attachment:fixed;overflow-x:hidden;
+}
+
+/* HEADER */
+.site-header{padding:clamp(60px,10vw,120px) clamp(20px,5vw,80px) clamp(36px,5vw,60px);max-width:1400px;margin:0 auto}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:28px;display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--text-muted)}
+h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,7vw,84px);line-height:0.96;letter-spacing:-0.025em;margin-bottom:28px;max-width:920px}
+h1 em{font-style:italic;color:var(--accent)}
+.subtitle{font-size:clamp(15px,1.6vw,17px);color:var(--text-muted);max-width:620px;line-height:1.7}
+
+/* LEGEND */
+.legend{max-width:1400px;margin:0 auto;padding:36px clamp(20px,5vw,80px) 48px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+@media(max-width:900px){.legend{grid-template-columns:1fr;gap:28px}}
+.legend-section h3{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-muted);font-weight:500;margin-bottom:18px}
+.legend-list{list-style:none;display:flex;flex-direction:column;gap:11px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.legend-list li{display:flex;align-items:center;gap:12px}
+.legend-swatch{width:20px;height:20px;border-radius:5px;flex-shrink:0}
+.legend-ring{width:18px;height:18px;border-radius:50%;flex-shrink:0;background:transparent;border:2.5px solid;box-sizing:border-box}
+.legend-preview{display:grid;grid-template-columns:repeat(6,20px);grid-template-rows:repeat(6,20px);gap:4px}
+.legend-preview .cell{width:20px;height:20px;border-radius:4px}
+.legend-preview .cell[data-notif]::before{inset:-3px;border-width:1.5px;border-radius:6px}
+
+/* LAYOUT */
+.layout{max-width:1400px;margin:0 auto;padding:0 clamp(20px,5vw,80px);display:grid;grid-template-columns:200px minmax(0,1fr);gap:60px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr;gap:0}}
+.side-nav{position:sticky;top:32px;align-self:start;padding-top:60px;max-height:calc(100vh - 64px);overflow-y:auto}
+@media(max-width:1000px){.side-nav{display:none}}
+.nav-group{margin-bottom:22px}
+.nav-group-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;font-weight:500}
+.nav-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.nav-list a{display:flex;align-items:center;gap:10px;padding:5px 8px;border-radius:5px;color:var(--text-muted);text-decoration:none;font-size:12.5px;transition:color 0.15s,background 0.15s}
+.nav-list a:hover{color:var(--accent);background:rgba(217,119,87,0.06)}
+.nav-list .num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);min-width:18px}
+.nav-list a:hover .num{color:var(--accent)}
+
+/* FAMILY HEADERS */
+.family-header{padding:clamp(60px,9vw,100px) 0 clamp(20px,3vw,30px);border-top:1px solid var(--border)}
+.family-header:first-child{border-top:none}
+.family-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.family-title{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(28px,4vw,42px);line-height:1.05;letter-spacing:-0.015em;margin-bottom:8px}
+.family-q{font-style:normal;color:var(--accent)}
+.family-desc{font-size:14.5px;color:var(--text-muted);max-width:60ch;line-height:1.6}
+
+/* EXAMPLE SECTIONS */
+.example{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(36px,5vw,80px);padding:clamp(50px,7vw,90px) 0;border-bottom:1px solid var(--border);align-items:center;scroll-margin-top:32px}
+.example:last-of-type{border-bottom:none}
+@media(max-width:900px){.example{grid-template-columns:1fr;gap:40px}}
+.example-meta{display:flex;flex-direction:column;gap:18px}
+.example-number{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(44px,7vw,80px);line-height:1;color:var(--text-faint);letter-spacing:-0.02em;display:flex;align-items:baseline;gap:14px}
+.example-number .slug{font-family:'JetBrains Mono',monospace;font-style:normal;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-muted)}
+.example-title{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(28px,3.4vw,40px);line-height:1.05;letter-spacing:-0.015em;margin-top:-4px}
+.example-title em{font-style:italic;color:var(--accent)}
+.example-body{display:flex;flex-direction:column;gap:14px;margin-top:2px}
+.spec-block .label{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-weight:500}
+.spec-block p{font-size:14px;line-height:1.65;max-width:50ch}
+
+/* PLAY BUTTON */
+.example-controls{margin-top:6px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.play-btn{background:transparent;border:1px solid var(--border-strong);color:var(--text);padding:10px 18px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:all 0.25s var(--ease-out);display:inline-flex;align-items:center;gap:10px;min-width:118px;justify-content:center}
+.play-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.play-btn[data-state="on"]{background:rgba(217,119,87,0.10);border-color:var(--accent);color:var(--accent)}
+.play-btn .icon{display:inline-block;font-size:10px;line-height:1}
+
+/* CATEGORY TABS */
+.cat-tabs{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--border-strong);border-radius:999px;background:rgba(0,0,0,0.2)}
+.cat-tab{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.2s var(--ease-out);padding:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,0,0,0.7);font-weight:600}
+.cat-tab[data-cat="A"]{background:var(--cat-a)}
+.cat-tab[data-cat="B"]{background:var(--cat-b)}
+.cat-tab[data-cat="C"]{background:var(--cat-c)}
+.cat-tab[data-cat="D"]{background:var(--cat-d)}
+.cat-tab[data-cat="E"]{background:var(--cat-e)}
+.cat-tab[data-cat="F"]{background:var(--cat-f)}
+.cat-tab:hover{transform:scale(1.08)}
+.cat-tab[data-active="true"]{border-color:var(--text);box-shadow:0 0 0 2px var(--bg),0 0 14px rgba(255,255,255,0.18)}
+
+/* GRID + CELL BASE */
+.grid-wrap{display:flex;justify-content:center;align-items:center;height:var(--grid-stage);position:relative;background:radial-gradient(ellipse at center,rgba(255,240,220,0.025),transparent 70%);border-radius:12px;overflow:visible}
+.grid{display:grid;grid-template-columns:repeat(6,var(--cell-size));grid-template-rows:repeat(6,var(--cell-size));gap:var(--cell-gap);position:relative}
+.cell{width:var(--cell-size);height:var(--cell-size);border-radius:var(--cell-radius);position:relative;transition:transform 0.8s var(--ease-out),background-color 0.7s var(--ease-out),opacity 0.6s var(--ease-out),filter 0.6s var(--ease-out),box-shadow 0.6s var(--ease-out);will-change:transform,filter}
+.cell[data-cat="A"]{background:var(--cat-a)}
+.cell[data-cat="B"]{background:var(--cat-b)}
+.cell[data-cat="C"]{background:var(--cat-c)}
+.cell[data-cat="D"]{background:var(--cat-d)}
+.cell[data-cat="E"]{background:var(--cat-e)}
+.cell[data-cat="F"]{background:var(--cat-f)}
+.cell[data-notif]::before{content:'';position:absolute;inset:-5px;border-radius:calc(var(--cell-radius) + 4px);border:2px solid;transition:inherit;pointer-events:none}
+.cell[data-notif="pink"]::before{border-color:var(--ring-pink)}
+.cell[data-notif="mint"]::before{border-color:var(--ring-mint)}
+.cell[data-notif="gold"]::before{border-color:var(--ring-gold)}
+.cell[data-notif="violet"]::before{border-color:var(--ring-violet)}
+
+/* === ANIMATIONS === */
+
+/* 01 BLOOM — radial intensity, --dist ∈ {1,2,3} */
+.example[data-anim="bloom"].is-active .cell{
+  transform:scale(calc(1.25 - var(--dist) * 0.12));
+  filter:brightness(calc(1.5 - var(--dist) * 0.30)) saturate(calc(1.6 - var(--dist) * 0.35));
+  box-shadow:0 0 calc((4 - var(--dist)) * 6px) rgba(217,119,87,calc(0.3 - var(--dist) * 0.08));
+}
+
+/* 02 WAVE — diagonal pulse */
+@keyframes wavePulse{0%{transform:scale(1);filter:brightness(1)}35%{transform:scale(1.18);filter:brightness(1.5) saturate(1.4)}100%{transform:scale(1);filter:brightness(1)}}
+.example[data-anim="wave"].is-active .cell{
+  animation:wavePulse 1.1s var(--ease-out) forwards;
+  animation-delay:calc((var(--col) + var(--row)) * 90ms);
+}
+
+/* 03 CATEGORY CYCLE — tabs spotlight one category */
+.example[data-anim="cycle"][data-active-cat] .cell{opacity:0.12;filter:saturate(0.3) brightness(0.7);transform:scale(0.92)}
+.example[data-anim="cycle"][data-active-cat="A"] .cell[data-cat="A"],
+.example[data-anim="cycle"][data-active-cat="B"] .cell[data-cat="B"],
+.example[data-anim="cycle"][data-active-cat="C"] .cell[data-cat="C"],
+.example[data-anim="cycle"][data-active-cat="D"] .cell[data-cat="D"],
+.example[data-anim="cycle"][data-active-cat="E"] .cell[data-cat="E"],
+.example[data-anim="cycle"][data-active-cat="F"] .cell[data-cat="F"]{
+  opacity:1;filter:brightness(1.18) saturate(1.2);transform:scale(1.08);z-index:2;
+}
+.example[data-anim="cycle"][data-active-cat="A"] .cell[data-cat="A"]{box-shadow:0 0 22px rgba(217,119,87,0.5)}
+.example[data-anim="cycle"][data-active-cat="B"] .cell[data-cat="B"]{box-shadow:0 0 22px rgba(122,155,135,0.5)}
+.example[data-anim="cycle"][data-active-cat="C"] .cell[data-cat="C"]{box-shadow:0 0 22px rgba(197,153,107,0.5)}
+.example[data-anim="cycle"][data-active-cat="D"] .cell[data-cat="D"]{box-shadow:0 0 22px rgba(142,122,156,0.5)}
+.example[data-anim="cycle"][data-active-cat="E"] .cell[data-cat="E"]{box-shadow:0 0 22px rgba(106,140,160,0.5)}
+.example[data-anim="cycle"][data-active-cat="F"] .cell[data-cat="F"]{box-shadow:0 0 22px rgba(184,163,95,0.5)}
+
+/* 04 DENSITY PROBE — cursor is the bloom center */
+.example[data-anim="probe"].is-active .cell{
+  transform:scale(calc(1.2 - var(--mouse-dist,3) * 0.10));
+  filter:brightness(calc(1.5 - var(--mouse-dist,3) * 0.18)) saturate(calc(1.4 - var(--mouse-dist,3) * 0.18));
+  transition:transform 0.2s var(--ease-out),filter 0.2s var(--ease-out);
+}
+.probe-popup{position:absolute;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:10px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);line-height:1.65;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity 0.15s,transform 0.15s;z-index:10;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.probe-popup[data-visible="true"]{opacity:1;transform:translateY(0)}
+.probe-popup .pop-row{display:flex;justify-content:space-between;gap:14px;margin-bottom:4px}
+.probe-popup .pop-row:last-child{margin-bottom:0}
+.probe-popup .pop-label{color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;font-size:9.5px}
+.probe-popup .pop-value{color:var(--text)}
+.probe-popup .pop-swatch{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:6px}
+
+/* 05 CONNECTION MESH */
+.mesh-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.mesh-line{stroke:var(--accent);stroke-width:1.2;fill:none;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);opacity:0}
+.example[data-anim="mesh"].is-active .cell:not([data-notif]){filter:brightness(0.55) saturate(0.55)}
+.example[data-anim="mesh"].is-active .mesh-line{animation:drawLine 1.4s var(--ease-out) forwards;animation-delay:calc(var(--line-index) * 120ms)}
+@keyframes drawLine{0%{stroke-dashoffset:var(--len);opacity:0}20%{opacity:0.85}100%{stroke-dashoffset:0;opacity:0.85}}
+
+/* 06 QUADRANT SPLIT */
+.example[data-anim="quadrants"].is-active .cell{
+  transform:translate(var(--quad-dx,0),var(--quad-dy,0));
+  transition:transform 1.1s var(--ease-in-out);
+}
+.example[data-anim="quadrants"].is-active .cell[data-quad="0"]{box-shadow:inset 0 0 0 100px rgba(217,119,87,0.10)}
+.example[data-anim="quadrants"].is-active .cell[data-quad="1"]{box-shadow:inset 0 0 0 100px rgba(106,140,160,0.12)}
+.example[data-anim="quadrants"].is-active .cell[data-quad="2"]{box-shadow:inset 0 0 0 100px rgba(184,163,95,0.12)}
+.example[data-anim="quadrants"].is-active .cell[data-quad="3"]{box-shadow:inset 0 0 0 100px rgba(142,122,156,0.12)}
+
+/* 07 HISTOGRAM */
+.example[data-anim="histogram"].is-active .cell[data-in-bar="0"]{opacity:0.06;transform:scale(0.7);filter:saturate(0.2)}
+.example[data-anim="histogram"].is-active .cell[data-in-bar="0"]::before{opacity:0}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="A"]{background:var(--cat-a)}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="B"]{background:var(--cat-b)}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="C"]{background:var(--cat-c)}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="D"]{background:var(--cat-d)}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="E"]{background:var(--cat-e)}
+.example[data-anim="histogram"].is-active .cell[data-bar-cat="F"]{background:var(--cat-f)}
+.example[data-anim="histogram"].is-active .cell[data-in-bar="1"]{filter:brightness(1.15);transition-delay:calc(var(--col) * 80ms)}
+
+/* 08 DONUT */
+.example[data-anim="donut"].is-active .cell{
+  transform:translate(var(--donut-dx,0),var(--donut-dy,0)) scale(0.65);
+  transition:transform 1.3s var(--ease-in-out);
+}
+
+/* 09 TREEMAP */
+.example[data-anim="treemap"].is-active .cell{
+  transform:translate(var(--tree-dx,0),var(--tree-dy,0));
+  transition:transform 1.2s var(--ease-in-out);
+}
+.example[data-anim="treemap"].is-active .cell[data-tree-keep="0"]{opacity:0;transform:translate(var(--tree-dx,0),var(--tree-dy,0)) scale(0.3)}
+
+/* 10 FUNNEL */
+.example[data-anim="funnel"].is-active .cell{
+  transform:translate(var(--funnel-dx,0),0);
+  transition:transform 0.9s var(--ease-in-out),opacity 0.7s ease;
+  transition-delay:calc(var(--row) * 80ms);
+}
+.example[data-anim="funnel"].is-active .cell[data-funnel="0"]{opacity:0;transform:translate(var(--funnel-dx,0),0) scale(0.3)}
+
+/* 11 CALENDAR STRIP */
+.example[data-anim="calendar"].is-active .cell{
+  transform:translate(var(--cal-dx,0),var(--cal-dy,0));
+  transition:transform 1.2s var(--ease-in-out);
+}
+
+/* 12 CONSTELLATION */
+.example[data-anim="constellation"].is-active .cell{
+  transform:translate(var(--const-dx,0),var(--const-dy,0));
+  transition:transform 1.4s var(--ease-in-out);
+}
+
+/* FOOTER */
+.site-footer{max-width:1400px;margin:0 auto;padding:60px clamp(20px,5vw,80px) 80px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.footer-note{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted)}
+.footer-mark{font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--text-faint)}
+
+@media(prefers-reduced-motion:reduce){.cell,.mesh-line{animation:none!important;transition:opacity 0.3s ease!important}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="eyebrow">Motion Studies · v2</div>
+  <h1>Twelve ways to <em>animate</em> a 6×6 grid of data.</h1>
+  <p class="subtitle">One starting grid &mdash; thirty-six rounded cells in six categories, seven with notification rings &mdash; read twelve different ways through motion. Grouped by the question each shape answers.</p>
+</header>
+
+<section class="legend">
+  <div class="legend-section">
+    <h3>Categories</h3>
+    <ul class="legend-list">
+      <li><span class="legend-swatch" style="background:var(--cat-a)"></span>A · terracotta · 10</li>
+      <li><span class="legend-swatch" style="background:var(--cat-b)"></span>B · sage · 7</li>
+      <li><span class="legend-swatch" style="background:var(--cat-c)"></span>C · sand · 6</li>
+      <li><span class="legend-swatch" style="background:var(--cat-d)"></span>D · plum · 4</li>
+      <li><span class="legend-swatch" style="background:var(--cat-e)"></span>E · slate-blue · 5</li>
+      <li><span class="legend-swatch" style="background:var(--cat-f)"></span>F · ochre · 4</li>
+    </ul>
+  </div>
+  <div class="legend-section">
+    <h3>Notification rings</h3>
+    <ul class="legend-list">
+      <li><span class="legend-ring" style="border-color:var(--ring-pink)"></span>pink</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-mint)"></span>mint</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-gold)"></span>gold</li>
+      <li><span class="legend-ring" style="border-color:var(--ring-violet)"></span>violet</li>
+    </ul>
+  </div>
+  <div class="legend-section">
+    <h3>Starting grid</h3>
+    <div class="legend-preview" id="legend-preview"></div>
+  </div>
+</section>
+
+<div class="layout">
+<aside class="side-nav" aria-label="Studies">
+  <div class="nav-group">
+    <div class="nav-group-title">Focus &amp; Intensity</div>
+    <ul class="nav-list">
+      <li><a href="#s01"><span class="num">01</span>Heat Bloom</a></li>
+      <li><a href="#s02"><span class="num">02</span>Wave</a></li>
+      <li><a href="#s03"><span class="num">03</span>Category Cycle</a></li>
+      <li><a href="#s04"><span class="num">04</span>Density Probe</a></li>
+      <li><a href="#s05"><span class="num">05</span>Mesh</a></li>
+    </ul>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">Distribution</div>
+    <ul class="nav-list">
+      <li><a href="#s06"><span class="num">06</span>Quadrant Split</a></li>
+      <li><a href="#s07"><span class="num">07</span>Histogram</a></li>
+      <li><a href="#s08"><span class="num">08</span>Donut</a></li>
+      <li><a href="#s09"><span class="num">09</span>Treemap</a></li>
+    </ul>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">Hierarchy</div>
+    <ul class="nav-list">
+      <li><a href="#s10"><span class="num">10</span>Funnel</a></li>
+    </ul>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">Time</div>
+    <ul class="nav-list">
+      <li><a href="#s11"><span class="num">11</span>Calendar Strip</a></li>
+    </ul>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">Spatial</div>
+    <ul class="nav-list">
+      <li><a href="#s12"><span class="num">12</span>Constellation</a></li>
+    </ul>
+  </div>
+</aside>
+
+<main class="examples">
+
+<div class="family-header">
+  <div class="family-eyebrow">Family 01 · 5 studies</div>
+  <div class="family-title">Focus &amp; intensity — <span class="family-q">"what should I look at?"</span></div>
+  <p class="family-desc">Overlays that don't change the grid's shape. They add a layer of attention on top of the layout, directing the eye without rearranging anything.</p>
+</div>
+
+<section class="example" id="s01" data-anim="bloom">
+  <div class="example-meta">
+    <div class="example-number">01<span class="slug">heat bloom</span></div>
+    <h2 class="example-title">A center that <em>radiates</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>Where is activity concentrated? Used for showing a hub of attention and the falloff around it.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Center cells warm and intensify; periphery dims. Heat through metal, not a hard spotlight.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s02" data-anim="wave">
+  <div class="example-meta">
+    <div class="example-number">02<span class="slug">wave</span></div>
+    <h2 class="example-title">A signal <em>passes through</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How does change propagate over time? Notification cascades, viral spread, status changes rippling through dependents.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>One diagonal wavefront sweeping top-left to bottom-right. Reads as a single motion, not thirty-six separate flashes.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s03" data-anim="cycle">
+  <div class="example-meta">
+    <div class="example-number">03<span class="slug">category cycle</span></div>
+    <h2 class="example-title">Filter by <em>one color</em> at a time.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>Where do cells of any one category live? Studying spatial distribution per attribute without re-sorting the grid.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Tabs are the controls. Tap one to spotlight that color; tap again to clear. Only one active at a time.</p></div>
+    </div>
+    <div class="example-controls">
+      <div class="cat-tabs" role="group" aria-label="Pick a category">
+        <button class="cat-tab" data-cat="A" data-active="false">A</button>
+        <button class="cat-tab" data-cat="B" data-active="false">B</button>
+        <button class="cat-tab" data-cat="C" data-active="false">C</button>
+        <button class="cat-tab" data-cat="D" data-active="false">D</button>
+        <button class="cat-tab" data-cat="E" data-active="false">E</button>
+        <button class="cat-tab" data-cat="F" data-active="false">F</button>
+      </div>
+    </div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s04" data-anim="probe">
+  <div class="example-meta">
+    <div class="example-number">04<span class="slug">density probe</span></div>
+    <h2 class="example-title">Your cursor becomes the <em>focus</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>What's around any given point? An inspector pattern — point at a region to study it, click any cell to read its metadata.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Hover (or touch-drag) anywhere on the grid to spotlight that area. Click a cell for a popup. Click again to dismiss.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Enable</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s05" data-anim="mesh">
+  <div class="example-meta">
+    <div class="example-number">05<span class="slug">connection mesh</span></div>
+    <h2 class="example-title">The real structure is <em>underneath</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>Who is related to whom? Timelines, task dependencies, any network where the grid is just where the nodes happen to live.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Background dims. Lines stroke between notification cells in sequence so you can follow which connections appeared first.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<div class="family-header">
+  <div class="family-eyebrow">Family 02 · 4 studies</div>
+  <div class="family-title">Distribution — <span class="family-q">"what's the mix?"</span></div>
+  <p class="family-desc">Shapes that re-express the data's composition. Same input, different visual argument about what the proportions actually are.</p>
+</div>
+
+<section class="example" id="s06" data-anim="quadrants">
+  <div class="example-meta">
+    <div class="example-number">06<span class="slug">quadrant split</span></div>
+    <h2 class="example-title">Two axes, four <em>rooms</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How does the grid divide along two binary axes? Useful for 2×2 prioritization, importance/urgency, before/after × active/inactive.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Grid cleaves into four 3×3 chunks that drift apart with a visible gutter. Each quadrant picks up its own subtle tint.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s07" data-anim="histogram">
+  <div class="example-meta">
+    <div class="example-number">07<span class="slug">histogram</span></div>
+    <h2 class="example-title">Layout collapses into <em>bars</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How many of each? Vertical bars, height by count. The classic distribution view, performed in place.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Each column becomes one category; cells outside the bars fade, cells inside unify in color. Bars grow with a column stagger.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s08" data-anim="donut">
+  <div class="example-meta">
+    <div class="example-number">08<span class="slug">donut</span></div>
+    <h2 class="example-title">Proportion <em>curls into a ring</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>What share does each category represent? Proportion-first composition view in a compact circular footprint.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Cells migrate from grid positions to ring positions, each category occupying an arc proportional to its count. Notification rings travel with their cells.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<section class="example" id="s09" data-anim="treemap">
+  <div class="example-meta">
+    <div class="example-number">09<span class="slug">treemap</span></div>
+    <h2 class="example-title">Nested rectangles <em>sized by count</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How do categories pack together when sized by their share? For many categories at once where pie slices get too thin to read.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Cells collect into rectangular blocks per category, each block visually sized by count. Excess cells fade rather than overcrowd a block.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<div class="family-header">
+  <div class="family-eyebrow">Family 03 · 1 study</div>
+  <div class="family-title">Hierarchy — <span class="family-q">"what matters most?"</span></div>
+  <p class="family-desc">Shapes that argue about priority. The position itself encodes importance, not just category.</p>
+</div>
+
+<section class="example" id="s10" data-anim="funnel">
+  <div class="example-meta">
+    <div class="example-number">10<span class="slug">funnel</span></div>
+    <h2 class="example-title">Where do they <em>drop off</em>?</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>At each stage, how many remain? Conversion funnels, attrition, any sequential process where you care about the loss between steps as much as the final outcome.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Each row narrows by one cell. Cells that drop off fade outward; survivors compress toward the centerline.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<div class="family-header">
+  <div class="family-eyebrow">Family 04 · 1 study</div>
+  <div class="family-title">Time &amp; sequence — <span class="family-q">"in what order?"</span></div>
+  <p class="family-desc">Shapes that put cells in temporal order. The position is the timeline.</p>
+</div>
+
+<section class="example" id="s11" data-anim="calendar">
+  <div class="example-meta">
+    <div class="example-number">11<span class="slug">calendar strip</span></div>
+    <h2 class="example-title">Each cell becomes a <em>day</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How does activity spread across calendar time? GitHub-contributions style: 7-wide rows where each square is one day.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Cells reorganize from 6×6 grid into a 7-column layout, reading across as weeks. The footprint widens slightly to accommodate the extra column.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+<div class="family-header">
+  <div class="family-eyebrow">Family 05 · 1 study</div>
+  <div class="family-title">Spatial &amp; relational — <span class="family-q">"how do these sit together?"</span></div>
+  <p class="family-desc">Shapes where position itself carries meaning beyond category or count — affinity, gravity, soft grouping.</p>
+</div>
+
+<section class="example" id="s12" data-anim="constellation">
+  <div class="example-meta">
+    <div class="example-number">12<span class="slug">constellation</span></div>
+    <h2 class="example-title">Six gravity wells, <em>six clusters</em>.</h2>
+    <div class="example-body">
+      <div class="spec-block"><span class="label">Question</span><p>How do affinity groups look when freed from grid lines? For soft clusters where membership isn't strictly bounded by row or column.</p></div>
+      <div class="spec-block"><span class="label">Look for</span><p>Cells of each category gravitate toward an invisible category center. Result is six soft clouds around the grid's middle, with notification rings still attached.</p></div>
+    </div>
+    <div class="example-controls"><button class="play-btn" data-state="off"><span class="icon">▶</span><span class="label">Play</span></button></div>
+  </div>
+  <div class="grid-wrap"><div class="grid"></div></div>
+</section>
+
+</main>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-note">end of set · twelve studies · five families · same grid, twelve readings</div>
+  <div class="footer-mark">Motion Studies</div>
+</footer>
+
+<script>
+// === SHARED STARTING GRID ===
+const GRID = [
+  {cat:'A',notif:null},{cat:'B',notif:null},{cat:'B',notif:'pink'},
+  {cat:'C',notif:null},{cat:'A',notif:null},{cat:'D',notif:null},
+  {cat:'C',notif:null},{cat:'A',notif:'mint'},{cat:'E',notif:null},
+  {cat:'B',notif:null},{cat:'F',notif:null},{cat:'A',notif:null},
+  {cat:'B',notif:null},{cat:'D',notif:null},{cat:'A',notif:null},
+  {cat:'A',notif:'gold'},{cat:'C',notif:null},{cat:'E',notif:null},
+  {cat:'F',notif:null},{cat:'C',notif:null},{cat:'B',notif:'violet'},
+  {cat:'D',notif:null},{cat:'E',notif:null},{cat:'A',notif:null},
+  {cat:'A',notif:null},{cat:'E',notif:null},{cat:'C',notif:null},
+  {cat:'F',notif:'pink'},{cat:'A',notif:null},{cat:'B',notif:null},
+  {cat:'D',notif:null},{cat:'A',notif:null},{cat:'F',notif:null},
+  {cat:'B',notif:null},{cat:'C',notif:'mint'},{cat:'E',notif:null},
+];
+const COLS = 6, ROWS = 6;
+
+// === METRICS: read the actual rendered cell size so shape math uses real pixels.
+function getMetrics(){
+  const probe = document.createElement('div');
+  probe.className = 'cell';
+  probe.style.cssText = 'position:absolute;visibility:hidden';
+  document.body.appendChild(probe);
+  const size = probe.getBoundingClientRect().width;
+  document.body.removeChild(probe);
+  const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-gap')) || 7;
+  return { size, gap, step: size + gap };
+}
+
+// === SHAPE TARGET COMPUTATIONS ===
+// Each returns an array of { dx, dy, ...extras } per cell index. The vars
+// get set on cells at render time, scoped per-animation so they don't collide.
+
+// Chebyshev distance from grid center, used by Bloom. Returns 1, 2, or 3.
+function distFromCenter(col, row){
+  return Math.ceil(Math.max(Math.abs(col - 2.5), Math.abs(row - 2.5)));
+}
+
+// Count of same-category 8-neighbors. Used by Density Probe popup.
+function densityAt(idx){
+  const col = idx % COLS, row = (idx / COLS) | 0;
+  const myCat = GRID[idx].cat;
+  let count = 0;
+  for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++){
+    if (dr===0 && dc===0) continue;
+    const r = row+dr, c = col+dc;
+    if (r<0||r>=ROWS||c<0||c>=COLS) continue;
+    if (GRID[r*COLS+c].cat === myCat) count++;
+  }
+  return count;
+}
+
+// Histogram: each column = one category, bar height = count/max × 6.
+function histogramLayout(){
+  const counts = {A:0,B:0,C:0,D:0,E:0,F:0};
+  GRID.forEach(c => counts[c.cat]++);
+  const max = Math.max(...Object.values(counts));
+  const cats = ['A','B','C','D','E','F'];
+  const heights = cats.map(c => Math.round(counts[c]/max*6));
+  const layout = new Array(36);
+  for (let r=0; r<ROWS; r++) for (let c=0; c<COLS; c++){
+    layout[r*COLS+c] = { inBar: r >= (6 - heights[c]), cat: cats[c] };
+  }
+  return layout;
+}
+
+// Donut: categories get arcs proportional to count, A starts at 12 o'clock.
+function donutTargets(step){
+  const counts = {A:0,B:0,C:0,D:0,E:0,F:0};
+  GRID.forEach(c => counts[c.cat]++);
+  const cats = ['A','B','C','D','E','F'];
+  const arcStart = {};
+  let cum = 0;
+  cats.forEach(c => { arcStart[c] = cum; cum += counts[c]; });
+  const slotIdx = {A:0,B:0,C:0,D:0,E:0,F:0};
+  const cx = 2.5*step, cy = 2.5*step;
+  const R = step * 2.2;
+  const out = new Array(36);
+  GRID.forEach((cell, i) => {
+    const seq = arcStart[cell.cat] + slotIdx[cell.cat]++;
+    const theta = -Math.PI/2 + (seq/36) * 2*Math.PI;
+    const tx = cx + R*Math.cos(theta);
+    const ty = cy + R*Math.sin(theta);
+    const ix = (i%COLS)*step, iy = ((i/COLS)|0)*step;
+    out[i] = { dx: tx - ix, dy: ty - iy };
+  });
+  return out;
+}
+
+// Treemap: six fixed rectangular blocks, sized roughly by category counts.
+// Block slots total 36; some categories overflow their blocks (cells fade)
+// and some blocks have spare slots (visual gaps).
+function treemapTargets(step){
+  // Blocks: A 3×3=9 slots (10 cells, 1 fades) | B 3×3=9 (7 cells, 2 gaps)
+  //         C 3×2=6 (6 ✓)  | D 2×1=2 (4 cells, 2 fade) | E 2×2=4 (5 cells, 1 fades)
+  //         F 1×3=3 (4 cells, 1 fades) — plus 3 extra slots elsewhere
+  // Tweaked to: A 3×3, B 3×3, C 3×2, D 2×1, E 2×2, F 1×3 — but tweak to fill 36.
+  // Let's use: A 3×3 (9), B 3×3 (9), C 3×2 (6), D 2×2 (4), E 3×1 (3), F 1×5 (5) = 36
+  const blocks = [
+    { cat:'A', c0:0, r0:0, w:3, h:3 },  // top-left 3×3 = 9 slots, A has 10 → 1 fades
+    { cat:'B', c0:3, r0:0, w:3, h:3 },  // top-right 3×3 = 9 slots, B has 7 → 2 gaps
+    { cat:'C', c0:0, r0:3, w:3, h:2 },  // mid-left 3×2 = 6 slots, C has 6 ✓
+    { cat:'E', c0:3, r0:3, w:2, h:2 },  // mid-right 2×2 = 4 slots, E has 5 → 1 fades
+    { cat:'D', c0:0, r0:5, w:2, h:1 },  // bottom-left 2×1 = 2 slots, D has 4 → 2 fade
+    { cat:'F', c0:2, r0:5, w:3, h:1 },  // bottom-mid 3×1 = 3 slots, F has 4 → 1 fades
+    // 9+9+6+4+2+3 = 33 slots. 3 cells remain unplaceable; they fade.
+  ];
+  const slotsByCat = {};
+  blocks.forEach(b => {
+    const slots = [];
+    for (let r=0; r<b.h; r++) for (let c=0; c<b.w; c++){
+      slots.push([b.c0+c, b.r0+r]);
+    }
+    slotsByCat[b.cat] = slots;
+  });
+  const ptr = {A:0,B:0,C:0,D:0,E:0,F:0};
+  const out = new Array(36);
+  GRID.forEach((cell, i) => {
+    const list = slotsByCat[cell.cat];
+    const slot = list && list[ptr[cell.cat]];
+    const ix = (i%COLS)*step, iy = ((i/COLS)|0)*step;
+    if (slot){
+      ptr[cell.cat]++;
+      out[i] = { dx: slot[0]*step - ix, dy: slot[1]*step - iy, keep: 1 };
+    } else {
+      out[i] = { dx: 0, dy: 0, keep: 0 };
+    }
+  });
+  return out;
+}
+
+// Funnel: row R keeps the middle (6-R) cells; outer cells fade and drift away.
+function funnelTargets(step){
+  const out = new Array(36);
+  for (let r=0; r<ROWS; r++){
+    const visible = 6 - r;
+    const startCol = (6 - visible) / 2;  // 0, 0.5, 1, 1.5, 2, 2.5
+    for (let c=0; c<COLS; c++){
+      const idx = r*COLS + c;
+      const inWindow = c >= startCol && c < startCol + visible;
+      if (inWindow){
+        // Translate inward toward the centerline so survivors center-align.
+        // Centerline of the row is col 2.5; the cell's target offset is
+        // (startCol + position-within-window) instead of c.
+        const targetCol = startCol + (c - Math.ceil(startCol));
+        out[idx] = { dx: (targetCol - c) * step, funnel: 1 };
+      } else {
+        // Drift edge cells out and away. Direction by side.
+        const drift = c < 3 ? -step * 1.2 : step * 1.2;
+        out[idx] = { dx: drift, funnel: 0 };
+      }
+    }
+  }
+  return out;
+}
+
+// Calendar Strip: cells reflow into a 7-column layout. Cell i → (i%7, ⌊i/7⌋).
+// The new layout is 1 column wider than the original; we offset by -0.5 step
+// to keep it visually centered in the stage.
+function calendarTargets(step){
+  const offsetX = -step * 0.5;
+  const out = new Array(36);
+  for (let i=0; i<36; i++){
+    const newCol = i % 7, newRow = (i / 7) | 0;
+    const tx = newCol * step + offsetX;
+    const ty = newRow * step;
+    const ix = (i%COLS)*step, iy = ((i/COLS)|0)*step;
+    out[i] = { dx: tx - ix, dy: ty - iy };
+  }
+  return out;
+}
+
+// Constellation: each category's cells gravitate to an invisible "well" placed
+// around the grid center in a hex arrangement. Within a category, cells spread
+// using the golden angle for natural-looking sunflower-style distribution.
+function constellationTargets(step){
+  const cx = 2.5*step, cy = 2.5*step;
+  const wellR = step * 1.85;
+  const cats = ['A','B','C','D','E','F'];
+  const wells = {};
+  cats.forEach((c, k) => {
+    const theta = -Math.PI/2 + (k/6) * 2*Math.PI;
+    wells[c] = { x: cx + wellR*Math.cos(theta), y: cy + wellR*Math.sin(theta) };
+  });
+  const seen = {A:0,B:0,C:0,D:0,E:0,F:0};
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const out = new Array(36);
+  GRID.forEach((cell, i) => {
+    const k = seen[cell.cat]++;
+    const localR = step * 0.18 * Math.sqrt(k);
+    const localTheta = k * goldenAngle;
+    const w = wells[cell.cat];
+    const tx = w.x + localR * Math.cos(localTheta);
+    const ty = w.y + localR * Math.sin(localTheta);
+    const ix = (i%COLS)*step, iy = ((i/COLS)|0)*step;
+    out[i] = { dx: tx - ix, dy: ty - iy };
+  });
+  return out;
+}
+
+// === RENDER ===
+let TARGETS = null;
+function buildCell(i, metrics, skipExtras){
+  const seed = GRID[i];
+  const col = i % COLS, row = (i / COLS) | 0;
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.dataset.cat = seed.cat;
+  if (seed.notif) cell.dataset.notif = seed.notif;
+  cell.style.setProperty('--col', col);
+  cell.style.setProperty('--row', row);
+  cell.style.setProperty('--dist', distFromCenter(col, row));
+  cell.dataset.idx = i;
+
+  if (skipExtras) return cell;
+
+  // Quadrant
+  const quad = (col < 3 ? 0 : 1) + (row < 3 ? 0 : 2);
+  cell.dataset.quad = quad;
+  const drift = 14;
+  cell.style.setProperty('--quad-dx', `${col < 3 ? -drift : drift}px`);
+  cell.style.setProperty('--quad-dy', `${row < 3 ? -drift : drift}px`);
+
+  // Histogram
+  const h = TARGETS.histo[i];
+  cell.dataset.inBar = h.inBar ? '1' : '0';
+  cell.dataset.barCat = h.cat;
+
+  // Donut
+  const d = TARGETS.donut[i];
+  cell.style.setProperty('--donut-dx', `${d.dx}px`);
+  cell.style.setProperty('--donut-dy', `${d.dy}px`);
+
+  // Treemap
+  const t = TARGETS.tree[i];
+  cell.style.setProperty('--tree-dx', `${t.dx}px`);
+  cell.style.setProperty('--tree-dy', `${t.dy}px`);
+  cell.dataset.treeKeep = t.keep;
+
+  // Funnel
+  const f = TARGETS.funnel[i];
+  cell.style.setProperty('--funnel-dx', `${f.dx}px`);
+  cell.dataset.funnel = f.funnel;
+
+  // Calendar
+  const cal = TARGETS.cal[i];
+  cell.style.setProperty('--cal-dx', `${cal.dx}px`);
+  cell.style.setProperty('--cal-dy', `${cal.dy}px`);
+
+  // Constellation
+  const co = TARGETS.constellation[i];
+  cell.style.setProperty('--const-dx', `${co.dx}px`);
+  cell.style.setProperty('--const-dy', `${co.dy}px`);
+
+  return cell;
+}
+
+function renderAllGrids(){
+  const metrics = getMetrics();
+  TARGETS = {
+    histo: histogramLayout(),
+    donut: donutTargets(metrics.step),
+    tree: treemapTargets(metrics.step),
+    funnel: funnelTargets(metrics.step),
+    cal: calendarTargets(metrics.step),
+    constellation: constellationTargets(metrics.step),
+  };
+  document.querySelectorAll('.example .grid').forEach(g => {
+    g.innerHTML = '';
+    for (let i=0; i<36; i++) g.appendChild(buildCell(i, metrics, false));
+  });
+  const legend = document.getElementById('legend-preview');
+  if (legend){
+    legend.innerHTML = '';
+    for (let i=0; i<36; i++) legend.appendChild(buildCell(i, metrics, true));
+  }
+  buildMesh(metrics);
+}
+
+// === MESH OVERLAY (study 05) ===
+function buildMesh(metrics){
+  const sec = document.querySelector('.example[data-anim="mesh"]');
+  if (!sec) return;
+  const grid = sec.querySelector('.grid');
+  const old = grid.querySelector('.mesh-svg');
+  if (old) old.remove();
+
+  const notifs = [];
+  GRID.forEach((c, i) => { if (c.notif) notifs.push(i); });
+
+  const seen = new Set();
+  const lines = [];
+  notifs.forEach(a => {
+    notifs.filter(b => b !== a)
+      .map(b => ({ b, d: Math.hypot((a%COLS)-(b%COLS), ((a/COLS)|0)-((b/COLS)|0)) }))
+      .sort((x,y) => x.d - y.d)
+      .slice(0, 2)
+      .forEach(({b}) => {
+        const k = a < b ? `${a}-${b}` : `${b}-${a}`;
+        if (!seen.has(k)){ seen.add(k); lines.push([a, b]); }
+      });
+  });
+
+  const { step, size, gap } = metrics;
+  const ctr = i => ({ x: (i%COLS)*step + size/2, y: ((i/COLS)|0)*step + size/2 });
+  const w = COLS*step - gap, h = ROWS*step - gap;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'mesh-svg');
+  svg.style.width = w + 'px';
+  svg.style.height = h + 'px';
+  lines.forEach(([a, b], idx) => {
+    const pa = ctr(a), pb = ctr(b);
+    const len = Math.hypot(pa.x - pb.x, pa.y - pb.y);
+    const ln = document.createElementNS(svgNS, 'line');
+    ln.setAttribute('class', 'mesh-line');
+    ln.setAttribute('x1', pa.x); ln.setAttribute('y1', pa.y);
+    ln.setAttribute('x2', pb.x); ln.setAttribute('y2', pb.y);
+    ln.style.setProperty('--len', len);
+    ln.style.setProperty('--line-index', idx);
+    svg.appendChild(ln);
+  });
+  grid.appendChild(svg);
+}
+
+// === PLAY / RESET BUTTON ===
+const ONE_SHOT = new Set(['wave']);
+const ONE_SHOT_MS = { wave: 2300 };
+const revertTimers = new Map();
+
+function setButton(section, on){
+  const btn = section.querySelector('.play-btn');
+  if (!btn) return;
+  btn.dataset.state = on ? 'on' : 'off';
+  const ic = btn.querySelector('.icon');
+  const lb = btn.querySelector('.label');
+  // "Enable" label for probe instead of "Play"; toggles to "Disable".
+  const isProbe = section.dataset.anim === 'probe';
+  ic.textContent = on ? '↺' : '▶';
+  lb.textContent = on ? (isProbe ? 'Disable' : 'Reset') : (isProbe ? 'Enable' : 'Play');
+}
+
+function play(section){
+  const anim = section.dataset.anim;
+  section.classList.remove('is-active');
+  void section.offsetWidth;  // reflow flush so keyframe animations restart
+  section.classList.add('is-active');
+  setButton(section, true);
+  clearTimeout(revertTimers.get(section));
+  if (ONE_SHOT.has(anim)){
+    revertTimers.set(section, setTimeout(() => {
+      section.classList.remove('is-active');
+      setButton(section, false);
+      revertTimers.delete(section);
+    }, ONE_SHOT_MS[anim]));
+  }
+}
+
+function reset(section){
+  clearTimeout(revertTimers.get(section));
+  revertTimers.delete(section);
+  section.classList.remove('is-active');
+  setButton(section, false);
+}
+
+function setupButtons(){
+  document.querySelectorAll('.play-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sec = btn.closest('.example');
+      if (sec.classList.contains('is-active')) reset(sec); else play(sec);
+    });
+  });
+}
+
+// === CATEGORY CYCLE TABS (study 03) ===
+function setupCatTabs(){
+  document.querySelectorAll('.example[data-anim="cycle"] .cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const sec = tab.closest('.example');
+      const cat = tab.dataset.cat;
+      const currentActive = sec.dataset.activeCat;
+      // Clear all tabs first.
+      sec.querySelectorAll('.cat-tab').forEach(t => t.dataset.active = 'false');
+      if (currentActive === cat){
+        // Click same tab again → clear.
+        delete sec.dataset.activeCat;
+      } else {
+        // New selection.
+        sec.dataset.activeCat = cat;
+        tab.dataset.active = 'true';
+      }
+    });
+  });
+}
+
+// === DENSITY PROBE (study 04) ===
+// While enabled: cursor position drives a --mouse-dist var on each cell.
+// Click a cell → popup shows its metadata. Click anywhere to dismiss.
+function setupProbe(){
+  const sec = document.querySelector('.example[data-anim="probe"]');
+  if (!sec) return;
+  const grid = sec.querySelector('.grid');
+
+  // Create popup once and reuse.
+  const popup = document.createElement('div');
+  popup.className = 'probe-popup';
+  popup.dataset.visible = 'false';
+  sec.querySelector('.grid-wrap').appendChild(popup);
+
+  function cellCenter(cell){
+    const r = cell.getBoundingClientRect();
+    return { x: r.left + r.width/2, y: r.top + r.height/2 };
+  }
+
+  function updateMouseDistances(clientX, clientY){
+    const cells = grid.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      const c = cellCenter(cell);
+      const dx = c.x - clientX, dy = c.y - clientY;
+      // Distance in cell-widths (so the math feels natural in the CSS).
+      const r = cell.getBoundingClientRect();
+      const dist = Math.hypot(dx, dy) / (r.width + 6);
+      cell.style.setProperty('--mouse-dist', dist.toFixed(2));
+    });
+  }
+
+  function resetDistances(){
+    grid.querySelectorAll('.cell').forEach(c => c.style.setProperty('--mouse-dist', '3'));
+  }
+
+  function showPopup(cell, mouseX, mouseY){
+    const idx = parseInt(cell.dataset.idx);
+    const seed = GRID[idx];
+    const col = idx % COLS, row = (idx / COLS) | 0;
+    const density = densityAt(idx);
+    const ringNames = { pink:'Pink', mint:'Mint', gold:'Gold', violet:'Violet' };
+    const catNames = { A:'Terracotta', B:'Sage', C:'Sand', D:'Plum', E:'Slate-blue', F:'Ochre' };
+
+    popup.innerHTML = `
+      <div class="pop-row"><span class="pop-label">Position</span><span class="pop-value">col ${col} · row ${row}</span></div>
+      <div class="pop-row"><span class="pop-label">Category</span><span class="pop-value"><span class="pop-swatch" style="background:var(--cat-${seed.cat.toLowerCase()})"></span>${seed.cat} · ${catNames[seed.cat]}</span></div>
+      <div class="pop-row"><span class="pop-label">Notification</span><span class="pop-value">${seed.notif ? ringNames[seed.notif] : '—'}</span></div>
+      <div class="pop-row"><span class="pop-label">Same-cat neighbors</span><span class="pop-value">${density} / 8</span></div>
+    `;
+
+    // Position popup near the click point, kept inside the grid-wrap.
+    const wrap = sec.querySelector('.grid-wrap');
+    const wRect = wrap.getBoundingClientRect();
+    const popW = 200, popH = 110;
+    let x = mouseX - wRect.left + 14;
+    let y = mouseY - wRect.top + 14;
+    if (x + popW > wRect.width) x = mouseX - wRect.left - popW - 14;
+    if (y + popH > wRect.height) y = mouseY - wRect.top - popH - 14;
+    popup.style.left = Math.max(8, x) + 'px';
+    popup.style.top = Math.max(8, y) + 'px';
+    popup.dataset.visible = 'true';
+  }
+
+  function hidePopup(){ popup.dataset.visible = 'false'; }
+
+  // Pointer move: live distance update while probe is enabled.
+  grid.addEventListener('pointermove', (e) => {
+    if (!sec.classList.contains('is-active')) return;
+    updateMouseDistances(e.clientX, e.clientY);
+  });
+  grid.addEventListener('pointerleave', () => {
+    if (!sec.classList.contains('is-active')) return;
+    resetDistances();
+  });
+
+  // Click a cell: show popup. Click again (or click outside): hide.
+  grid.addEventListener('click', (e) => {
+    if (!sec.classList.contains('is-active')) return;
+    const cell = e.target.closest('.cell');
+    if (!cell) { hidePopup(); return; }
+    if (popup.dataset.visible === 'true'){ hidePopup(); }
+    else { showPopup(cell, e.clientX, e.clientY); }
+  });
+
+  // When probe is disabled, hide popup and reset distances.
+  // We re-check this state inside the play/reset toggle by listening for the
+  // class change via MutationObserver (lighter than polling).
+  new MutationObserver(() => {
+    if (!sec.classList.contains('is-active')){
+      hidePopup();
+      resetDistances();
+    } else {
+      resetDistances();  // initialize to "no proximity" until cursor enters
+    }
+  }).observe(sec, { attributes: true, attributeFilter: ['class'] });
+}
+
+// === BOOT ===
+window.addEventListener('DOMContentLoaded', () => {
+  requestAnimationFrame(() => {
+    renderAllGrids();
+    setupButtons();
+    setupCatTabs();
+    setupProbe();
+  });
+});
+
+// === RESIZE ===
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    // Reset any active sections so they don't get stuck at stale offsets.
+    document.querySelectorAll('.example.is-active').forEach(reset);
+    renderAllGrids();
+  }, 200);
+});
+</script>
+
+</body>
+</html>
