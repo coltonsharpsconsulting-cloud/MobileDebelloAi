@@ -1,0 +1,8 @@
+# Workspace layouts are device-specific and cause merge conflicts on every sync
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

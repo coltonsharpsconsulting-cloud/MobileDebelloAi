@@ -1,0 +1,10 @@
+{
+  "id": "fit",
+  "name": "FIT",
+  "version": "1.3.3",
+  "minAppVersion": "0.15.0",
+  "description": "File Integration Tool — sync your Obsidian vault via GitHub.",
+  "author": "joshuakto",
+  "authorUrl": "https://github.com/joshuakto/obsidian-fit",
+  "isDesktopOnly": false
+}
