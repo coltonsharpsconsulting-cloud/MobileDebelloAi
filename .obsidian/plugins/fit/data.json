@@ -1,0 +1,40 @@
+{
+  "localSha": {
+    "wallpaper.html": "686d6a4a039b9dea913f1290e1660f51b7b73961",
+    "wallpaper-v9.html": "dbdd8789b0de3e8a935ec99baf9c238191236eaf",
+    "wallpaper-v3.html": "053fee7516a239e68c598e5818c64bbcc0dcbf90",
+    "wallpaper-v2.html": "027626c2c350edbcad21dee134e14735002d9721",
+    "wallpaper 2.html": "3810dc31236e1d7418ab6a8454d76723da45cb3b",
+    "grid-motion-studiesV3.html": "260287d5811a2a6d16b01e35f582067a49e9e171",
+    "grid-motion-studies.html": "6fb9259177830d3da75e1a91d6112859724104b6",
+    "grid-motion-studies 2.html": "e3423997bc8892ad839bbde1324f50878c7dd761",
+    "debello.html": "8e771c24be9c656fc981b6c735eb27cd09c95650",
+    "Note for all.md": "106dd1c7e7a56f9d0a3119b7d71f2184a38fdbbf"
+  },
+  "lastFetchedCommitSha": "b61f1b841544b5ef2767572c8dcbb339cbd7473e",
+  "lastFetchedRemoteSha": {
+    ".gitignore": "2240fb1778d93b74f775572066fdaba576999b80",
+    "Note for all.md": "f71bb41acb422a49f846d583412b5094ba55a606",
+    "debello.html": "2ad3f9974646da7dbb6df9654c790e01860d668c",
+    "grid-motion-studies 2.html": "50c21a53a58ae0bd3a7bfa359f4c83616327f38c",
+    "grid-motion-studies.html": "a750a2dc89bc6584f061d6c73a508900019d86a0",
+    "grid-motion-studiesV3.html": "7556c9ccb2f3a5b6029b660473398e845606bf29",
+    "wallpaper 2.html": "41d395d9f51690063be9aa9a909fe3e6b2babbb5",
+    "wallpaper-v2.html": "1f08e6c6bc05a3e3b5d008326c4709f1cc72b77a",
+    "wallpaper-v3.html": "9d5dc15d4bf1789288ac8f4c6f8a89d549c5235d",
+    "wallpaper-v9.html": "06e3efe817da2157489403d38f2d823c6df8f023",
+    "wallpaper.html": "41d395d9f51690063be9aa9a909fe3e6b2babbb5"
+  },
+  "encryptionPassword": "",
+  "pat": "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",
+  "owner": "coltonsharpsconsulting-cloud",
+  "avatarUrl": "https://avatars.githubusercontent.com/u/231743206?v=4",
+  "repo": "MobileDebelloAi",
+  "branch": "claude/review-codebase-qh9Hw",
+  "deviceName": "macos",
+  "checkEveryXMinutes": 5,
+  "autoSync": "on",
+  "notifyChanges": true,
+  "notifyConflicts": true,
+  "enableDebugLogging": true
+}

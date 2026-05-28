@@ -1,0 +1,293 @@
+﻿[2026-05-28T18:13:12.076Z] [Plugin] Starting plugin initialization
+[2026-05-28T18:13:12.081Z] .. 📦 [Cache] Loaded SHA caches from storage: {
+  "source": "plugin data.json",
+  "localShaCount": 0,
+  "remoteShaCount": 0,
+  "lastCommit": null
+}
+[2026-05-28T18:13:12.082Z] [Plugin] Plugin initialization completed successfully
+[2026-05-28T18:18:12.866Z] [Plugin] Manual sync requested
+[2026-05-28T18:18:12.869Z] 🚀 [SYNC START] Manual sync requested
+[2026-05-28T18:18:12.870Z] 🔄 [Sync] Checking local and remote changes (parallel)...
+[2026-05-28T18:18:12.870Z] .. 💾 [LocalVault] Scanning files...
+[2026-05-28T18:18:12.871Z] .. ☁️ [RemoteVault] Fetching from GitHub...
+[2026-05-28T18:18:12.896Z] ... 💾 [LocalVault] Scanned 10 files
+[2026-05-28T18:18:13.267Z] ... ⬇️ [RemoteVault] Fetching initial state from GitHub (b61f1b8)...
+[2026-05-28T18:18:13.614Z] ... ☁️ [RemoteVault] Fetched 11 files
+[2026-05-28T18:18:13.614Z] [Fit] Remote changes detected: {
+  "ADDED": 11,
+  "MODIFIED": 0,
+  "REMOVED": 0,
+  "total": 11
+}
+[2026-05-28T18:18:13.614Z] .. ✅ [Sync] Change detection complete
+[2026-05-28T18:18:13.614Z] 🔄 [FitSync] Syncing changes (10 local, 11 remote): {
+  "local": {
+    "ADDED": [
+      "wallpaper.html",
+      "wallpaper-v9.html",
+      "wallpaper-v3.html",
+      "wallpaper-v2.html",
+      "wallpaper 2.html",
+      "grid-motion-studiesV3.html",
+      "grid-motion-studies.html",
+      "grid-motion-studies 2.html",
+      "debello.html",
+      "Note for all.md"
+    ]
+  },
+  "remote": {
+    "ADDED": [
+      ".gitignore",
+      "Note for all.md",
+      "debello.html",
+      "grid-motion-studies 2.html",
+      "grid-motion-studies.html",
+      "grid-motion-studiesV3.html",
+      "wallpaper 2.html",
+      "wallpaper-v2.html",
+      "wallpaper-v3.html",
+      "wallpaper-v9.html",
+      "wallpaper.html"
+    ]
+  }
+}
+[2026-05-28T18:18:13.616Z] [FitSync] Conflict detection complete: {
+  "safeLocal": 0,
+  "safeRemote": 0,
+  "clashes": 11
+}
+[2026-05-28T18:18:14.455Z] .. ⬇️ [Pull] Applied remote changes to local: {
+  "filesWritten": 0,
+  "filesDeleted": 0,
+  "clashesWrittenToFit": 11
+}
+[2026-05-28T18:18:14.456Z] [FitSync] Updated local state with SHAs from written files: {
+  "filesProcessed": 1,
+  "totalFilesInState": 11
+}
+[2026-05-28T18:18:14.456Z] .. 📦 [Cache] Updating SHA cache after sync: {
+  "localChanges": 11,
+  "remoteChanges": 11,
+  "commitChanged": true,
+  "warnings": [
+    "Local SHA cache jumped from 0 to 11 files - possible recovery from empty cache or first sync"
+  ],
+  "localOpsApplied": 11,
+  "remoteOpsPushed": 0
+}
+[2026-05-28T18:18:14.459Z] .. 📦 [Cache] Loaded SHA caches from storage: {
+  "source": "plugin data.json",
+  "localShaCount": 11,
+  "remoteShaCount": 11,
+  "lastCommit": "b61f1b841544b5ef2767572c8dcbb339cbd7473e"
+}
+[2026-05-28T18:18:14.459Z] [FitSync] Sync completed with conflicts: {
+  "conflictCount": 11,
+  "conflicts": [
+    {
+      "path": "wallpaper.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "wallpaper-v9.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "wallpaper-v3.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "wallpaper-v2.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "wallpaper 2.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "grid-motion-studiesV3.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "grid-motion-studies.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "grid-motion-studies 2.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "debello.html",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": "Note for all.md",
+      "local": "ADDED",
+      "remote": "ADDED"
+    },
+    {
+      "path": ".gitignore",
+      "local": "untracked",
+      "remote": "ADDED"
+    }
+  ]
+}
+[2026-05-28T18:18:14.460Z] ✅ [SYNC COMPLETE] Success with conflicts: {
+  "duration": "1.59s",
+  "totalOperations": 11,
+  "conflicts": 11,
+  "changes": [
+    {
+      "heading": "Local file updates:",
+      "changes": [
+        {
+          "path": "_fit/wallpaper.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/wallpaper-v9.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/wallpaper-v3.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/wallpaper-v2.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/wallpaper 2.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/grid-motion-studiesV3.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/grid-motion-studies.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/grid-motion-studies 2.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/debello.html",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/Note for all.md",
+          "type": "ADDED"
+        },
+        {
+          "path": "_fit/.gitignore",
+          "type": "ADDED"
+        }
+      ]
+    },
+    {
+      "heading": "Remote file updates:",
+      "changes": []
+    }
+  ],
+  "unresolvedConflicts": [
+    {
+      "path": "wallpaper.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "wallpaper-v9.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "wallpaper-v3.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "wallpaper-v2.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "wallpaper 2.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "grid-motion-studiesV3.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "grid-motion-studies.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "grid-motion-studies 2.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "debello.html",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": "Note for all.md",
+      "localState": "ADDED",
+      "remoteOp": "ADDED"
+    },
+    {
+      "path": ".gitignore",
+      "localState": "untracked",
+      "remoteOp": "ADDED"
+    }
+  ]
+}
+[2026-05-28T18:19:43.436Z] [Plugin] Manual sync requested
+[2026-05-28T18:19:43.441Z] 🚀 [SYNC START] Manual sync requested
+[2026-05-28T18:19:43.441Z] 🔄 [Sync] Checking local and remote changes (parallel)...
+[2026-05-28T18:19:43.441Z] .. 💾 [LocalVault] Scanning files...
+[2026-05-28T18:19:43.441Z] .. ☁️ [RemoteVault] Fetching from GitHub...
+[2026-05-28T18:19:43.471Z] ... 💾 [LocalVault] Scanned 20 files
+[2026-05-28T18:19:43.818Z] ... ⬇️ [RemoteVault] Fetching initial state from GitHub (b61f1b8)...
+[2026-05-28T18:19:44.082Z] ... ☁️ [RemoteVault] Fetched 11 files
+[2026-05-28T18:19:44.082Z] .. ✅ [Sync] Change detection complete
+[2026-05-28T18:19:44.082Z] [FitSync] Conflict detection complete: {
+  "safeLocal": 0,
+  "safeRemote": 0,
+  "clashes": 0
+}
+[2026-05-28T18:19:44.082Z] .. 📦 [Cache] Updating SHA cache after sync: {
+  "localChanges": 11,
+  "remoteChanges": 0,
+  "commitChanged": false,
+  "localOpsApplied": 0,
+  "remoteOpsPushed": 0
+}
+[2026-05-28T18:19:44.084Z] .. 📦 [Cache] Loaded SHA caches from storage: {
+  "source": "plugin data.json",
+  "localShaCount": 10,
+  "remoteShaCount": 11,
+  "lastCommit": "b61f1b841544b5ef2767572c8dcbb339cbd7473e"
+}
+[2026-05-28T18:19:44.084Z] ✅ [SYNC COMPLETE] Success: {
+  "duration": "0.64s",
+  "totalOperations": 0,
+  "conflicts": 0
+}
