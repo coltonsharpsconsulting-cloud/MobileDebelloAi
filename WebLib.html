@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEBLIB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #080808; height: 100%; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #252520; border-radius: 3px; }
+
+    /* ── Layout ── */
+    #app { display: flex; flex-direction: column; height: 100vh; color: #c8c0b0; overflow: hidden; font-family: 'DM Sans', sans-serif; }
+
+    /* ── Header ── */
+    #header {
+      display: flex; align-items: center; gap: 18px; padding: 11px 20px;
+      border-bottom: 1px solid #1e1e1e; background: #090909; flex-shrink: 0;
+    }
+    #logo-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -0.03em; color: #eee8de; }
+    #logo-title span { color: #d4ff47; }
+    #logo-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #303030; margin-top: 1px; }
+    #divider { width: 1px; height: 28px; background: #1e1e1e; flex-shrink: 0; }
+    #search {
+      flex: 1; max-width: 460px; background: #111; border: 1px solid #1e1e1e;
+      border-radius: 6px; padding: 7px 12px; color: #eee8de;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; transition: border-color 0.1s;
+    }
+    #search::placeholder { color: #333330; }
+    #search:focus { outline: none; border-color: #d4ff4733; }
+    #header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    #show-down-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; color: #363632; user-select: none; }
+    #show-down { accent-color: #d4ff47; }
+    #result-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #282824; }
+
+    /* ── Body ── */
+    #body { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 190px; flex-shrink: 0; border-right: 1px solid #1e1e1e;
+      overflow-y: auto; padding: 10px 0 20px; background: #090909;
+    }
+    #cat-label { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; color: #252520; padding: 2px 16px 8px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .cat-btn {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 16px; background: transparent; border: none; border-left: 2px solid transparent;
+      cursor: pointer; color: #3a3a38; font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+      text-align: left; transition: color 0.1s, background 0.1s;
+    }
+    .cat-btn:hover:not(.active) { color: #777770; background: #111; }
+    .cat-btn.active { background: #161614; border-left-color: #d4ff47; color: #eee8de; font-weight: 500; }
+    .cat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; }
+    .cat-count { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #252520; flex-shrink: 0; }
+    .cat-btn.active .cat-count { color: #d4ff47; }
+
+    /* ── Grid ── */
+    #grid-wrap { flex: 1; overflow-y: auto; padding: 18px 20px 40px; }
+    #cat-heading { display: none; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+    #cat-heading h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: #eee8de; letter-spacing: -0.02em; margin: 0; }
+    #cat-heading span { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #484842; }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+
+    /* ── Card ── */
+    .card {
+      display: flex; flex-direction: column; background: #101010;
+      border: 1px solid #1e1e1e; border-radius: 8px; padding: 13px 14px;
+      text-decoration: none; transition: all 0.12s; position: relative; overflow: hidden;
+    }
+    .card:hover { background: #161616; border-color: #d4ff4722; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .card-bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #d4ff47, #a8cc30); opacity: 0; transition: opacity 0.12s; }
+    .card:hover .card-bar { opacity: 1; }
+    .card-name-row { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+    .card-favicon { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; opacity: 0.85; }
+    .card-favicon-fb { width: 14px; height: 14px; background: #222; border-radius: 2px; flex-shrink: 0; display: none; }
+    .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: #eee8de; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-host { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #d4ff47; opacity: 0.6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-desc { font-family: 'DM Sans', sans-serif; font-size: 11.5px; color: #484842; line-height: 1.55; margin: 7px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+    .card-footer { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-top: auto; }
+    .tag { font-size: 9px; font-family: 'JetBrains Mono', monospace; padding: 2px 5px; border-radius: 3px; letter-spacing: 0.04em; }
+    .tag-paid { background: #2a1800; color: #f59e0b; }
+    .tag-student { background: #031a0e; color: #4ade80; }
+    .tag-down { background: #200000; color: #f87171; }
+    .card-sub { font-size: 9.5px; color: #303030; font-family: 'DM Sans', sans-serif; margin-left: auto; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Load more ── */
+    #load-more-wrap { text-align: center; padding-top: 28px; display: none; }
+    #load-more { background: #111; border: 1px solid #2a2a28; color: #c8c0b0; padding: 9px 24px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: border-color 0.1s, color 0.1s; }
+    #load-more:hover { border-color: #d4ff4733; color: #eee8de; }
+
+    /* ── Empty / Loading / Error ── */
+    #empty { display: none; padding: 80px 0; text-align: center; color: #2a2a28; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    #loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #080808; gap: 14px; }
+    #loading-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; color: #d4ff47; letter-spacing: -0.03em; }
+    #loading-title span { color: #eee8de; }
+    #loading-msg { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #484842; animation: pulse 1.6s ease-in-out infinite; }
+    #error-screen { display: none; align-items: center; justify-content: center; height: 100vh; background: #080808; color: #f87171; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    @keyframes pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <div id="loading-title">WEB<span>LIB</span></div>
+  <div id="loading-msg">fetching index from github...</div>
+</div>
+
+<div id="app" style="display:none">
+  <div id="header">
+    <div>
+      <div id="logo-title">WEB<span>LIB</span></div>
+      <div id="logo-sub"></div>
+    </div>
+    <div id="divider"></div>
+    <input id="search" type="text" placeholder="search name, description, url, category...">
+    <div id="header-right">
+      <label id="show-down-label">
+        <input type="checkbox" id="show-down"> show down sites
+      </label>
+      <div id="result-count"></div>
+    </div>
+  </div>
+  <div id="body">
+    <div id="sidebar">
+      <div id="cat-label">Categories</div>
+      <div id="cat-list"></div>
+    </div>
+    <div id="grid-wrap">
+      <div id="cat-heading"><h2 id="cat-heading-name"></h2><span id="cat-heading-count"></span></div>
+      <div id="empty"></div>
+      <div id="grid"></div>
+      <div id="load-more-wrap"><button id="load-more"></button></div>
+    </div>
+  </div>
+</div>
+
+<div id="error-screen"></div>
+
+<script>
+const SKIP = new Set(["Contents","Contributing","DISCLAIMER","LICENSE","Nomenclature"]);
+const PAGE_SZ = 60;
+
+function parseREADME(text) {
+  const sites = [];
+  let cat = null, sub = "";
+  for (const raw of text.split("\n")) {
+    const t = raw.trim();
+    if (t.startsWith("## ") && !t.startsWith("### ")) {
+      const c = t.slice(3).trim();
+      cat = SKIP.has(c) ? null : c; sub = "";
+    } else if (t.startsWith("### ")) {
+      sub = t.slice(4).trim();
+    } else if (cat !== null && /^\*\s\[/.test(t)) {
+      const m = t.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      if (!m || !m[2].startsWith("http")) continue;
+      const [, name, url] = m;
+      const tags = [];
+      if (t.includes("($)")) tags.push("paid");
+      if (t.includes("(@)")) tags.push("student");
+      if (t.includes("(!)")) tags.push("down");
+      const desc = t.slice(t.indexOf(m[0]) + m[0].length)
+        .replace(/\s*\(\$\)\s*/g," ").replace(/\s*\(@\)\s*/g," ").replace(/\s*\(!\)\s*/g," ")
+        .replace(/^\s*[-–:]\s*/,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").trim();
+      let host = "";
+      try { host = new URL(url).hostname.replace(/^www\./,""); } catch {}
+      sites.push({ id: sites.length, name, url, desc, cat, sub: sub || null, tags, host });
+    }
+  }
+  return sites;
+}
+
+let allSites = [], currentCat = "All", currentSearch = "", showDown = false, currentPage = 1;
+
+function getFiltered() {
+  let r = showDown ? allSites : allSites.filter(s => !s.tags.includes("down"));
+  if (currentCat !== "All") r = r.filter(s => s.cat === currentCat);
+  if (currentSearch.trim()) {
+    const q = currentSearch.toLowerCase();
+    r = r.filter(s =>
+      s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q) ||
+      s.host.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q) ||
+      (s.sub||"").toLowerCase().includes(q)
+    );
+  }
+  return r;
+}
+
+function makeCard(site) {
+  const a = document.createElement("a");
+  a.className = "card"; a.href = site.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+  a.innerHTML = `<div class="card-bar"></div>
+    <div class="card-name-row">
+      <img class="card-favicon" src="https://www.google.com/s2/favicons?domain=${site.host}&sz=32" width="14" height="14" alt="">
+      <div class="card-favicon-fb"></div>
+      <span class="card-name">${site.name}</span>
+    </div>
+    <div class="card-host" style="margin-bottom:${site.desc?'7px':'0'}">${site.host}</div>
+    ${site.desc ? `<p class="card-desc">${site.desc}</p>` : ""}
+    ${(site.tags.length||site.sub) ? `<div class="card-footer">
+      ${site.tags.map(tag=>({paid:'<span class="tag tag-paid">$ paid</span>',student:'<span class="tag tag-student">@ student</span>',down:'<span class="tag tag-down">! down</span>'}[tag])).join("")}
+      ${site.sub?`<span class="card-sub">${site.sub}</span>`:""}
+    </div>` : ""}`;
+  const img = a.querySelector(".card-favicon");
+  const fb  = a.querySelector(".card-favicon-fb");
+  img.onerror = () => { img.style.display = "none"; fb.style.display = "block"; };
+  return a;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const visible   = filtered.slice(0, currentPage * PAGE_SZ);
+  const remaining = filtered.length - visible.length;
+
+  document.getElementById("result-count").textContent = `${filtered.length} results`;
+
+  const heading = document.getElementById("cat-heading");
+  if (currentCat !== "All") {
+    heading.style.display = "flex";
+    document.getElementById("cat-heading-name").textContent = currentCat;
+    document.getElementById("cat-heading-count").textContent = `${filtered.length} sites`;
+  } else { heading.style.display = "none"; }
+
+  const grid  = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    empty.style.display = "block";
+    empty.textContent = currentSearch ? `no results for "${currentSearch}"` : "nothing here";
+  } else {
+    empty.style.display = "none";
+    const frag = document.createDocumentFragment();
+    visible.forEach(s => frag.appendChild(makeCard(s)));
+    grid.appendChild(frag);
+  }
+
+  const lmWrap = document.getElementById("load-more-wrap");
+  if (remaining > 0) {
+    lmWrap.style.display = "block";
+    document.getElementById("load-more").textContent = `load ${Math.min(PAGE_SZ,remaining)} more · ${remaining} remaining`;
+  } else { lmWrap.style.display = "none"; }
+
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === currentCat));
+}
+
+function buildSidebar() {
+  const map = {};
+  allSites.forEach(s => { map[s.cat] = (map[s.cat]||0) + 1; });
+  const cats = [["All", allSites.length], ...Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0]))];
+  const list = document.getElementById("cat-list");
+  list.innerHTML = "";
+  cats.forEach(([c, n]) => {
+    const btn = document.createElement("button");
+    btn.className = "cat-btn" + (c === currentCat ? " active" : "");
+    btn.dataset.cat = c;
+    btn.innerHTML = `<span class="cat-name">${c}</span><span class="cat-count">${n}</span>`;
+    btn.addEventListener("click", () => { currentCat = c; currentPage = 1; render(); });
+    list.appendChild(btn);
+  });
+}
+
+document.getElementById("search").addEventListener("input", e => { currentSearch = e.target.value; currentPage = 1; render(); });
+document.getElementById("show-down").addEventListener("change", e => { showDown = e.target.checked; currentPage = 1; render(); });
+document.getElementById("load-more").addEventListener("click", () => { currentPage++; render(); });
+
+fetch("https://raw.githubusercontent.com/atakanaltok/awesome-useful-websites/main/README.md")
+  .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
+  .then(text => {
+    allSites = parseREADME(text);
+    document.getElementById("logo-sub").textContent = `${allSites.length} sites indexed`;
+    document.getElementById("loading-screen").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    buildSidebar();
+    render();
+  })
+  .catch(e => {
+    document.getElementById("loading-screen").style.display = "none";
+    const err = document.getElementById("error-screen");
+    err.style.display = "flex";
+    err.textContent = `fetch error: ${e.message}`;
+  });
+</script>
+</body>
+</html>
