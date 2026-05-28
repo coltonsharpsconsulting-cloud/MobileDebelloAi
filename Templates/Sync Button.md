@@ -1,3 +1,4 @@
+
 <%*
 const src = "_fit/.obsidian";
 const dst = ".obsidian";
@@ -14,3 +15,5 @@ for (const file of files) {
 }
 new Notice("Config synced to .obsidian ✓");
 %>
+
+
