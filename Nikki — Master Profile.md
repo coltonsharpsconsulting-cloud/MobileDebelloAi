@@ -86,6 +86,15 @@ Nikki's creative energy lives in her hands and her body — movement, cooking, b
 
 **Top Recommendations for Quiet Experience:** Crystal Cove or San Clemente (closer drive), Santa Barbara or Pismo (further but noticeably more peaceful).
 
+**Lodging Budget:** Under $300/night · Willing to drive up to 30 miles from beach · Platforms: Vrbo, Airbnb, major hotels
+
+**Lodging Strategy (researched):**
+- **Best value:** San Clemente Vrbo/Airbnb ($150–$260/night, beach right there) or Mission Viejo/Irvine hotels ($89–$160/night, 20–25 min to Laguna/Crystal Cove)
+- **Central Coast:** Pismo Beach rentals ($150–$280/night) or San Luis Obispo hotels ($100–$180/night, 12 mi to Pismo)
+- **Avoid:** Santa Barbara — avg vacation rental is $789/night, doesn't fit budget in July
+
+→ Full lodging research and search links: [[California Beach Trip 2026]]
+
 ---
 
 ## 💫 PRIME DIRECTIVE
@@ -94,4 +103,4 @@ Nikki is a nurturer doing her absolute best — for her family, her future, and 
 
 ---
 
-*Nikki Profile v2.0 · Updated by Claude · Ready to deploy*
+*Nikki Profile v2.1 · Updated by Claude · Ready to deploy*
