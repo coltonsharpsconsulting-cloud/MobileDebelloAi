@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>California Beach Trip 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f2ed; color: #1a1a1a; font-size: 16px; }
+
+    header { background: #1d3a5f; color: white; padding: 20px 16px 16px; }
+    header h1 { font-size: 22px; font-weight: 700; }
+    header p { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+
+    .crew-bar { background: #e8f4f8; border-left: 4px solid #1d3a5f; padding: 12px 16px; margin: 14px 16px; border-radius: 4px; }
+    .crew-bar .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #777; margin-bottom: 5px; font-weight: 600; }
+    .crew-bar p { font-size: 13px; line-height: 1.6; }
+
+    .dates-bar { background: #2d6a4f; color: white; padding: 12px 16px; margin: 0 16px 14px; border-radius: 8px; font-size: 13px; line-height: 1.7; }
+    .dates-bar strong { display: block; font-size: 15px; margin-bottom: 3px; }
+
+    .tabs { display: flex; background: white; border-bottom: 2px solid #e0e0e0; position: sticky; top: 0; z-index: 20; }
+    .tab { flex: 1; padding: 13px 4px; text-align: center; font-size: 12px; font-weight: 700; color: #888; background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; letter-spacing: 0.3px; }
+    .tab.active { color: #1d3a5f; border-bottom-color: #1d3a5f; }
+
+    .pane { display: none; padding: 16px; }
+    .pane.active { display: block; }
+
+    .sec-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: #999; font-weight: 700; margin-bottom: 10px; }
+
+    .card { background: white; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .card-title { font-size: 17px; font-weight: 700; color: #1d3a5f; margin-bottom: 3px; }
+    .card-sub { font-size: 13px; color: #777; margin-bottom: 8px; }
+    .card p { font-size: 14px; line-height: 1.55; color: #333; }
+
+    .tags { margin-bottom: 8px; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; margin-right: 4px; }
+    .t-green { background: #d4edda; color: #155724; }
+    .t-blue { background: #d1ecf1; color: #0c5460; }
+    .t-yellow { background: #fff3cd; color: #856404; }
+    .t-red { background: #f8d7da; color: #721c24; }
+
+    .row-list { list-style: none; }
+    .row-list li { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .row-list li:last-child { border-bottom: none; }
+    .row-name { font-weight: 700; font-size: 14px; color: #1a1a1a; margin-bottom: 3px; }
+    .row-desc { font-size: 13px; color: #555; line-height: 1.45; }
+    .row-kid { font-size: 11px; color: #2d6a4f; font-weight: 600; margin-top: 3px; }
+
+    .callout { background: #fff8e1; border-left: 3px solid #f59e0b; padding: 11px 13px; border-radius: 0 6px 6px 0; margin-bottom: 12px; font-size: 14px; line-height: 1.55; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { background: #1d3a5f; color: white; padding: 9px 10px; text-align: left; }
+    td { padding: 9px 10px; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.4; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    .price { font-weight: 700; color: #2d6a4f; }
+    .price-warn { font-weight: 700; color: #c0392b; }
+
+    .links p { font-size: 14px; line-height: 2.2; }
+    .links a { color: #1d3a5f; font-weight: 600; text-decoration: none; }
+    .links a:active { color: #c0392b; }
+
+    .checklist { list-style: none; }
+    .checklist li { padding: 9px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; display: flex; align-items: flex-start; gap: 10px; }
+    .checklist li::before { content: '☐'; font-size: 17px; color: #bbb; flex-shrink: 0; line-height: 1.3; }
+    .checklist li:last-child { border-bottom: none; }
+
+    .section { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏖️ California Beach Trip 2026</h1>
+  <p>Peoria, AZ → California &nbsp;·&nbsp; Coordinating with Amy</p>
+</header>
+
+<div class="crew-bar">
+  <div class="label">The Crew — 8 People</div>
+  <p><strong>Regular portions:</strong> Nikki · Colton · Dylan · Amy<br>
+     <strong>Kids / small plates:</strong> Abi · Hollie · Jameson · Sondra</p>
+</div>
+
+<div class="dates-bar">
+  <strong>📅 Trip Window</strong>
+  Late June &nbsp;<em>or</em>&nbsp; July 5–18 &nbsp;·&nbsp; Back to school July 20 (firm) &nbsp;·&nbsp; Skip July 4th weekend
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPane('oc', this)">OC Coast</button>
+  <button class="tab" onclick="showPane('pismo', this)">Pismo/SLO</button>
+  <button class="tab" onclick="showPane('lodging', this)">Lodging</button>
+  <button class="tab" onclick="showPane('compare', this)">Compare</button>
+</div>
+
+<!-- ── OC COAST ─────────────────────────────── -->
+<div id="oc" class="pane active">
+
+  <div class="section">
+    <div class="sec-label">The Destination</div>
+    <div class="card">
+      <div class="card-title">Orange County Coast</div>
+      <div class="card-sub">~5.5 hrs from Peoria · Crystal Cove · Laguna Beach · San Clemente</div>
+      <div class="tags">
+        <span class="tag t-green">Shorter Drive</span>
+        <span class="tag t-blue">Tide Pools</span>
+        <span class="tag t-blue">Surf Town Vibe</span>
+      </div>
+      <p>Closest option. Crystal Cove is protected state park land — completely different from commercial beaches. San Clemente is a mellow surf town, not a resort scene. Laguna has coves and a real local art community.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Where Locals Actually Go</div>
+    <div class="card">
+      <ul class="row-list">
+        <li>
+          <div class="row-name">Little Treasure Cove Sea Caves — Crystal Cove</div>
+          <div class="row-desc">Only reachable at super low tide. Sea caves — kids go wild. Check tide charts before you go. Negative low tides only, usually mornings in summer.</div>
+        </li>
+        <li>
+          <div class="row-name">Shaw's Cove — Laguna Beach</div>
+          <div class="row-desc">Best tidepooling in Laguna. 58 steps down from Fairview St, north of downtown. Inside the marine reserve. Not on tourist maps.</div>
+        </li>
+        <li>
+          <div class="row-name">Table Rock Beach — South Laguna</div>
+          <div class="row-desc">Off Bluff Drive via Table Rock Drive. Quiet, no crowds. Good for just sitting. Skip the main Laguna beach scene entirely.</div>
+        </li>
+        <li>
+          <div class="row-name">Lost Winds Beach — San Clemente</div>
+          <div class="row-desc">Bluffs of south SC. Trail between homes at 2004 Calle De Los Alamos — drops past railroad tracks to sand. No signs, no parking lot, no crowd.</div>
+        </li>
+        <li>
+          <div class="row-name">Treasure Island — Laguna (below the Montage)</div>
+          <div class="row-desc">Turquoise water, hidden coves, snorkeling rocks. Beach is public even though it's at the base of a fancy resort. Great for the kids to explore.</div>
+        </li>
+        <li>
+          <div class="row-name">Crystal Cove Tide Pool Areas</div>
+          <div class="row-desc">4 spots inside the park: Reef Point, Rocky Bight, Pelican Point, Treasure Cove. Protected land — pools are genuinely full of life. Best at morning low tides.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Where Locals Eat — San Clemente & Laguna</div>
+    <div class="card">
+      <ul class="row-list">
+        <li>
+          <div class="row-name">Avila's El Ranchito</div>
+          <div class="row-desc">Del Mar Ave staple. Family-run for years. Tacos, enchiladas, margaritas. The real deal — not a chain, not tourist-priced.</div>
+          <div class="row-kid">✓ Kids eat well here</div>
+        </li>
+        <li>
+          <div class="row-name">Cafe Mimosa</div>
+          <div class="row-desc">French-inspired breakfast, family-owned since 2008. Locals start their mornings here. Avenida Del Mar.</div>
+          <div class="row-kid">✓ Breakfast portions — good for small eaters</div>
+        </li>
+        <li>
+          <div class="row-name">Antoine's Café</div>
+          <div class="row-desc">Downtown SC institution. The kind of place regulars come back to. Easy, unfussy, solid food.</div>
+        </li>
+        <li>
+          <div class="row-name">The Cellar</div>
+          <div class="row-desc">Avenida Del Mar. Wine bar + restaurant + cheese shop in one. New American, flatbreads, live music on weekends. Feels like a secret.</div>
+        </li>
+        <li>
+          <div class="row-name">San Clemente Wine Company</div>
+          <div class="row-desc">Del Mar. Rotating small plates, great wine selection. Local crowd, zero tourist energy. Adult evening move.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── PISMO / SLO ───────────────────────────── -->
+<div id="pismo" class="pane">
+
+  <div class="section">
+    <div class="sec-label">The Destination</div>
+    <div class="card">
+      <div class="card-title">Pismo Beach + San Luis Obispo</div>
+      <div class="card-sub">~7.5 hrs from Peoria · Central Coast · Quietest Option</div>
+      <div class="tags">
+        <span class="tag t-green">Most Peaceful</span>
+        <span class="tag t-blue">Walkable Beach</span>
+        <span class="tag t-blue">Unique Activities</span>
+        <span class="tag t-yellow">Longer Drive</span>
+      </div>
+      <p>Least touristy of all the options. Pismo has a walkable downtown and beach with no resort scene. SLO is a college town 12 miles inland — charming and affordable. The dunes and coves here are unique to California.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Where Locals Actually Go</div>
+    <div class="card">
+      <ul class="row-list">
+        <li>
+          <div class="row-name">Wilmar Stairs — North End of Pismo</div>
+          <div class="row-desc">Hidden stair access to the quiet north beach. Walk further north and you hit a white-walled cove only reachable at low tide. Almost nobody's there.</div>
+        </li>
+        <li>
+          <div class="row-name">Oso Flaco Lake Trail</div>
+          <div class="row-desc">Southern Pismo State Park. 2.2 miles — boardwalk past a lake, through dunes, out to the ocean. Birding, completely peaceful, totally off the tourist radar. Good for all ages.</div>
+        </li>
+        <li>
+          <div class="row-name">Dinosaur Caves Park</div>
+          <div class="row-desc">Free coastal park. Giant dinosaur sculptures and dino eggs to climb, bluff views over the ocean. Locals bring their kids here — it's not in the travel guides. Abi, Hollie, Jameson and Sondra will love it.</div>
+        </li>
+        <li>
+          <div class="row-name">Avila Barn</div>
+          <div class="row-desc">Mini-donkeys, goats, heritage chickens. Local produce, snack shack, ice cream. Kids do the animals, adults browse the farm store. Slow and easy.</div>
+        </li>
+        <li>
+          <div class="row-name">Pismo Preserve</div>
+          <div class="row-desc">Hiking trails with sweeping Pacific views. E-bike rentals available. Watch for dolphins from the bluff trail. No crowds, genuinely gorgeous.</div>
+        </li>
+        <li>
+          <div class="row-name">Clam Digging on the Beach</div>
+          <div class="row-desc">Pismo is literally named for Pismo clams. Grab a license, rent a bucket, dig. The kids dig them up, you cook them. It's a whole activity and a free dinner in one.</div>
+        </li>
+        <li>
+          <div class="row-name">Oceano Dunes SVRA</div>
+          <div class="row-desc">Only beach in California where you can drive or ride ATVs on the sand. Rent ATVs on-site. Completely different energy from a regular beach day — the kids will talk about it for years.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Where Locals Eat — Pismo Beach</div>
+    <div class="card">
+      <ul class="row-list">
+        <li>
+          <div class="row-name">Splash Cafe</div>
+          <div class="row-desc">Clam chowder institution since 1989. No-frills, locals line up here. Chowder bread bowl is the move. Simple and perfect.</div>
+          <div class="row-kid">✓ Kids do well — simple comfort food</div>
+        </li>
+        <li>
+          <div class="row-name">Beachin' Biscuits</div>
+          <div class="row-desc">Family-owned. From-scratch biscuits & gravy, burritos, sandwiches. Short walk from the beach. The kind of breakfast spot you come back to every morning.</div>
+          <div class="row-kid">✓ Easy to ask for half portions</div>
+        </li>
+        <li>
+          <div class="row-name">Brad's Restaurant</div>
+          <div class="row-desc">Short walk from the beach. Laid-back, welcoming. The tri-tip sandwich is a local legend. No fuss, no tourist markup.</div>
+        </li>
+        <li>
+          <div class="row-name">Cracked Crab</div>
+          <div class="row-desc">Locals' seafood pick. Fresh local catch. They dump buckets of crab on the table — messy, fun, memorable. The kind of dinner the whole trip gets remembered by.</div>
+          <div class="row-kid">✓ Fun for kids — the dump-bucket experience</div>
+        </li>
+        <li>
+          <div class="row-name">Puffers of Pismo</div>
+          <div class="row-desc">Tiny speakeasy vibe. Small plates, cheese boards, amazing wine list. The adult night out after the kids are down.</div>
+        </li>
+        <li>
+          <div class="row-name">Penny's Diner</div>
+          <div class="row-desc">Classic American diner packed with locals. Big breakfast plates. Dave's Mess — eggs, home fries, bacon, ham, sausage, cheddar — feeds the whole table.</div>
+          <div class="row-kid">✓ Kids eat half a plate and are done</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── LODGING ─────────────────────────────── -->
+<div id="lodging" class="pane">
+
+  <div class="callout">
+    <strong>Group reality: 8 people.</strong> No single hotel room legally fits more than 6. The hotel play is connecting rooms. The rental play is 3BR. Both work — the numbers are just different.
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Best Hotel Pick — OC Area</div>
+    <div class="card">
+      <div class="card-title">Laguna Hills Lodge — Connecting Rooms</div>
+      <div class="card-sub">Laguna Hills · 6 miles / ~12 min to Laguna Beach</div>
+      <div class="tags">
+        <span class="tag t-green">Under $300 Total ✓</span>
+        <span class="tag t-blue">4 Queen Beds</span>
+        <span class="tag t-blue">2 Bathrooms</span>
+      </div>
+      <p>Two connecting rooms, connecting door at no extra charge. 4 queens across both rooms, 2 full baths. Adults one side, kids the other. Reliable, straightforward, fits the budget.</p>
+      <p style="margin-top:9px;font-size:13px;">Est: <span class="price">~$150–$220/night total</span> for both rooms</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Suite Hotel — OC Area</div>
+    <div class="card">
+      <div class="card-title">Embassy Suites Irvine OC Airport</div>
+      <div class="card-sub">Irvine · 17 min to Laguna Beach &amp; Crystal Cove</div>
+      <div class="tags">
+        <span class="tag t-green">Breakfast Included</span>
+        <span class="tag t-blue">King + Living Room</span>
+        <span class="tag t-yellow">Max 6 Per Suite</span>
+      </div>
+      <p>King bedroom + separate living room with pull-out sofa. Made-to-order breakfast every morning included. Caps at 6 per suite — for a group of 8 you'd need two, which pushes the cost up.</p>
+      <p style="margin-top:9px;font-size:13px;">Est: <span class="price">~$180–$220/night per suite</span></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Best Rental for 8 People</div>
+    <div class="card">
+      <div class="card-title">3BR Vrbo / Airbnb — Pismo Beach</div>
+      <div class="card-sub">Beach walkable · Full kitchen · Living room · Sleeps 8 comfortably</div>
+      <div class="tags">
+        <span class="tag t-green">Walkable to Beach</span>
+        <span class="tag t-blue">Full Kitchen</span>
+        <span class="tag t-yellow">Add ~$250 in Fees</span>
+      </div>
+      <p>At 8 people a 3BR rental starts making real sense. Pismo is cheaper than OC. Full kitchen means you can feed the kids breakfast without a restaurant every morning and save the money for the fun stuff.</p>
+      <p style="margin-top:9px;font-size:13px;">Est: <span class="price">~$200–$260/night</span> + fees &nbsp;·&nbsp; 5 nights ~$1,250–$1,550</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Search Links</div>
+    <div class="card links">
+      <p>
+        🔗 <a href="https://www.lagunahillslodge.com/">Laguna Hills Lodge</a><br>
+        🔗 <a href="https://www.hilton.com/en/hotels/kolcaes-embassy-suites-irvine-orange-county-airport/">Embassy Suites Irvine</a><br>
+        🔗 <a href="https://www.vrbo.com/vacation-rentals/usa/california/san-luis-obispo-county/pismo-beach">Pismo Beach — Vrbo</a><br>
+        🔗 <a href="https://www.airbnb.com/pismo-beach-ca/stays">Pismo Beach — Airbnb</a><br>
+        🔗 <a href="https://www.vrbo.com/vacation-rentals/usa/california/orange-county/san-clemente">San Clemente — Vrbo</a><br>
+        🔗 <a href="https://www.airbnb.com/san-clemente-ca/stays">San Clemente — Airbnb</a>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── COMPARE ──────────────────────────────── -->
+<div id="compare" class="pane">
+
+  <div class="section">
+    <div class="sec-label">5-Night Lodging Cost</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Est. 5-Night Total</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Laguna Hills Lodge</strong><br><span style="font-size:12px;color:#666;">Connecting rooms · 4 queens · 2 baths</span></td>
+            <td><span class="price">$750–$1,100</span></td>
+          </tr>
+          <tr>
+            <td><strong>Embassy Suites Irvine</strong><br><span style="font-size:12px;color:#666;">1 suite (max 6) · breakfast included</span></td>
+            <td><span class="price">$950–$1,050</span></td>
+          </tr>
+          <tr>
+            <td><strong>Pismo 3BR Rental</strong><br><span style="font-size:12px;color:#666;">Walkable beach · full kitchen · 8 guests</span></td>
+            <td><span class="price">$1,250–$1,550</span></td>
+          </tr>
+          <tr>
+            <td><strong>San Clemente 2BR Rental</strong><br><span style="font-size:12px;color:#666;">Avg $361/night · hard to hit under $300</span></td>
+            <td><span class="price-warn">$1,645–$1,900</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">OC Coast vs. Pismo / SLO</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th></th><th>OC Coast</th><th>Pismo/SLO</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Drive from Peoria</td><td>5.5 hrs</td><td>7.5 hrs</td></tr>
+          <tr><td>Crowd level</td><td>Moderate</td><td>Low</td></tr>
+          <tr><td>Budget fit</td><td>Good</td><td>Best</td></tr>
+          <tr><td>Gas @ $6.03/gal</td><td>Less</td><td>More</td></tr>
+          <tr><td>Unique for kids</td><td>Tide pools 🐚</td><td>ATVs + dinos 🦕</td></tr>
+          <tr><td>Unique for adults</td><td>Coves + wine bars</td><td>Dunes + local food</td></tr>
+          <tr><td>Beach walkability</td><td>Depends on lodging</td><td>Yes (Pismo)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Gas Cost — Drive from Peoria</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Destination</th><th>Est. Miles RT</th><th>Est. Gas Cost</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>OC Coast (San Clemente area)</td><td>~600 mi</td><td><span class="price">~$145</span></td></tr>
+          <tr><td>Pismo Beach</td><td>~900 mi</td><td><span class="price-warn">~$216</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:#888;margin-top:8px;">Based on $6.03/gal · avg 25 mpg · round trip</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Next Steps</div>
+    <div class="card">
+      <ul class="checklist">
+        <li>Lock dates with Amy</li>
+        <li>Choose OC or Central Coast</li>
+        <li>Book lodging — July fills fast</li>
+        <li>Check tide charts for Crystal Cove / Shaw's Cove</li>
+        <li>Plan the drive — gas + snacks for 8</li>
+        <li>Look up ATV rentals if going to Pismo / Oceano Dunes</li>
+        <li>Grab Pismo clam license ahead of time if digging</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showPane(id, btn) {
+    document.querySelectorAll('.pane').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
