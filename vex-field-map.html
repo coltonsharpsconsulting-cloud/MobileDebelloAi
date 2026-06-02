@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEX VRC Field Map</title>
+<style>
+:root {
+  --bg-deep:      #050508;
+  --glass-bg:     rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.08);
+  --neon-cyan:    #00f5ff;
+  --neon-mag:     #ff00ff;
+  --neon-purple:  #8b00ff;
+  --neon-green:   #00ff88;
+  --neon-orange:  #ff6600;
+  --neon-red:     #ff2244;
+  --neon-blue:    #0080ff;
+  --neon-yellow:  #ffee00;
+  --neu-out: 6px 6px 14px rgba(0,0,0,.85), -3px -3px 8px rgba(255,255,255,.025);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  background: var(--bg-deep);
+  min-height: 100vh;
+  font-family: -apple-system,'SF Pro Display','Segoe UI',sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px 40px;
+  overflow-x: hidden;
+}
+
+/* ambient orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.06;pointer-events:none;animation:drift 22s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:var(--neon-purple);top:-150px;left:-150px}
+.orb2{width:350px;height:350px;background:var(--neon-cyan);bottom:-80px;right:-80px;animation-delay:-8s}
+.orb3{width:250px;height:250px;background:var(--neon-red);top:40%;left:35%;animation-delay:-14s}
+@keyframes drift{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(40px,-30px)scale(1.12)}66%{transform:translate(-25px,40px)scale(.9)}}
+
+/* header */
+.header{display:flex;align-items:center;gap:14px;width:100%;max-width:700px;margin-bottom:18px}
+.logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--neon-purple),var(--neon-cyan));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;box-shadow:0 0 24px rgba(139,0,255,.55);flex-shrink:0}
+.header-text{flex:1}
+.brand{font-size:18px;font-weight:800;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-mag));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;width:100%;max-width:700px;margin-bottom:14px;align-items:center}
+.tbtn{padding:8px 14px;border-radius:10px;border:1px solid var(--glass-border);background:var(--glass-bg);color:rgba(255,255,255,.6);font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;transition:all .2s;backdrop-filter:blur(12px)}
+.tbtn:hover{color:var(--neon-cyan);border-color:rgba(0,245,255,.4);background:rgba(0,245,255,.06)}
+.tbtn.active{color:var(--neon-cyan);border-color:var(--neon-cyan);background:rgba(0,245,255,.08);box-shadow:0 0 12px rgba(0,245,255,.25)}
+.tbtn.red-btn{color:var(--neon-red);border-color:rgba(255,34,68,.35)}
+.tbtn.red-btn:hover{background:rgba(255,34,68,.08);box-shadow:0 0 12px rgba(255,34,68,.2)}
+.sep{width:1px;height:28px;background:var(--glass-border)}
+
+/* main layout */
+.main{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:700px}
+
+/* field wrapper */
+.field-wrap{
+  position:relative;
+  background:rgba(10,10,20,.7);
+  border:1.5px solid var(--glass-border);
+  border-radius:16px;
+  box-shadow:var(--neu-out),0 0 40px rgba(0,0,0,.6);
+  backdrop-filter:blur(24px);
+  padding:16px;
+  width:100%;
+}
+
+.field-canvas-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:1;
+  max-width:600px;
+  margin:0 auto;
+  cursor:crosshair;
+}
+
+#fieldCanvas{width:100%;height:100%;display:block;border-radius:6px}
+
+/* dropped elements on field */
+.field-el{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  cursor:grab;
+  user-select:none;
+  transition:filter .15s;
+  z-index:10;
+  font-size:0;
+}
+.field-el:active{cursor:grabbing}
+.field-el:hover .el-del{opacity:1}
+.el-del{
+  position:absolute;top:-8px;right:-8px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff2244;border:none;cursor:pointer;
+  font-size:10px;font-weight:900;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;z-index:20;
+  line-height:1;
+}
+.el-label{
+  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-weight:700;letter-spacing:.5px;white-space:nowrap;
+  color:rgba(255,255,255,.7);pointer-events:none;
+}
+
+/* palette */
+.palette{
+  width:100%;
+  background:rgba(10,10,20,.7);
+  border:1.5px solid var(--glass-border);
+  border-radius:14px;
+  backdrop-filter:blur(24px);
+  padding:14px;
+}
+.palette-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:10px}
+.palette-grid{display:flex;flex-wrap:wrap;gap:8px}
+.pal-item{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 8px;border-radius:10px;
+  border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.02);
+  cursor:grab;user-select:none;
+  transition:all .2s;min-width:64px;
+}
+.pal-item:hover{border-color:rgba(0,245,255,.35);background:rgba(0,245,255,.05);transform:translateY(-2px)}
+.pal-item:active{cursor:grabbing;transform:scale(.95)}
+.pal-icon{font-size:26px;line-height:1;pointer-events:none}
+.pal-name{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.5);text-align:center;pointer-events:none}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px;width:100%;padding:10px 14px;background:rgba(10,10,20,.5);border:1px solid var(--glass-border);border-radius:12px;backdrop-filter:blur(12px)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.5px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* score panel */
+.score-panel{display:flex;gap:10px;width:100%}
+.score-box{flex:1;background:rgba(10,10,20,.7);border:1.5px solid;border-radius:12px;padding:12px;text-align:center;backdrop-filter:blur(12px)}
+.score-box.red-box{border-color:rgba(255,34,68,.4);box-shadow:0 0 16px rgba(255,34,68,.15)}
+.score-box.blue-box{border-color:rgba(0,128,255,.4);box-shadow:0 0 16px rgba(0,128,255,.15)}
+.score-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:4px}
+.score-val{font-size:28px;font-weight:900;letter-spacing:-1px}
+.score-box.red-box .score-val{color:var(--neon-red)}
+.score-box.blue-box .score-val{color:var(--neon-blue)}
+.score-ctrl{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.sc-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass-bg);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.sc-btn:hover{background:rgba(255,255,255,.08)}
+
+/* info panel */
+.info-bar{font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:.5px}
+
+/* ── PRINT ── */
+@media print {
+  body{background:#fff;padding:0;color:#000}
+  .orb,.toolbar,.palette,.score-panel,.info-bar,.el-del,.legend{display:none!important}
+  .header{margin-bottom:8px}
+  .brand{-webkit-text-fill-color:#000;background:none;color:#000}
+  .subtitle{color:#555}
+  .field-wrap{background:#fff;border:1px solid #ccc;box-shadow:none;padding:8px}
+  .field-canvas-wrap{max-width:100%;width:90vmin}
+  .el-label{color:#000}
+  .main{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="header">
+  <div class="logo">🤖</div>
+  <div class="header-text">
+    <div class="brand">VEX VRC Field Map</div>
+    <div class="subtitle">High Stakes &mdash; 2025&ndash;26 Season &bull; 12 &times; 12 ft</div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="tbtn active" id="btnZones" onclick="toggleZones()">Zones</button>
+  <button class="tbtn active" id="btnLabels" onclick="toggleLabels()">Labels</button>
+  <button class="tbtn active" id="btnGrid" onclick="toggleGrid()">Grid</button>
+  <div class="sep"></div>
+  <button class="tbtn" onclick="clearAll()">Clear Field</button>
+  <button class="tbtn red-btn" onclick="resetAll()">Reset</button>
+  <div class="sep"></div>
+  <button class="tbtn" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="main">
+
+  <!-- Score -->
+  <div class="score-panel">
+    <div class="score-box red-box">
+      <div class="score-label">Red Alliance</div>
+      <div class="score-val" id="redScore">0</div>
+      <div class="score-ctrl">
+        <button class="sc-btn" onclick="addScore('red',-1)">−</button>
+        <button class="sc-btn" onclick="addScore('red',1)">+</button>
+      </div>
+    </div>
+    <div class="score-box blue-box">
+      <div class="score-label">Blue Alliance</div>
+      <div class="score-val" id="blueScore">0</div>
+      <div class="score-ctrl">
+        <button class="sc-btn" onclick="addScore('blue',-1)">−</button>
+        <button class="sc-btn" onclick="addScore('blue',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Field -->
+  <div class="field-wrap">
+    <div class="field-canvas-wrap" id="fieldWrap">
+      <canvas id="fieldCanvas" width="600" height="600"></canvas>
+      <!-- dropped elements injected here -->
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#ff2244;opacity:.7"></div>Red Alliance Zone</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#0080ff;opacity:.7"></div>Blue Alliance Zone</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,238,0,.5)"></div>Neutral Zone</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.25)"></div>Starting Tile</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,255,136,.4)"></div>Positive Corner</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(180,0,255,.4)"></div>Negative Corner</div>
+  </div>
+
+  <!-- Palette -->
+  <div class="palette">
+    <div class="palette-title">Game Elements — Drag onto Field</div>
+    <div class="palette-grid" id="paletteGrid">
+      <!-- items injected by JS -->
+    </div>
+  </div>
+
+  <div class="info-bar">Drag elements from the palette onto the field &bull; Click &times; to remove &bull; Drag to reposition</div>
+
+</div>
+
+<script>
+/* ══════════════════════════
+   CONFIG
+══════════════════════════ */
+const FIELD_PX = 600;   // canvas resolution
+const TILES    = 6;
+const TILE     = FIELD_PX / TILES;
+
+// VRC High Stakes field zones (in tile coordinates)
+// Each entry: { col, row, w, h, color, alpha, label }
+const ZONES = [
+  // Red alliance zone (bottom-left 3x3)
+  { x:0,   y:3,   w:3, h:3, fill:'#ff2244', alpha:.18, label:'RED\nZONE',   labelX:.75, labelY:4.5 },
+  // Blue alliance zone (top-right 3x3)
+  { x:3,   y:0,   w:3, h:3, fill:'#0080ff', alpha:.18, label:'BLUE\nZONE',  labelX:4.25,labelY:1.5 },
+  // Neutral zone (center cross)
+  { x:2,   y:2,   w:2, h:2, fill:'#ffee00', alpha:.10, label:'NEUTRAL',     labelX:3,   labelY:3   },
+];
+
+// Starting tiles (1 tile each, robots start here)
+const START_TILES = [
+  { x:0, y:5, fill:'#ff2244', alpha:.55, label:'R1' },
+  { x:1, y:5, fill:'#ff2244', alpha:.55, label:'R2' },
+  { x:4, y:0, fill:'#0080ff', alpha:.55, label:'B1' },
+  { x:5, y:0, fill:'#0080ff', alpha:.55, label:'B2' },
+];
+
+// Positive / Negative corners
+const CORNERS = [
+  { x:0, y:0, fill:'#00ff88', alpha:.3, label:'+' },
+  { x:5, y:5, fill:'#00ff88', alpha:.3, label:'+' },
+  { x:5, y:0, fill:'#b400ff', alpha:.3, label:'−' },
+  { x:0, y:5, fill:'#b400ff', alpha:.3, label:'−' },
+];
+
+// Wall stakes positions (on edges, centered between tiles)
+const WALL_STAKES = [
+  { side:'top',    pos:1.5 }, { side:'top',    pos:4.5 },
+  { side:'bottom', pos:1.5 }, { side:'bottom', pos:4.5 },
+  { side:'left',   pos:1.5 }, { side:'left',   pos:4.5 },
+  { side:'right',  pos:1.5 }, { side:'right',  pos:4.5 },
+];
+
+// Mobile goal positions (tile centers)
+const MOB_GOALS = [
+  { tx:1, ty:1 }, { tx:4, ty:1 },
+  { tx:3, ty:3 },
+  { tx:1, ty:4 }, { tx:4, ty:4 },
+];
+
+// Ring positions scattered on field
+const RING_POSITIONS = [
+  {tx:.5,ty:.5},{tx:2.5,ty:.5},{tx:3.5,ty:.5},{tx:5.5,ty:.5},
+  {tx:.5,ty:2.5},{tx:5.5,ty:2.5},
+  {tx:2.5,ty:3.5},{tx:3.5,ty:3.5},
+  {tx:.5,ty:3.5},{tx:5.5,ty:3.5},
+  {tx:.5,ty:5.5},{tx:2.5,ty:5.5},{tx:3.5,ty:5.5},{tx:5.5,ty:5.5},
+];
+
+/* palette definition */
+const PALETTE = [
+  { id:'robot-red',   icon:'🤖', name:'Red Robot',   size:42, color:'#ff2244', emoji:true },
+  { id:'robot-blue',  icon:'🤖', name:'Blue Robot',  size:42, color:'#0080ff', emoji:true, tint:true },
+  { id:'mob-goal',    icon:'🥅', name:'Mobile Goal', size:36, color:'#ffee00', emoji:true },
+  { id:'ring',        icon:'⭕', name:'Ring',        size:28, color:'#ff6600', emoji:true },
+  { id:'ring-blue',   icon:'🔵', name:'Blue Ring',   size:28, color:'#0080ff', emoji:true },
+  { id:'wall-stake',  icon:'📍', name:'Wall Stake',  size:28, color:'#ffffff', emoji:true },
+  { id:'flag-red',    icon:'🚩', name:'Red Flag',    size:30, color:'#ff2244', emoji:true },
+  { id:'flag-blue',   icon:'🏴', name:'Blue Flag',   size:30, color:'#0080ff', emoji:true },
+  { id:'marker',      icon:'📌', name:'Marker',      size:28, color:'#ffee00', emoji:true },
+  { id:'climb',       icon:'⬆️',  name:'Climb Bar',  size:30, color:'#00ff88', emoji:true },
+  { id:'note',        icon:'✏️',  name:'Note',       size:28, color:'#aaa',    emoji:true },
+];
+
+/* ══════════════════════════
+   STATE
+══════════════════════════ */
+let showZones  = true;
+let showLabels = true;
+let showGrid   = true;
+let scores     = { red:0, blue:0 };
+let placedEls  = [];   // { id, type, x%, y%, label }
+let elCounter  = 0;
+
+/* ══════════════════════════
+   CANVAS DRAW
+══════════════════════════ */
+const canvas = document.getElementById('fieldCanvas');
+const ctx    = canvas.getContext('2d');
+
+function t(tile){ return tile * TILE; }  // tile → pixel
+
+function drawField(){
+  ctx.clearRect(0,0,FIELD_PX,FIELD_PX);
+
+  // field background (grey mat)
+  ctx.fillStyle = '#1a1f1a';
+  ctx.fillRect(0,0,FIELD_PX,FIELD_PX);
+
+  // tile base pattern
+  for(let r=0;r<TILES;r++){
+    for(let c=0;c<TILES;c++){
+      ctx.fillStyle = ((r+c)%2===0) ? 'rgba(255,255,255,.025)' : 'rgba(0,0,0,.04)';
+      ctx.fillRect(t(c),t(r),TILE,TILE);
+    }
+  }
+
+  // zones
+  if(showZones){
+    ZONES.forEach(z=>{
+      ctx.fillStyle = z.fill;
+      ctx.globalAlpha = z.alpha;
+      ctx.fillRect(t(z.x),t(z.y),t(z.w),t(z.h));
+      ctx.globalAlpha = 1;
+    });
+    CORNERS.forEach(c=>{
+      ctx.fillStyle = c.fill;
+      ctx.globalAlpha = c.alpha;
+      ctx.fillRect(t(c.x),t(c.y),TILE,TILE);
+      ctx.globalAlpha = 1;
+    });
+    START_TILES.forEach(s=>{
+      ctx.fillStyle = s.fill;
+      ctx.globalAlpha = s.alpha;
+      ctx.fillRect(t(s.x)+2,t(s.y)+2,TILE-4,TILE-4);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  // grid
+  if(showGrid){
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 1;
+    for(let i=0;i<=TILES;i++){
+      ctx.beginPath();ctx.moveTo(t(i),0);ctx.lineTo(t(i),FIELD_PX);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,t(i));ctx.lineTo(FIELD_PX,t(i));ctx.stroke();
+    }
+    // field border
+    ctx.strokeStyle = 'rgba(255,255,255,.35)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(1.5,1.5,FIELD_PX-3,FIELD_PX-3);
+  }
+
+  // wall stakes (drawn as small pegs on the edges)
+  WALL_STAKES.forEach(ws=>{
+    const peg = 6;
+    ctx.fillStyle = '#aaaaaa';
+    ctx.strokeStyle = 'rgba(255,255,255,.5)';
+    ctx.lineWidth = 1;
+    let px,py;
+    if(ws.side==='top')    { px=t(ws.pos)-peg/2; py=0; ctx.fillRect(px,py,peg,peg*1.5); ctx.strokeRect(px,py,peg,peg*1.5); }
+    if(ws.side==='bottom') { px=t(ws.pos)-peg/2; py=FIELD_PX-peg*1.5; ctx.fillRect(px,py,peg,peg*1.5); ctx.strokeRect(px,py,peg,peg*1.5); }
+    if(ws.side==='left')   { px=0; py=t(ws.pos)-peg/2; ctx.fillRect(px,py,peg*1.5,peg); ctx.strokeRect(px,py,peg*1.5,peg); }
+    if(ws.side==='right')  { px=FIELD_PX-peg*1.5; py=t(ws.pos)-peg/2; ctx.fillRect(px,py,peg*1.5,peg); ctx.strokeRect(px,py,peg*1.5,peg); }
+  });
+
+  // mobile goals (static reference positions, semi-transparent)
+  MOB_GOALS.forEach(mg=>{
+    const cx = t(mg.tx), cy = t(mg.ty), r = TILE*.28;
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(255,238,0,.18)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,238,0,.55)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    if(showLabels){
+      ctx.fillStyle = 'rgba(255,238,0,.6)';
+      ctx.font = `bold ${TILE*.14}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('MG', cx, cy);
+    }
+  });
+
+  // ring positions (static reference)
+  RING_POSITIONS.forEach(rp=>{
+    const cx = t(rp.tx), cy = t(rp.ty), r = TILE*.1;
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,102,0,.4)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+
+  // labels
+  if(showLabels){
+    // zone labels
+    ZONES.forEach(z=>{
+      ctx.fillStyle = z.fill;
+      ctx.globalAlpha = .7;
+      ctx.font = `bold ${TILE*.16}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const lines = z.label.split('\n');
+      lines.forEach((line,i)=>{
+        ctx.fillText(line, t(z.labelX), t(z.labelY) + (i-.5*(lines.length-1))*TILE*.2);
+      });
+      ctx.globalAlpha = 1;
+    });
+
+    // start tile labels
+    START_TILES.forEach(s=>{
+      ctx.fillStyle = '#fff';
+      ctx.globalAlpha = .85;
+      ctx.font = `bold ${TILE*.18}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(s.label, t(s.x)+TILE/2, t(s.y)+TILE/2);
+      ctx.globalAlpha = 1;
+    });
+
+    // corner labels
+    CORNERS.forEach(c=>{
+      ctx.fillStyle = c.fill;
+      ctx.globalAlpha = .9;
+      ctx.font = `bold ${TILE*.28}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(c.label, t(c.x)+TILE/2, t(c.y)+TILE/2);
+      ctx.globalAlpha = 1;
+    });
+
+    // tape measure ticks (inch marks on border)
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.font = `${TILE*.1}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for(let i=0;i<TILES;i++){
+      ctx.fillText(`${(i+1)*24}"`, t(i)+TILE/2, 4);
+    }
+  }
+}
+
+/* ══════════════════════════
+   PALETTE
+══════════════════════════ */
+function buildPalette(){
+  const grid = document.getElementById('paletteGrid');
+  PALETTE.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'pal-item';
+    el.draggable = true;
+    el.dataset.type = p.id;
+    el.innerHTML = `<span class="pal-icon">${p.icon}</span><span class="pal-name">${p.name}</span>`;
+    el.addEventListener('dragstart', onPalDragStart);
+    grid.appendChild(el);
+  });
+}
+
+let dragType = null;
+
+function onPalDragStart(e){
+  dragType = e.currentTarget.dataset.type;
+  e.dataTransfer.effectAllowed = 'copy';
+}
+
+/* ══════════════════════════
+   FIELD DROP
+══════════════════════════ */
+const fieldWrap = document.getElementById('fieldWrap');
+
+fieldWrap.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; });
+fieldWrap.addEventListener('drop', e=>{
+  e.preventDefault();
+  if(!dragType) return;
+  const rect = fieldWrap.getBoundingClientRect();
+  const xPct = (e.clientX - rect.left) / rect.width  * 100;
+  const yPct = (e.clientY - rect.top)  / rect.height * 100;
+  placeElement(dragType, xPct, yPct);
+  dragType = null;
+});
+
+function placeElement(type, xPct, yPct){
+  const pal = PALETTE.find(p=>p.id===type);
+  if(!pal) return;
+
+  const id  = 'el-' + (++elCounter);
+  const div = document.createElement('div');
+  div.className  = 'field-el';
+  div.id         = id;
+  div.style.left = xPct + '%';
+  div.style.top  = yPct + '%';
+  div.style.fontSize = (pal.size||32) + 'px';
+  div.innerHTML  = `${pal.icon}<button class="el-del" onclick="removeEl('${id}')">×</button><span class="el-label">${pal.name}</span>`;
+
+  makeDraggable(div);
+  fieldWrap.appendChild(div);
+  placedEls.push({ id, type, xPct, yPct });
+}
+
+function removeEl(id){
+  document.getElementById(id)?.remove();
+  placedEls = placedEls.filter(e=>e.id!==id);
+}
+
+function makeDraggable(el){
+  let startX,startY,startLeft,startTop,dragging=false;
+
+  el.addEventListener('mousedown', e=>{
+    if(e.target.classList.contains('el-del')) return;
+    e.preventDefault();
+    dragging = true;
+    const rect = fieldWrap.getBoundingClientRect();
+    startX    = e.clientX;
+    startY    = e.clientY;
+    startLeft = parseFloat(el.style.left);
+    startTop  = parseFloat(el.style.top);
+    el.style.zIndex = 50;
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    const rect = fieldWrap.getBoundingClientRect();
+    const dx = (e.clientX - startX) / rect.width  * 100;
+    const dy = (e.clientY - startY) / rect.height * 100;
+    el.style.left = Math.max(0,Math.min(100,startLeft+dx)) + '%';
+    el.style.top  = Math.max(0,Math.min(100,startTop +dy)) + '%';
+  });
+  window.addEventListener('mouseup', ()=>{ dragging=false; el.style.zIndex=10; });
+
+  // touch
+  el.addEventListener('touchstart', e=>{
+    if(e.target.classList.contains('el-del')) return;
+    const t = e.touches[0];
+    dragging = true;
+    const rect = fieldWrap.getBoundingClientRect();
+    startX    = t.clientX;
+    startY    = t.clientY;
+    startLeft = parseFloat(el.style.left);
+    startTop  = parseFloat(el.style.top);
+    el.style.zIndex = 50;
+  },{passive:true});
+  window.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    const t = e.touches[0];
+    const rect = fieldWrap.getBoundingClientRect();
+    const dx = (t.clientX - startX) / rect.width  * 100;
+    const dy = (t.clientY - startY) / rect.height * 100;
+    el.style.left = Math.max(0,Math.min(100,startLeft+dx)) + '%';
+    el.style.top  = Math.max(0,Math.min(100,startTop +dy)) + '%';
+  },{passive:true});
+  window.addEventListener('touchend', ()=>{ dragging=false; el.style.zIndex=10; });
+}
+
+/* ══════════════════════════
+   CONTROLS
+══════════════════════════ */
+function toggleZones(){ showZones=!showZones; document.getElementById('btnZones').classList.toggle('active',showZones); drawField(); }
+function toggleLabels(){ showLabels=!showLabels; document.getElementById('btnLabels').classList.toggle('active',showLabels); drawField(); }
+function toggleGrid(){ showGrid=!showGrid; document.getElementById('btnGrid').classList.toggle('active',showGrid); drawField(); }
+
+function clearAll(){
+  document.querySelectorAll('.field-el').forEach(e=>e.remove());
+  placedEls=[];
+}
+
+function resetAll(){
+  clearAll();
+  scores={red:0,blue:0};
+  updateScoreDisplay();
+}
+
+function addScore(side, delta){
+  scores[side] = Math.max(0, scores[side]+delta);
+  updateScoreDisplay();
+}
+
+function updateScoreDisplay(){
+  document.getElementById('redScore').textContent  = scores.red;
+  document.getElementById('blueScore').textContent = scores.blue;
+}
+
+/* ══════════════════════════
+   INIT
+══════════════════════════ */
+buildPalette();
+drawField();
+
+// redraw on resize
+const ro = new ResizeObserver(()=>{ drawField(); });
+ro.observe(canvas);
+</script>
+</body>
+</html>
