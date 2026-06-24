@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MobileDebello</title>
+<style>
+:root {
+  --bg:           #050508;
+  --glass-bg:     rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.08);
+  --blur:         blur(24px);
+
+  --cyan:   #00f5ff;
+  --mag:    #ff00ff;
+  --purple: #8b00ff;
+  --green:  #00ff88;
+  --orange: #ff6600;
+  --blue:   #0080ff;
+  --yellow: #ffee00;
+
+  --neu-out: 6px 6px 14px rgba(0,0,0,0.85), -3px -3px 8px rgba(255,255,255,0.025);
+  --neu-in:  inset 4px 4px 10px rgba(0,0,0,0.85), inset -2px -2px 5px rgba(255,255,255,0.025);
+
+  --sq: min(88vw, 420px);
+  --r:  18px;
+  --tile: min(41vw, 190px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 60px;
+  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ── ambient orbs ── */
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px); opacity: .065; pointer-events: none;
+  animation: drift 24s ease-in-out infinite;
+}
+.o1 { width:520px;height:520px;background:var(--purple);top:-160px;left:-160px; }
+.o2 { width:380px;height:380px;background:var(--cyan);bottom:-100px;right:-100px;animation-delay:-9s; }
+.o3 { width:260px;height:260px;background:var(--mag);top:50%;left:38%;animation-delay:-16s; }
+@keyframes drift {
+  0%,100%{transform:translate(0,0)scale(1)}
+  33%{transform:translate(38px,-28px)scale(1.1)}
+  66%{transform:translate(-22px,36px)scale(.92)}
+}
+
+/* ── wordmark ── */
+.wordmark {
+  width: 100%; max-width: var(--sq);
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 32px;
+}
+.wm-sq {
+  width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  display: grid; place-items: center;
+  font-size: 22px; font-weight: 900;
+  box-shadow: 0 0 28px rgba(139,0,255,.5);
+}
+.wm-text {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.wm-title {
+  font-size: 19px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;
+  background: linear-gradient(135deg, var(--cyan), var(--mag));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.wm-sub {
+  font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+
+/* ── section label ── */
+.section-label {
+  width: 100%; max-width: var(--sq);
+  font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+  margin-bottom: 12px;
+  padding-left: 2px;
+}
+
+/* ── square grid ── */
+.grid {
+  width: 100%; max-width: var(--sq);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* ── tile ── */
+.tile {
+  aspect-ratio: 1;
+  border-radius: var(--r);
+  background: rgba(10,10,20,.6);
+  backdrop-filter: var(--blur);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--neu-out);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  text-decoration: none; color: #fff;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.tile::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--r);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.tile:hover { transform: translateY(-3px); }
+.tile:active { transform: scale(.97); box-shadow: var(--neu-in); }
+
+/* per-tile accent colors */
+.tile[data-color="cyan"]::before   { background: radial-gradient(ellipse at 30% 30%, rgba(0,245,255,.12), transparent 65%); }
+.tile[data-color="mag"]::before    { background: radial-gradient(ellipse at 30% 30%, rgba(255,0,255,.12), transparent 65%); }
+.tile[data-color="green"]::before  { background: radial-gradient(ellipse at 30% 30%, rgba(0,255,136,.12), transparent 65%); }
+.tile[data-color="orange"]::before { background: radial-gradient(ellipse at 30% 30%, rgba(255,102,0,.12), transparent 65%); }
+.tile[data-color="blue"]::before   { background: radial-gradient(ellipse at 30% 30%, rgba(0,128,255,.12), transparent 65%); }
+.tile[data-color="yellow"]::before { background: radial-gradient(ellipse at 30% 30%, rgba(255,238,0,.12), transparent 65%); }
+
+.tile:hover::before { opacity: 1; }
+
+.tile[data-color="cyan"]:hover   { border-color: rgba(0,245,255,.4);   box-shadow: 0 0 30px rgba(0,245,255,.25), var(--neu-out); }
+.tile[data-color="mag"]:hover    { border-color: rgba(255,0,255,.4);   box-shadow: 0 0 30px rgba(255,0,255,.25), var(--neu-out); }
+.tile[data-color="green"]:hover  { border-color: rgba(0,255,136,.4);   box-shadow: 0 0 30px rgba(0,255,136,.25), var(--neu-out); }
+.tile[data-color="orange"]:hover { border-color: rgba(255,102,0,.4);   box-shadow: 0 0 30px rgba(255,102,0,.25), var(--neu-out); }
+.tile[data-color="blue"]:hover   { border-color: rgba(0,128,255,.4);   box-shadow: 0 0 30px rgba(0,128,255,.25), var(--neu-out); }
+.tile[data-color="yellow"]:hover { border-color: rgba(255,238,0,.4);   box-shadow: 0 0 30px rgba(255,238,0,.25), var(--neu-out); }
+
+.tile-icon {
+  font-size: 30px;
+  filter: drop-shadow(0 0 8px currentColor);
+  position: relative; z-index: 1;
+}
+.tile-name {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.tile[data-color="cyan"]   .tile-name { color: var(--cyan); }
+.tile[data-color="mag"]    .tile-name { color: var(--mag); }
+.tile[data-color="green"]  .tile-name { color: var(--green); }
+.tile[data-color="orange"] .tile-name { color: var(--orange); }
+.tile[data-color="blue"]   .tile-name { color: var(--blue); }
+.tile[data-color="yellow"] .tile-name { color: var(--yellow); }
+
+.tile-tag {
+  position: absolute; top: 11px; right: 11px;
+  font-size: 7px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 3px 6px;
+  color: rgba(255,255,255,.35);
+}
+
+/* ── wide tile (spans 2 cols) ── */
+.tile.wide {
+  aspect-ratio: auto;
+  grid-column: 1 / -1;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 20px 22px;
+  gap: 18px;
+  min-height: 80px;
+}
+.tile.wide .tile-icon { font-size: 26px; }
+.tile.wide .tile-name { font-size: 12px; letter-spacing: 2px; }
+.tile.wide .tile-desc {
+  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.35);
+  letter-spacing: .4px; line-height: 1.4;
+  margin-top: 2px;
+  position: relative; z-index: 1;
+}
+.tile.wide .tile-text { display: flex; flex-direction: column; gap: 3px; position: relative; z-index: 1; }
+
+/* ── status dot ── */
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  position: absolute; bottom: 12px; left: 12px;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+.dot.live  { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.dot.soon  { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+.dot.draft { background: rgba(255,255,255,.2); }
+
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.75)}
+}
+
+/* ── divider ── */
+.divider {
+  width: 100%; max-width: var(--sq);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  margin: 8px 0 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<!-- wordmark -->
+<div class="wordmark">
+  <div class="wm-sq">D</div>
+  <div class="wm-text">
+    <div class="wm-title">Debello</div>
+    <div class="wm-sub">Mobile Command</div>
+  </div>
+</div>
+
+<!-- apps -->
+<div class="section-label">Apps</div>
+<div class="grid">
+
+  <a class="tile" href="debello.html" data-color="cyan">
+    <div class="dot live"></div>
+    <div class="tile-tag">Live</div>
+    <div class="tile-icon">⬛</div>
+    <div class="tile-name">Debello</div>
+  </a>
+
+  <a class="tile" href="WebLib.html" data-color="mag">
+    <div class="dot live"></div>
+    <div class="tile-tag">Live</div>
+    <div class="tile-icon">📚</div>
+    <div class="tile-name">WebLib</div>
+  </a>
+
+  <a class="tile" href="California Beach Trip 2026.html" data-color="orange">
+    <div class="dot live"></div>
+    <div class="tile-tag">2026</div>
+    <div class="tile-icon">🏖</div>
+    <div class="tile-name">Beach Trip</div>
+  </a>
+
+  <a class="tile" href="apps/" data-color="green">
+    <div class="dot soon"></div>
+    <div class="tile-tag">New</div>
+    <div class="tile-icon">＋</div>
+    <div class="tile-name">Apps</div>
+  </a>
+
+</div>
+
+<div class="divider"></div>
+
+<!-- design lab -->
+<div class="section-label">Design Lab</div>
+<div class="grid">
+
+  <a class="tile" href="grid-motion-studies.html" data-color="blue">
+    <div class="dot draft"></div>
+    <div class="tile-tag">Study</div>
+    <div class="tile-icon">⬜</div>
+    <div class="tile-name">Grid v1</div>
+  </a>
+
+  <a class="tile" href="grid-motion-studies 2.html" data-color="blue">
+    <div class="dot draft"></div>
+    <div class="tile-tag">Study</div>
+    <div class="tile-icon">◻</div>
+    <div class="tile-name">Grid v2</div>
+  </a>
+
+  <a class="tile" href="grid-motion-studiesV3.html" data-color="blue">
+    <div class="dot draft"></div>
+    <div class="tile-tag">Study</div>
+    <div class="tile-icon">▫</div>
+    <div class="tile-name">Grid v3</div>
+  </a>
+
+  <a class="tile" href="wallpaper.html" data-color="yellow">
+    <div class="dot draft"></div>
+    <div class="tile-tag">WP</div>
+    <div class="tile-icon">🎨</div>
+    <div class="tile-name">Wallpaper</div>
+  </a>
+
+</div>
+
+</body>
+</html>
