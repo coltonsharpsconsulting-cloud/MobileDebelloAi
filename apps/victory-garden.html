@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acre Log · Victory Garden</title>
+<style>
+:root {
+  --bg:#050508;--glass-bg:rgba(255,255,255,0.03);--glass-border:rgba(255,255,255,0.08);--blur:blur(24px);
+  --cyan:#00f5ff;--mag:#ff00ff;--purple:#8b00ff;--green:#00ff88;--orange:#ff6600;--blue:#0080ff;--yellow:#ffee00;--gold:#ffd700;
+  --neu-out:6px 6px 14px rgba(0,0,0,0.85),-3px -3px 8px rgba(255,255,255,0.025);
+  --sq:min(88vw,440px);--r:18px;--r-s:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 80px;font-family:-apple-system,'SF Pro Display','Segoe UI',sans-serif;color:#fff;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.065;pointer-events:none;animation:drift 24s ease-in-out infinite}
+.o1{width:500px;height:500px;background:var(--green);top:-180px;left:-180px}
+.o2{width:340px;height:340px;background:var(--purple);bottom:-90px;right:-90px;animation-delay:-9s}
+.o3{width:220px;height:220px;background:var(--cyan);top:50%;left:35%;animation-delay:-16s}
+@keyframes drift{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(36px,-26px)scale(1.1)}66%{transform:translate(-20px,34px)scale(.92)}}
+.back{width:100%;max-width:var(--sq);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);text-decoration:none;margin-bottom:20px;display:flex;align-items:center;gap:6px}
+.back:hover{color:rgba(255,255,255,.45)}
+.wordmark{width:100%;max-width:var(--sq);display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.wm-icon{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#003d18,var(--green));display:grid;place-items:center;font-size:22px;box-shadow:0 0 28px rgba(0,255,136,.4);animation:gGlow 3s ease-in-out infinite}
+@keyframes gGlow{0%,100%{box-shadow:0 0 28px rgba(0,255,136,.4)}50%{box-shadow:0 0 44px rgba(0,255,136,.65)}}
+.wm-text{display:flex;flex-direction:column;gap:2px}
+.wm-title{font-size:20px;font-weight:900;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.wm-sub{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.stat-strip{width:100%;max-width:var(--sq);display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-card{border-radius:var(--r-s);background:rgba(10,10,20,.65);backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);box-shadow:var(--neu-out);padding:12px 10px;display:flex;flex-direction:column;gap:4px}
+.stat-val{font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-val.gold{background:linear-gradient(135deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:7.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.28)}
+.tabs{display:flex;gap:6px;width:100%;max-width:var(--sq);margin-bottom:14px}
+.tab{flex:1;padding:9px 0;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:rgba(255,255,255,.35);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.tab.on{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.35);color:var(--green)}
+.panel{width:100%;max-width:var(--sq);border-radius:var(--r);background:rgba(10,10,20,.65);backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);box-shadow:var(--neu-out);padding:18px;margin-bottom:12px}
+.panel-label{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:14px}
+.bed-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:var(--sq)}
+.bed-card{border-radius:var(--r-s);background:rgba(0,255,136,.03);border:1.5px solid rgba(0,255,136,.12);padding:14px}
+.bed-card.salsa{background:rgba(255,102,0,.03);border-color:rgba(255,102,0,.12)}
+.bed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bed-name{font-size:14px;font-weight:800;color:rgba(255,255,255,.85)}
+.bed-meta{display:flex;align-items:center;gap:6px}
+.bed-cat{font-size:7px;font-weight:700;letter-spacing:1.5px;padding:2px 6px;border-radius:4px;text-transform:uppercase}
+.bed-cat.main{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green)}
+.bed-cat.salsa{background:rgba(255,102,0,.1);border:1px solid rgba(255,102,0,.2);color:var(--orange)}
+.bed-cat.fruit{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);color:var(--gold)}
+.health-dots{display:flex;gap:3px}
+.h-dot{width:6px;height:6px;border-radius:50%}
+.crop-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.crop-chip{font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px}
+.crop-chip.planned{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3)}
+.crop-chip.germinating{background:rgba(255,238,0,.07);border:1px solid rgba(255,238,0,.18);color:rgba(255,238,0,.8)}
+.crop-chip.growing{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);color:var(--green)}
+.crop-chip.flowering{background:rgba(0,245,255,.07);border:1px solid rgba(0,245,255,.2);color:var(--cyan)}
+.crop-chip.harvest-ready{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--gold)}
+.crop-chip.harvested{background:rgba(139,0,255,.07);border:1px solid rgba(139,0,255,.18);color:rgba(180,100,255,.9)}
+.crop-chip.failed{background:rgba(255,50,50,.06);border:1px solid rgba(255,50,50,.15);color:rgba(255,90,90,.7)}
+.bed-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.bed-last{font-size:8.5px;color:rgba(255,255,255,.25);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bed-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-sm{padding:5px 10px;border-radius:7px;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit;border:1px solid;transition:all .15s}
+.btn-sm.green{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.2);color:var(--green)}
+.btn-sm.green:hover{background:rgba(0,255,136,.16)}
+.btn-sm.dim{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.3)}
+.btn-sm.dim:hover{background:rgba(255,255,255,.07)}
+.log-rows{display:flex;flex-direction:column;gap:7px}
+.log-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--r-s);background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05)}
+.lr-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;font-size:15px}
+.lr-icon.fertilizer{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.15)}
+.lr-icon.water{background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.15)}
+.lr-icon.amendment{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.15)}
+.lr-icon.harvest-icon{background:rgba(255,102,0,.08);border:1px solid rgba(255,102,0,.15)}
+.lr-icon.other{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.lr-body{flex:1;min-width:0}
+.lr-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.8)}
+.lr-sub{font-size:8.5px;color:rgba(255,255,255,.3);margin-top:2px}
+.lr-right{text-align:right;flex-shrink:0;font-size:9px;color:rgba(255,255,255,.3)}
+.intel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.intel-card{border-radius:var(--r-s);background:rgba(10,10,20,.6);backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);padding:12px;display:flex;flex-direction:column;gap:3px}
+.intel-card.wide{grid-column:1/-1}
+.ic-val{font-size:20px;font-weight:900;line-height:1.1}
+.ic-val.green{background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ic-val.gold{background:linear-gradient(135deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ic-val.orange{background:linear-gradient(135deg,var(--orange),#ffe0cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ic-sub{font-size:9px;color:rgba(255,255,255,.35);line-height:1.45;margin-top:1px}
+.ic-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:auto;padding-top:6px}
+.salsa-list{display:flex;flex-direction:column;gap:6px}
+.salsa-row{padding:10px 12px;border-radius:var(--r-s);background:rgba(255,102,0,.03);border:1px solid rgba(255,102,0,.1);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.sc-body{flex:1;min-width:0}
+.sc-name{font-size:11px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:2px}
+.sc-variety{font-size:8px;color:rgba(255,102,0,.7);margin-bottom:3px}
+.sc-why{font-size:8.5px;color:rgba(255,255,255,.3);line-height:1.45}
+.sc-status{font-size:7.5px;font-weight:700;padding:3px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.sc-status.in-ground{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green)}
+.sc-status.not-planted{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.28)}
+.tree-list{display:flex;flex-direction:column;gap:7px}
+.tree-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-s);background:rgba(255,215,0,.03);border:1px solid rgba(255,215,0,.1)}
+.tree-icon{font-size:20px;flex-shrink:0}
+.tree-body{flex:1;min-width:0}
+.tree-name{font-size:11px;font-weight:700;color:rgba(255,255,255,.8)}
+.tree-detail{font-size:8.5px;color:rgba(255,255,255,.3);margin-top:2px}
+.tree-badge{font-size:7.5px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:4px;text-transform:uppercase;white-space:nowrap;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.18);color:var(--gold)}
+.btn-add{width:100%;max-width:var(--sq);padding:12px;margin-bottom:12px;border-radius:var(--r-s);background:rgba(0,255,136,.06);border:1.5px solid rgba(0,255,136,.2);color:var(--green);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-add:hover{background:rgba(0,255,136,.12);border-color:rgba(0,255,136,.35)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);z-index:100;align-items:flex-end;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{width:min(90vw,420px);border-radius:var(--r) var(--r) 0 0;background:rgba(10,10,22,.96);border:1.5px solid rgba(0,255,136,.15);border-bottom:none;padding:22px;box-shadow:0 -10px 60px rgba(0,255,136,.1);max-height:82vh;overflow-y:auto}
+.modal-title{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:16px}
+.log-form{display:flex;flex-direction:column;gap:10px}
+.field{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:var(--r-s);padding:10px 13px;color:#fff;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.field:focus{border-color:rgba(0,255,136,.3)}
+.field::placeholder{color:rgba(255,255,255,.2)}
+select.field option{background:#0d0d14}
+.field-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.field-group{display:flex;flex-direction:column}
+.field-row{display:flex;gap:8px}
+.health-picker{display:flex;gap:6px;margin-top:4px}
+.hp-btn{flex:1;padding:10px 4px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;text-align:center;color:rgba(255,255,255,.5)}
+.hp-btn.on{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.1);color:var(--green)}
+.btn-submit{width:100%;padding:12px;border-radius:var(--r-s);background:linear-gradient(135deg,rgba(0,255,136,.15),rgba(0,255,136,.08));border:1.5px solid rgba(0,255,136,.35);color:var(--green);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-submit:hover{background:linear-gradient(135deg,rgba(0,255,136,.25),rgba(0,255,136,.12))}
+.modal-close{width:100%;padding:10px;margin-top:10px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:rgba(255,255,255,.3);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit}
+.import-toggle{width:100%;max-width:var(--sq);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-s);background:var(--glass-bg);border:1px solid var(--glass-border);cursor:pointer;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
+.import-panel{display:none;width:100%;max-width:var(--sq);margin-bottom:14px}
+.import-panel.open{display:block}
+textarea.field{resize:vertical;min-height:110px;font-size:11px;line-height:1.5;font-family:'SF Mono',monospace}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);border-radius:10px;padding:10px 20px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--green);transition:transform .3s ease;white-space:nowrap;z-index:999}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;padding:24px 0;color:rgba(255,255,255,.18);font-size:11px}
+.divider{width:100%;max-width:var(--sq);height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:4px 0 14px}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<a class="back" href="../index.html">← Debello</a>
+
+<div class="wordmark">
+  <div class="wm-icon">🌱</div>
+  <div class="wm-text">
+    <div class="wm-title">Acre Log</div>
+    <div class="wm-sub">Victory Garden · 1 Acre</div>
+  </div>
+</div>
+
+<div class="stat-strip">
+  <div class="stat-card"><div class="stat-val" id="st-beds">—</div><div class="stat-lbl">Beds Active</div></div>
+  <div class="stat-card"><div class="stat-val" id="st-crops">—</div><div class="stat-lbl">Crops</div></div>
+  <div class="stat-card"><div class="stat-val gold" id="st-harvest">—</div><div class="stat-lbl">Harvests</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="switchTab('garden',this)">Garden</button>
+  <button class="tab" onclick="switchTab('inputs',this)">Inputs</button>
+  <button class="tab" onclick="switchTab('harvest',this)">Harvest</button>
+  <button class="tab" onclick="switchTab('intel',this)">Intel</button>
+</div>
+
+<!-- Garden Tab -->
+<div id="view-garden">
+  <div class="bed-list" id="bed-list"></div>
+</div>
+
+<!-- Inputs Tab -->
+<div id="view-inputs" style="display:none">
+  <button class="btn-add" onclick="openModal('input')">+ Log Input · Fertilizer / Amendment</button>
+  <div class="panel"><div class="panel-label">Input Log</div><div class="log-rows" id="input-log"></div></div>
+</div>
+
+<!-- Harvest Tab -->
+<div id="view-harvest" style="display:none">
+  <button class="btn-add" onclick="openModal('harvest')">+ Log Harvest</button>
+  <div class="panel"><div class="panel-label">Harvest Log</div><div class="log-rows" id="harvest-log"></div></div>
+</div>
+
+<!-- Intel Tab -->
+<div id="view-intel" style="display:none">
+  <div class="panel">
+    <div class="panel-label">Model Proof · Ground Report</div>
+    <div class="intel-grid" id="intel-grid"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-label">Salsa Garden · Best Crops for This Ground</div>
+    <div class="salsa-list" id="salsa-list"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-label">Fruit Tree Plan</div>
+    <div class="tree-list" id="tree-list"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="import-toggle" onclick="toggleImport()">
+  <span>Import Log Entry (YAML · Claude logs here)</span>
+  <span id="import-arrow">▾</span>
+</div>
+<div class="import-panel" id="import-panel">
+  <div class="panel">
+    <div class="panel-label">Supported: type: checkin · input · harvest · status</div>
+    <div class="log-form">
+      <textarea class="field" id="import-text" placeholder="---
+type: checkin
+bed: Salsa Patch
+date: 2026-06-24
+health: 4
+notes: Peppers establishing well. Tomatoes strong.
+---
+type: input
+bed: Salsa Patch
+date: 2026-06-24
+inputType: fertilizer
+product: 10-10-10 All Purpose
+amount: 2 lbs
+notes: First application, broadcast over bed
+---
+type: harvest
+bed: Greens Row
+date: 2026-06-24
+crop: Butterhead Lettuce
+amount: 1.2 lbs
+notes: First harvest of season, excellent quality"></textarea>
+      <button class="btn-submit" onclick="importYAML()">Import Entries</button>
+      <div id="import-result" style="font-size:10px;color:var(--green);text-align:center;min-height:14px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Check-in Modal -->
+<div class="modal-bg" id="modal-checkin" onclick="closeBg(event,'checkin')">
+  <div class="modal">
+    <div class="modal-title">Daily Check-In</div>
+    <div class="log-form">
+      <div class="field-group"><div class="field-label">Bed</div><select class="field" id="ci-bed"></select></div>
+      <div class="field-group"><div class="field-label">Date</div><input class="field" type="date" id="ci-date"></div>
+      <div class="field-group">
+        <div class="field-label">Health Score · 1 poor → 5 excellent</div>
+        <div class="health-picker">
+          <button class="hp-btn" onclick="pickH(1)" id="h1">1</button>
+          <button class="hp-btn" onclick="pickH(2)" id="h2">2</button>
+          <button class="hp-btn" onclick="pickH(3)" id="h3">3</button>
+          <button class="hp-btn on" onclick="pickH(4)" id="h4">4</button>
+          <button class="hp-btn" onclick="pickH(5)" id="h5">5</button>
+        </div>
+      </div>
+      <div class="field-group"><div class="field-label">Notes</div><textarea class="field" id="ci-notes" style="min-height:70px;resize:none" placeholder="What did you observe? Pests, growth, soil condition…"></textarea></div>
+      <button class="btn-submit" onclick="submitCheckin()">Save Check-In</button>
+    </div>
+    <button class="modal-close" onclick="closeM('checkin')">Cancel</button>
+  </div>
+</div>
+
+<!-- Input Modal -->
+<div class="modal-bg" id="modal-input" onclick="closeBg(event,'input')">
+  <div class="modal">
+    <div class="modal-title">Log Input</div>
+    <div class="log-form">
+      <div class="field-group"><div class="field-label">Bed</div><select class="field" id="in-bed"></select></div>
+      <div class="field-row">
+        <div class="field-group" style="flex:1"><div class="field-label">Date</div><input class="field" type="date" id="in-date"></div>
+        <div class="field-group" style="flex:1"><div class="field-label">Type</div>
+          <select class="field" id="in-type">
+            <option value="fertilizer">Fertilizer</option>
+            <option value="amendment">Amendment</option>
+            <option value="water">Water / Irrigation</option>
+            <option value="pest-control">Pest Control</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group" style="flex:2"><div class="field-label">Product</div><input class="field" id="in-product" placeholder="e.g. 10-10-10 All Purpose"></div>
+        <div class="field-group" style="flex:1"><div class="field-label">Amount</div><input class="field" id="in-amount" placeholder="2 lbs"></div>
+      </div>
+      <div class="field-group"><div class="field-label">Notes</div><textarea class="field" id="in-notes" style="min-height:60px;resize:none" placeholder="Application method, observations…"></textarea></div>
+      <button class="btn-submit" onclick="submitInput()">Log Input</button>
+    </div>
+    <button class="modal-close" onclick="closeM('input')">Cancel</button>
+  </div>
+</div>
+
+<!-- Harvest Modal -->
+<div class="modal-bg" id="modal-harvest" onclick="closeBg(event,'harvest')">
+  <div class="modal">
+    <div class="modal-title">Log Harvest</div>
+    <div class="log-form">
+      <div class="field-group"><div class="field-label">Bed</div><select class="field" id="hv-bed"></select></div>
+      <div class="field-row">
+        <div class="field-group" style="flex:1"><div class="field-label">Date</div><input class="field" type="date" id="hv-date"></div>
+        <div class="field-group" style="flex:1"><div class="field-label">Crop</div><input class="field" id="hv-crop" placeholder="Roma Tomato"></div>
+      </div>
+      <div class="field-row">
+        <div class="field-group" style="flex:1"><div class="field-label">Amount</div><input class="field" id="hv-amount" placeholder="4.5 lbs"></div>
+        <div class="field-group" style="flex:1"><div class="field-label">Quality (1–5)</div><input class="field" type="number" id="hv-quality" min="1" max="5" placeholder="4"></div>
+      </div>
+      <div class="field-group"><div class="field-label">Notes</div><textarea class="field" id="hv-notes" style="min-height:60px;resize:none" placeholder="Color, size, taste, yield surprise…"></textarea></div>
+      <button class="btn-submit" onclick="submitHarvest()">Log Harvest</button>
+    </div>
+    <button class="modal-close" onclick="closeM('harvest')">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'vgarden_v1';
+
+const SEED = {
+  beds:[
+    {id:'b-salsa',name:'Salsa Patch',category:'salsa',sqft:600,
+     crops:[
+       {id:'c1',name:'Roma Tomato',variety:'Roma VF',planted:'2026-05-15',status:'growing'},
+       {id:'c2',name:'Bell Pepper',variety:'California Wonder',planted:'2026-05-15',status:'germinating'},
+       {id:'c3',name:'Jalapeño',variety:'Early Jalapeño',planted:'2026-05-15',status:'germinating'},
+       {id:'c4',name:'Sweet Onion',variety:'Texas Sweet',planted:'2026-04-20',status:'growing'},
+       {id:'c5',name:'Cilantro',variety:'Slow-Bolt',planted:null,status:'planned'}
+     ],
+     inputs:[],
+     checkins:[{id:'ci0',date:'2026-06-20',health:3,notes:'Tomatoes looking healthy. Peppers slow to establish. No pests observed.'}],
+     harvests:[]},
+    {id:'b-beans',name:'Green Bean + Carrot Row',category:'main',sqft:400,
+     crops:[
+       {id:'c6',name:'Bush Bean',variety:'Blue Lake 274',planted:'2026-05-20',status:'germinating'},
+       {id:'c7',name:'Carrot',variety:'Nantes',planted:'2026-05-20',status:'germinating'},
+       {id:'c8',name:'Radish',variety:'Cherry Belle',planted:'2026-05-15',status:'growing'}
+     ],
+     inputs:[],
+     checkins:[{id:'ci1',date:'2026-06-18',health:4,notes:'Radishes coming in fast. Beans and carrots just sprouting, on track.'}],
+     harvests:[]},
+    {id:'b-greens',name:'Greens Row',category:'main',sqft:300,
+     crops:[
+       {id:'c9',name:'Butterhead Lettuce',variety:'Buttercrunch',planted:'2026-05-10',status:'harvest-ready'},
+       {id:'c10',name:'Spinach',variety:'Bloomsdale',planted:'2026-05-10',status:'growing'},
+       {id:'c11',name:'Kale',variety:'Lacinato',planted:'2026-05-15',status:'growing'}
+     ],
+     inputs:[],
+     checkins:[{id:'ci2',date:'2026-06-22',health:5,notes:'Lettuce ready to pull. Best performing bed. No issues.'}],
+     harvests:[]}
+  ],
+  fruitTrees:[
+    {id:'ft1',species:'Apple',variety:'Honeycrisp',status:'planned',planted:null,location:'North fence line',notes:'3–4 trees, 20 ft spacing'},
+    {id:'ft2',species:'Peach',variety:'Elberta',status:'planned',planted:null,location:'East boundary',notes:'Full sun, heat tolerant, high yield'},
+    {id:'ft3',species:'Fig',variety:'Brown Turkey',status:'planned',planted:null,location:'South wall',notes:'Low maintenance, drought tolerant once established'}
+  ],
+  meta:{acreage:1,soilType:'',started:'2026-05-01'}
+};
+
+const SALSA_INTEL = [
+  {name:'Roma Tomato',variety:'Roma VF or San Marzano',why:'Dense, low-moisture flesh — best for cooked salsa and sauce. 12–15 lbs/plant per season.'},
+  {name:'Jalapeño',variety:'Early Jalapeño',why:'Reliable heat, early producer. Roasts well for fire-roasted salsa. 2–4 lbs/plant.'},
+  {name:'Bell Pepper',variety:'California Wonder',why:'Sweetness to balance heat. Versatile raw or roasted. Strong performer in most soils.'},
+  {name:'Sweet Onion',variety:'Texas Sweet or Walla Walla',why:'Mild enough to eat raw. High yield per sqft. Cures well for long-term storage.'},
+  {name:'Garlic',variety:'Hardneck Rocambole',why:'Complex flavor, best for salsa depth. Plant fall, harvest early summer. Easy to store all year.'},
+  {name:'Tomatillo',variety:'Verde',why:'Required for salsa verde. Self-seeds after first year. Plant 2+ for cross-pollination.'},
+  {name:'Cilantro',variety:'Slow-Bolt (Santo)',why:'Succession-plant every 3 weeks in hot climates to prevent bolting. Essential fresh.'}
+];
+
+function load(){
+  try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):JSON.parse(JSON.stringify(SEED));}
+  catch(e){return JSON.parse(JSON.stringify(SEED));}
+}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+
+let G=load();
+if(!localStorage.getItem(KEY))save(G);
+
+function uid(){return 'x'+Math.random().toString(36).slice(2,9);}
+function today(){return new Date().toISOString().slice(0,10);}
+function fmtDate(ds){
+  if(!ds)return'—';
+  const d=new Date(ds+'T12:00:00');
+  return['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getDate();
+}
+function hColor(h){return['','#ff4444','#ff8800','#ffee00','#88ee00','#00ff88'][h]||'rgba(255,255,255,.1)';}
+function bedById(id){return G.beds.find(b=>b.id===id);}
+function bedByName(n){return G.beds.find(b=>b.name.toLowerCase().trim()===n.toLowerCase().trim());}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+const STATUS_ICON={planned:'◌',germinating:'◎',growing:'●',flowering:'✿','harvest-ready':'★',harvested:'◆',failed:'✕'};
+
+function renderStats(){
+  const active=G.beds.filter(b=>b.crops.some(c=>c.status!=='planned'&&c.status!=='failed')).length;
+  const crops=G.beds.reduce((s,b)=>s+b.crops.filter(c=>c.status!=='failed').length,0);
+  const harvests=G.beds.reduce((s,b)=>s+b.harvests.length,0);
+  document.getElementById('st-beds').textContent=active;
+  document.getElementById('st-crops').textContent=crops;
+  document.getElementById('st-harvest').textContent=harvests||'—';
+}
+
+function renderBeds(){
+  const el=document.getElementById('bed-list');
+  el.innerHTML=G.beds.map(bed=>{
+    const lastCI=bed.checkins.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+    const h=lastCI?lastCI.health:0;
+    const dots=[1,2,3,4,5].map(i=>`<div class="h-dot" style="background:${i<=h?hColor(h):'rgba(255,255,255,.1)'}"></div>`).join('');
+    const chips=bed.crops.map(c=>`<div class="crop-chip ${c.status}">${STATUS_ICON[c.status]||'◌'} ${c.name}</div>`).join('');
+    const note=lastCI?`${fmtDate(lastCI.date)} · ${lastCI.notes.slice(0,44)}${lastCI.notes.length>44?'…':''}`:'No check-ins yet';
+    return`<div class="bed-card ${bed.category}">
+      <div class="bed-header">
+        <div class="bed-name">${bed.name}</div>
+        <div class="bed-meta"><div class="bed-cat ${bed.category}">${bed.category}</div><div class="health-dots">${dots}</div></div>
+      </div>
+      <div class="crop-list">${chips}</div>
+      <div class="bed-footer">
+        <div class="bed-last">${note}</div>
+        <div class="bed-actions">
+          <button class="btn-sm green" onclick="openCheckin('${bed.id}')">Check In</button>
+          <button class="btn-sm dim" onclick="openInputFor('${bed.id}')">+ Input</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderInputLog(){
+  const el=document.getElementById('input-log');
+  const all=[];
+  G.beds.forEach(b=>b.inputs.forEach(i=>all.push({...i,bedName:b.name})));
+  all.sort((a,b)=>b.date.localeCompare(a.date));
+  if(!all.length){el.innerHTML='<div class="empty">No inputs logged yet.</div>';return;}
+  const icon={fertilizer:'🌿',amendment:'🪨',water:'💧','pest-control':'🐛',other:'📋'};
+  el.innerHTML=all.map(i=>`<div class="log-row">
+    <div class="lr-icon ${i.type}">${icon[i.type]||'📋'}</div>
+    <div class="lr-body"><div class="lr-title">${i.product}${i.amount?' · '+i.amount:''}</div><div class="lr-sub">${i.bedName}${i.notes?' · '+i.notes.slice(0,55):''}</div></div>
+    <div class="lr-right">${fmtDate(i.date)}</div>
+  </div>`).join('');
+}
+
+function renderHarvestLog(){
+  const el=document.getElementById('harvest-log');
+  const all=[];
+  G.beds.forEach(b=>b.harvests.forEach(h=>all.push({...h,bedName:b.name})));
+  all.sort((a,b)=>b.date.localeCompare(a.date));
+  if(!all.length){el.innerHTML='<div class="empty">No harvests logged yet.</div>';return;}
+  el.innerHTML=all.map(h=>`<div class="log-row">
+    <div class="lr-icon harvest-icon">🥬</div>
+    <div class="lr-body"><div class="lr-title">${h.crop} · ${h.amount}</div><div class="lr-sub">${h.bedName}${h.notes?' · '+h.notes.slice(0,55):''}</div></div>
+    <div class="lr-right">${fmtDate(h.date)}</div>
+  </div>`).join('');
+}
+
+function renderIntel(){
+  const sqft=G.beds.reduce((s,b)=>s+(b.sqft||0),0);
+  const pct=Math.round(sqft/43560*100);
+  const crops=G.beds.reduce((s,b)=>s+b.crops.filter(c=>c.status!=='failed').length,0);
+  const hrReady=G.beds.reduce((s,b)=>s+b.crops.filter(c=>c.status==='harvest-ready').length,0);
+  const harvests=G.beds.reduce((s,b)=>s+b.harvests.length,0);
+  const labor=Math.ceil(sqft/100*0.5);
+  const students=Math.ceil(labor/2);
+  const salsaBed=G.beds.find(b=>b.category==='salsa');
+  const salsaUp=salsaBed?salsaBed.crops.filter(c=>c.status!=='planned'&&c.status!=='failed').length:0;
+
+  document.getElementById('intel-grid').innerHTML=
+    `<div class="intel-card"><div class="ic-val green">${pct}%</div><div class="ic-sub">${sqft.toLocaleString()} sqft of 43,560 active</div><div class="ic-lbl">Acre Utilization</div></div>`+
+    `<div class="intel-card"><div class="ic-val green">${crops}</div><div class="ic-sub">${G.beds.length} beds · ${hrReady} harvest-ready</div><div class="ic-lbl">Crops Tracking</div></div>`+
+    `<div class="intel-card"><div class="ic-val orange">${labor}h</div><div class="ic-sub">~${students} students × 2h/wk to cover</div><div class="ic-lbl">Weekly Labor Est.</div></div>`+
+    `<div class="intel-card"><div class="ic-val gold">${salsaUp}/5</div><div class="ic-sub">Core salsa crops in ground</div><div class="ic-lbl">Salsa Readiness</div></div>`+
+    `<div class="intel-card wide"><div class="ic-sub" style="font-size:10px;color:rgba(255,255,255,.42);line-height:1.75">`+
+    `1 acre · ${G.beds.length} beds · ${sqft.toLocaleString()} sqft active · ${crops} crop varieties · ${labor}h/week estimated labor · ${harvests} harvests logged. `+
+    `Tracking fertilizer inputs, weekly health scores, and yield data to demonstrate a sustainable student-workforce agricultural model to district stakeholders.`+
+    `</div><div class="ic-lbl">District Summary · Proof of Model</div></div>`;
+
+  const salsaEl=document.getElementById('salsa-list');
+  salsaEl.innerHTML=SALSA_INTEL.map(s=>{
+    const match=salsaBed&&salsaBed.crops.find(c=>c.name.toLowerCase().includes(s.name.split(' ')[0].toLowerCase()));
+    const inGround=match&&match.status!=='planned'&&match.status!=='failed';
+    return`<div class="salsa-row">
+      <div class="sc-body">
+        <div class="sc-name">${s.name}</div>
+        <div class="sc-variety">${s.variety}</div>
+        <div class="sc-why">${s.why}</div>
+      </div>
+      <div class="sc-status ${inGround?'in-ground':'not-planted'}">${inGround?match.status:'not planted'}</div>
+    </div>`;
+  }).join('');
+
+  const treeEl=document.getElementById('tree-list');
+  const icons={Apple:'🍎',Peach:'🍑',Fig:'🍃',Pear:'🍐',Lemon:'🍋',Orange:'🍊',Cherry:'🍒'};
+  treeEl.innerHTML=G.fruitTrees.map(t=>`<div class="tree-row">
+    <div class="tree-icon">${icons[t.species]||'🌳'}</div>
+    <div class="tree-body"><div class="tree-name">${t.species} · ${t.variety}</div><div class="tree-detail">${t.location} · ${t.notes}</div></div>
+    <div class="tree-badge">${t.status}</div>
+  </div>`).join('');
+}
+
+function renderAll(){renderStats();renderBeds();renderInputLog();renderHarvestLog();renderIntel();}
+
+function switchTab(name,btn){
+  ['garden','inputs','harvest','intel'].forEach(t=>document.getElementById('view-'+t).style.display=t===name?'':'none');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+let selH=4;
+function pickH(h){selH=h;[1,2,3,4,5].forEach(i=>document.getElementById('h'+i).classList.toggle('on',i===h));}
+
+function populateSelects(){
+  const opts=G.beds.map(b=>`<option value="${b.id}">${b.name}</option>`).join('');
+  ['ci-bed','in-bed','hv-bed'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+
+function openModal(type){
+  populateSelects();
+  const d=today();
+  if(type==='checkin'){document.getElementById('ci-date').value=d;document.getElementById('ci-notes').value='';pickH(4);}
+  if(type==='input'){document.getElementById('in-date').value=d;document.getElementById('in-product').value='';document.getElementById('in-amount').value='';document.getElementById('in-notes').value='';}
+  if(type==='harvest'){document.getElementById('hv-date').value=d;document.getElementById('hv-crop').value='';document.getElementById('hv-amount').value='';document.getElementById('hv-notes').value='';}
+  document.getElementById('modal-'+type).classList.add('show');
+}
+function openCheckin(bedId){openModal('checkin');document.getElementById('ci-bed').value=bedId;}
+function openInputFor(bedId){openModal('input');document.getElementById('in-bed').value=bedId;}
+function closeBg(e,t){if(e.target===document.getElementById('modal-'+t))closeM(t);}
+function closeM(t){document.getElementById('modal-'+t).classList.remove('show');}
+
+function submitCheckin(){
+  const bedId=document.getElementById('ci-bed').value;
+  const date=document.getElementById('ci-date').value;
+  const notes=document.getElementById('ci-notes').value.trim();
+  if(!bedId||!date)return;
+  const bed=bedById(bedId);if(!bed)return;
+  bed.checkins.push({id:uid(),date,health:selH,notes});
+  save(G);closeM('checkin');renderAll();showToast('Check-in saved · '+bed.name);
+}
+function submitInput(){
+  const bedId=document.getElementById('in-bed').value;
+  const date=document.getElementById('in-date').value;
+  const type=document.getElementById('in-type').value;
+  const product=document.getElementById('in-product').value.trim();
+  const amount=document.getElementById('in-amount').value.trim();
+  const notes=document.getElementById('in-notes').value.trim();
+  if(!bedId||!date||!product)return;
+  const bed=bedById(bedId);if(!bed)return;
+  bed.inputs.push({id:uid(),date,type,product,amount,notes});
+  save(G);closeM('input');renderAll();showToast('Input logged · '+product);
+}
+function submitHarvest(){
+  const bedId=document.getElementById('hv-bed').value;
+  const date=document.getElementById('hv-date').value;
+  const crop=document.getElementById('hv-crop').value.trim();
+  const amount=document.getElementById('hv-amount').value.trim();
+  const quality=parseInt(document.getElementById('hv-quality').value)||3;
+  const notes=document.getElementById('hv-notes').value.trim();
+  if(!bedId||!date||!crop||!amount)return;
+  const bed=bedById(bedId);if(!bed)return;
+  bed.harvests.push({id:uid(),date,crop,amount,quality,notes});
+  save(G);closeM('harvest');renderAll();showToast('Harvest logged · '+amount+' '+crop);
+}
+
+function toggleImport(){
+  const p=document.getElementById('import-panel');
+  const a=document.getElementById('import-arrow');
+  p.classList.toggle('open');
+  a.textContent=p.classList.contains('open')?'▴':'▾';
+}
+
+function importYAML(){
+  const text=document.getElementById('import-text').value.trim();
+  const res=document.getElementById('import-result');
+  if(!text){res.textContent='Paste YAML entries above.';return;}
+  const blocks=text.split(/^---/m).map(s=>s.trim()).filter(Boolean);
+  let added=0,errors=0;
+  blocks.forEach(block=>{
+    try{
+      const obj={};
+      block.split('\n').forEach(line=>{
+        const m=line.match(/^(\w+):\s*(.+)$/);
+        if(m)obj[m[1].trim()]=m[2].trim().replace(/^["']|["']$/g,'');
+      });
+      const type=obj.type;
+      const bed=obj.bed?bedByName(obj.bed):null;
+      if(!type){errors++;return;}
+      if(type==='checkin'){
+        if(!bed){errors++;return;}
+        bed.checkins.push({id:uid(),date:obj.date||today(),health:parseInt(obj.health)||3,notes:obj.notes||''});
+        added++;
+      }else if(type==='input'){
+        if(!bed){errors++;return;}
+        bed.inputs.push({id:uid(),date:obj.date||today(),type:obj.inputType||'other',product:obj.product||'',amount:obj.amount||'',notes:obj.notes||''});
+        added++;
+      }else if(type==='harvest'){
+        if(!bed){errors++;return;}
+        bed.harvests.push({id:uid(),date:obj.date||today(),crop:obj.crop||'',amount:obj.amount||'',quality:parseInt(obj.quality)||3,notes:obj.notes||''});
+        added++;
+      }else if(type==='status'){
+        if(!bed){errors++;return;}
+        const crop=bed.crops.find(c=>c.name.toLowerCase().includes((obj.crop||'').toLowerCase()));
+        if(crop&&obj.status){crop.status=obj.status;added++;}
+      }
+    }catch(e){errors++;}
+  });
+  save(G);renderAll();
+  res.textContent=added+' imported'+(errors?', '+errors+' skipped':'');
+  if(added>0)document.getElementById('import-text').value='';
+}
+
+renderAll();
+</script>
+</body>
+</html>
