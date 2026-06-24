@@ -26,7 +26,7 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
 /* ── coin hero ── */
 .coin-hero{width:100%;max-width:var(--sq);display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 32px}
 .coin-ring{position:relative;width:100px;height:100px;margin-bottom:20px}
-.coin-body{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#b8860b,var(--gold),#ffeaa7,var(--gold));display:grid;place-items:center;font-size:42px;font-weight:900;color:#000;box-shadow:0 0 40px rgba(255,215,0,.5),0 0 80px rgba(255,215,0,.2);animation:coinGlow 3s ease-in-out infinite;position:relative;z-index:1}
+.coin-svg{width:100px;height:100px;border-radius:50%;box-shadow:0 0 40px rgba(255,215,0,.5),0 0 80px rgba(255,215,0,.2);animation:coinGlow 3s ease-in-out infinite;position:relative;z-index:1;display:block}
 @keyframes coinGlow{0%,100%{box-shadow:0 0 40px rgba(255,215,0,.5),0 0 80px rgba(255,215,0,.2)}50%{box-shadow:0 0 60px rgba(255,215,0,.8),0 0 120px rgba(255,215,0,.4)}}
 .coin-ring-pulse{position:absolute;inset:-12px;border-radius:50%;border:1.5px solid rgba(255,215,0,.2);animation:ringPulse 3s ease-in-out infinite}
 .coin-ring-pulse2{position:absolute;inset:-24px;border-radius:50%;border:1px solid rgba(255,215,0,.08);animation:ringPulse 3s ease-in-out infinite .6s}
@@ -92,7 +92,71 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
   <div class="coin-ring">
     <div class="coin-ring-pulse2"></div>
     <div class="coin-ring-pulse"></div>
-    <div class="coin-body">Đ</div>
+    <svg class="coin-svg" viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cgBg" cx="38%" cy="32%" r="68%">
+          <stop offset="0%" stop-color="#1c1400"/>
+          <stop offset="100%" stop-color="#060503"/>
+        </radialGradient>
+        <linearGradient id="cgGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b8860b"/>
+          <stop offset="50%" stop-color="#ffd700"/>
+          <stop offset="100%" stop-color="#fff0a0"/>
+        </linearGradient>
+        <linearGradient id="cgGoldD" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#a0700a"/>
+          <stop offset="45%" stop-color="#ffd700"/>
+          <stop offset="100%" stop-color="#ffeaa7"/>
+        </linearGradient>
+        <filter id="cgGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Coin base -->
+      <circle cx="50" cy="50" r="49" fill="url(#cgBg)"/>
+      <!-- Outer ring -->
+      <circle cx="50" cy="50" r="48" fill="none" stroke="url(#cgGold)" stroke-width="1.5"/>
+      <!-- 12 bezel tick marks -->
+      <g stroke="#ffd700" stroke-width="1" opacity="0.3">
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(0,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(30,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(60,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(90,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(120,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(150,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(180,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(210,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(240,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(270,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(300,50,50)"/>
+        <line x1="50" y1="3" x2="50" y2="8" transform="rotate(330,50,50)"/>
+      </g>
+      <!-- Inner bezel ring -->
+      <circle cx="50" cy="50" r="41" fill="none" stroke="rgba(255,215,0,0.12)" stroke-width="0.8"/>
+      <!-- Arc text paths (r=42 from center) -->
+      <path id="cgTop" d="M 8,50 A 42,42 0 0,1 92,50" fill="none"/>
+      <path id="cgBot" d="M 8,50 A 42,42 0 0,0 92,50" fill="none"/>
+      <!-- DEBELLO top arc -->
+      <text font-family="'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif"
+            font-size="6.2" font-weight="700" letter-spacing="2.5" fill="#ffd700" opacity="0.7">
+        <textPath href="#cgTop" startOffset="50%" text-anchor="middle">DEBELLO</textPath>
+      </text>
+      <!-- TECHNOLOGIES bottom arc -->
+      <text font-family="'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif"
+            font-size="4" font-weight="600" letter-spacing="1.2" fill="#ffd700" opacity="0.4">
+        <textPath href="#cgBot" startOffset="50%" text-anchor="middle">TECHNOLOGIES</textPath>
+      </text>
+      <!-- D mark: shadow layer for depth -->
+      <path d="M 33,26 L 44,26 L 68,50 L 44,74 L 33,74 Z"
+            fill="rgba(0,0,0,0.55)" transform="translate(1.5,1.5)"/>
+      <!-- D mark: main angular shield shape -->
+      <path d="M 33,26 L 44,26 L 68,50 L 44,74 L 33,74 Z"
+            fill="url(#cgGoldD)" filter="url(#cgGlow)"/>
+      <!-- D mark: edge highlights for bevel -->
+      <path d="M 33,26 L 44,26 L 68,50" stroke="rgba(255,255,255,0.22)" stroke-width="0.7" fill="none"/>
+      <line x1="33" y1="26" x2="33" y2="74" stroke="rgba(255,255,255,0.14)" stroke-width="0.7"/>
+    </svg>
   </div>
   <div class="coin-title">Deb-Coin</div>
   <div class="coin-ticker">DCX · Personal Value Index</div>
