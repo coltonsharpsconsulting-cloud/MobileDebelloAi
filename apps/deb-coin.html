@@ -71,6 +71,40 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
 .earn-desc{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
 .earn-amt{font-size:11px;font-weight:800;color:var(--gold);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.18);border-radius:6px;padding:3px 8px;white-space:nowrap;flex-shrink:0}
 
+/* ── index signal ── */
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.signal-tile{border-radius:var(--r-s);background:rgba(10,10,20,.6);backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);box-shadow:var(--neu-out);padding:14px 12px;display:flex;flex-direction:column;gap:3px}
+.signal-tile.wide{grid-column:1/-1}
+.st-val{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+.st-val.cyan{background:linear-gradient(135deg,var(--cyan),#e0ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.st-val.green{background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.st-sub{font-size:9px;color:rgba(255,255,255,.35);line-height:1.45;margin-top:1px}
+.st-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:auto;padding-top:6px}
+.tier-bar{display:flex;gap:2px;height:7px;border-radius:4px;overflow:hidden}
+.tier-seg{height:100%;min-width:2px}
+.tier-pcts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.tier-pct{font-size:8px;font-weight:700;letter-spacing:.5px}
+
+/* ── build record ── */
+.log-list{display:flex;flex-direction:column;gap:5px}
+.le-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--r-s);background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);transition:border-color .15s}
+.le-row:hover{border-color:rgba(255,215,0,.15)}
+.le-body{flex:1;min-width:0}
+.le-desc{font-size:11px;font-weight:600;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}
+.le-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.le-date{font-size:8.5px;color:rgba(255,255,255,.3)}
+.le-tvm{font-size:7.5px;font-weight:700;letter-spacing:.8px;padding:2px 6px;border-radius:4px}
+.le-tvm.t-elite{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:var(--gold)}
+.le-tvm.t-deep{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+.le-tvm.t-late{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.28)}
+.le-tvm.t-std{background:transparent;border:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.18)}
+.le-right{text-align:right;flex-shrink:0}
+.le-val{font-size:13px;font-weight:900;color:var(--gold)}
+.le-formula{font-size:8px;color:rgba(255,255,255,.2);margin-top:3px}
+.log-more{width:100%;padding:9px;margin-top:6px;border-radius:var(--r-s);background:transparent;border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.22);font-size:8.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.log-more:hover{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.4)}
+.no-data{text-align:center;padding:24px 0;font-size:11px;color:rgba(255,255,255,.18);letter-spacing:.5px}
+
 /* ── launch button ── */
 .launch-wrap{width:100%;max-width:var(--sq);margin-top:8px}
 .btn-launch{width:100%;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,215,0,.08));border:1.5px solid rgba(255,215,0,.4);color:var(--gold);font-size:13px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none}
@@ -165,9 +199,9 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
 
 <!-- stats -->
 <div class="stat-strip">
-  <div class="stat-card"><div class="stat-val">2,325</div><div class="stat-lbl">Total ĐBC</div></div>
-  <div class="stat-card"><div class="stat-val">75</div><div class="stat-lbl">Sessions</div></div>
-  <div class="stat-card"><div class="stat-val">31.0</div><div class="stat-lbl">Florin Price</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-total">2,325</div><div class="stat-lbl">Total ĐBC</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-sessions">75</div><div class="stat-lbl">Sessions</div></div>
+  <div class="stat-card"><div class="stat-val" id="stat-fp">31.0</div><div class="stat-lbl">Florin Price</div></div>
 </div>
 
 <div class="divider"></div>
@@ -249,6 +283,25 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
 
 <div class="divider"></div>
 
+<!-- index signal -->
+<div class="section">
+  <div class="section-label">Index Signal</div>
+  <div class="signal-grid" id="signal-grid">
+    <div class="signal-tile wide"><div class="no-data">Open DCX Tracker to mint your first coin.</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- build record -->
+<div class="section">
+  <div class="section-label">Build Record</div>
+  <div class="log-list" id="build-log"><div class="no-data">No sessions yet.</div></div>
+  <button class="log-more" id="log-more-btn" style="display:none" onclick="dcxShowMore()">Show More</button>
+</div>
+
+<div class="divider"></div>
+
 <!-- launch -->
 <div class="launch-wrap">
   <a class="btn-launch" href="./deb-coin-tracker.html">
@@ -256,5 +309,169 @@ body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;al
   </a>
 </div>
 
+<script>
+(function () {
+  var raw = localStorage.getItem('debcoin_v3');
+  if (!raw) return;
+  var sessions;
+  try { sessions = JSON.parse(raw); } catch (e) { return; }
+  if (!sessions || !sessions.length) return;
+
+  // ── stat strip ──
+  var total = sessions.reduce(function (s, x) { return s + x.value; }, 0);
+  var fp = (total / sessions.length).toFixed(1);
+  var elST = document.getElementById('stat-total');
+  var elSS = document.getElementById('stat-sessions');
+  var elFP = document.getElementById('stat-fp');
+  if (elST) elST.textContent = total.toLocaleString();
+  if (elSS) elSS.textContent = sessions.length;
+  if (elFP) elFP.textContent = fp;
+
+  // ── helpers ──
+  function tier(tvm) {
+    if (tvm >= 12) return 'elite';
+    if (tvm >= 7)  return 'deep';
+    if (tvm >= 3)  return 'late';
+    return 'std';
+  }
+  var TIER_COLOR = { elite:'rgba(255,215,0,.65)', deep:'rgba(255,255,255,.32)', late:'rgba(255,255,255,.14)', std:'rgba(255,255,255,.06)' };
+  var TIER_LABEL = { elite:'ELITE', deep:'DEEP', late:'LATE', std:'STD' };
+
+  function fmtDate(ds, ts) {
+    var d = new Date(ds + 'T12:00:00');
+    var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    var base = mo + ' ' + d.getDate();
+    if (!ts) return base;
+    var parts = ts.split(':').map(Number);
+    var h = parts[0], m = parts[1];
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12 || 12;
+    return base + ' · ' + h12 + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+  }
+
+  function durMins(s) {
+    if (!s.start || !s.end) return 0;
+    var sp = s.start.split(':').map(Number), ep = s.end.split(':').map(Number);
+    var d = (ep[0] * 60 + ep[1]) - (sp[0] * 60 + sp[1]);
+    return d <= 0 ? d + 1440 : d;
+  }
+
+  // ── compute insights ──
+  var tierTotals = { elite:0, deep:0, late:0, std:0 };
+  sessions.forEach(function (s) { tierTotals[tier(s.tvm)] += s.value; });
+
+  var best = sessions.reduce(function (a, b) { return a.value > b.value ? a : b; });
+
+  var byDate = {};
+  sessions.forEach(function (s) { byDate[s.date] = (byDate[s.date] || 0) + s.value; });
+  var peakDayEntry = Object.entries(byDate).reduce(function (a, b) { return b[1] > a[1] ? b : a; });
+  var peakDaySessions = sessions.filter(function (s) { return s.date === peakDayEntry[0]; }).length;
+
+  var totalMins = sessions.reduce(function (s, x) { return s + durMins(x); }, 0);
+  var debPerHr  = totalMins > 0 ? (total / (totalMins / 60)).toFixed(1) : '—';
+  var hrsLogged = Math.floor(totalMins / 60);
+  var minsRem   = totalMins % 60;
+
+  var avgTVM = (sessions.reduce(function (s, x) { return s + x.tvm; }, 0) / sessions.length).toFixed(1);
+
+  var nightTotal = tierTotals.elite + tierTotals.deep;
+  var nightPct   = Math.round((nightTotal / total) * 100);
+
+  var elitePct = Math.round(tierTotals.elite / total * 100);
+  var deepPct  = Math.round(tierTotals.deep  / total * 100);
+  var latePct  = Math.round(tierTotals.late  / total * 100);
+  var stdPct   = Math.round(tierTotals.std   / total * 100);
+
+  // ── render signal grid ──
+  var grid = document.getElementById('signal-grid');
+  if (grid) {
+    var barHTML = ['elite','deep','late','std'].map(function (t) {
+      var pct = (tierTotals[t] / total * 100).toFixed(1);
+      return '<div class="tier-seg" style="flex:' + pct + ';background:' + TIER_COLOR[t] + '"></div>';
+    }).join('');
+
+    var bestDesc = best.desc.length > 30 ? best.desc.slice(0, 30) + '…' : best.desc;
+    var peakDayFmt = (function (ds) {
+      var d = new Date(ds + 'T12:00:00');
+      var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+      return mo + ' ' + d.getDate();
+    })(peakDayEntry[0]);
+
+    grid.innerHTML =
+      '<div class="signal-tile wide">' +
+        '<div class="st-lbl">TVM Distribution · Đ by tier</div>' +
+        '<div class="tier-bar" style="margin:8px 0 6px">' + barHTML + '</div>' +
+        '<div class="tier-pcts">' +
+          '<span class="tier-pct" style="color:var(--gold)">' + elitePct + '% ELITE</span>' +
+          '<span class="tier-pct" style="color:rgba(255,255,255,.4)">' + deepPct + '% DEEP</span>' +
+          '<span class="tier-pct" style="color:rgba(255,255,255,.25)">' + latePct + '% LATE</span>' +
+          '<span class="tier-pct" style="color:rgba(255,255,255,.14)">' + stdPct + '% STD</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="signal-tile">' +
+        '<div class="st-val">Đ' + best.value + '</div>' +
+        '<div class="st-sub">' + bestDesc + '</div>' +
+        '<div class="st-sub">' + fmtDate(best.date, best.start) + ' · ×' + best.tvm + '</div>' +
+        '<div class="st-lbl">Best Session</div>' +
+      '</div>' +
+      '<div class="signal-tile">' +
+        '<div class="st-val cyan">' + debPerHr + '</div>' +
+        '<div class="st-sub">Đ per clock hour</div>' +
+        '<div class="st-sub">' + hrsLogged + 'h ' + minsRem + 'm logged</div>' +
+        '<div class="st-lbl">Output Rate</div>' +
+      '</div>' +
+      '<div class="signal-tile">' +
+        '<div class="st-val">Đ' + peakDayEntry[1] + '</div>' +
+        '<div class="st-sub">' + peakDayFmt + ' · ' + peakDaySessions + ' sessions</div>' +
+        '<div class="st-lbl">Peak Day</div>' +
+      '</div>' +
+      '<div class="signal-tile">' +
+        '<div class="st-val green">' + avgTVM + '×</div>' +
+        '<div class="st-sub">' + nightPct + '% of all Đ from elite + deep hours</div>' +
+        '<div class="st-lbl">Avg Multiplier</div>' +
+      '</div>';
+  }
+
+  // ── render build record ──
+  var logEl  = document.getElementById('build-log');
+  var moreBtn = document.getElementById('log-more-btn');
+  if (!logEl) return;
+
+  var sorted = sessions.slice().sort(function (a, b) {
+    if (b.date !== a.date) return b.date < a.date ? -1 : 1;
+    return (b.start || '') < (a.start || '') ? -1 : 1;
+  });
+
+  var CHUNK = 12;
+  var shown = 0;
+
+  function renderLogs() {
+    var end = shown + CHUNK;
+    var slice = sorted.slice(0, end);
+    logEl.innerHTML = slice.map(function (s) {
+      var t  = tier(s.tvm);
+      var tl = '×' + s.tvm + (t === 'elite' ? ' ELITE' : t === 'deep' ? ' DEEP' : '');
+      return '<div class="le-row">' +
+        '<div class="le-body">' +
+          '<div class="le-desc">' + s.desc + '</div>' +
+          '<div class="le-meta">' +
+            '<span class="le-date">' + fmtDate(s.date, s.start) + '</span>' +
+            '<span class="le-tvm t-' + t + '">' + tl + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="le-right">' +
+          '<div class="le-val">Đ' + s.value + '</div>' +
+          '<div class="le-formula">' + s.base + ' × ' + s.tvm + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    shown = end;
+    if (moreBtn) moreBtn.style.display = shown >= sorted.length ? 'none' : 'block';
+  }
+
+  renderLogs();
+  window.dcxShowMore = renderLogs;
+})();
+</script>
 </body>
 </html>
