@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debcoin — The Currency of Debello</title>
+<style>
+:root {
+  --bg:         #050508;
+  --bg2:        #080810;
+  --cyan:       #00f5ff;
+  --mag:        #ff00ff;
+  --purple:     #8b00ff;
+  --green:      #00ff88;
+  --orange:     #ff6600;
+  --yellow:     #ffee00;
+  --gold:       #ffd700;
+  --gold2:      #ffb800;
+  --glass:      rgba(255,255,255,0.03);
+  --border:     rgba(255,255,255,0.07);
+  --blur:       blur(24px);
+  --neu-out:    6px 6px 14px rgba(0,0,0,0.85), -3px -3px 8px rgba(255,255,255,0.025);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ── ORBS ── */
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px); opacity: .06; pointer-events: none; z-index: 0;
+  animation: drift 24s ease-in-out infinite;
+}
+.o1 { width:600px;height:600px;background:var(--purple);top:-200px;left:-200px; }
+.o2 { width:400px;height:400px;background:var(--gold);bottom:-100px;right:-100px;animation-delay:-9s; }
+.o3 { width:300px;height:300px;background:var(--cyan);top:40%;left:35%;animation-delay:-17s; }
+@keyframes drift {
+  0%,100%{transform:translate(0,0)scale(1)}
+  33%{transform:translate(50px,-40px)scale(1.15)}
+  66%{transform:translate(-30px,50px)scale(.88)}
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(5,5,8,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 18px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+}
+.nav-coin {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; color: #000;
+  box-shadow: 0 0 16px rgba(255,215,0,.5);
+  animation: coinpulse 3s ease-in-out infinite;
+}
+@keyframes coinpulse {
+  0%,100%{box-shadow:0 0 16px rgba(255,215,0,.5)}
+  50%{box-shadow:0 0 32px rgba(255,215,0,.9),0 0 60px rgba(255,215,0,.3)}
+}
+.nav-wordmark { background: linear-gradient(135deg, var(--gold), var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a { color: rgba(255,255,255,.4); text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: .5px; transition: color .2s; }
+.nav-links a:hover { color: var(--gold); }
+.nav-cta {
+  background: linear-gradient(135deg,var(--gold),var(--gold2));
+  color: #000; border: none; padding: 9px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 800; cursor: pointer; letter-spacing: .5px;
+  transition: opacity .2s, transform .2s;
+}
+.nav-cta:hover { opacity: .9; transform: translateY(-1px); }
+
+/* ── SECTIONS ── */
+section { position: relative; z-index: 1; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 24px 80px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,215,0,.08); border: 1px solid rgba(255,215,0,.2);
+  border-radius: 20px; padding: 5px 14px; margin-bottom: 28px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--gold);
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+.big-coin {
+  width: 160px; height: 160px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, #ff9500 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 40px;
+  box-shadow: 0 0 60px rgba(255,215,0,.4), 0 0 120px rgba(255,215,0,.15);
+  animation: coinspin 8s ease-in-out infinite, coinpulse2 3s ease-in-out infinite;
+  position: relative;
+}
+.big-coin::before {
+  content: '';
+  position: absolute; inset: 8px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.2);
+}
+.big-coin-letter { font-size: 64px; font-weight: 900; color: rgba(0,0,0,.75); line-height: 1; }
+@keyframes coinspin {
+  0%,100%{transform:rotateY(0deg) scale(1)}
+  25%{transform:rotateY(20deg) scale(1.03)}
+  75%{transform:rotateY(-20deg) scale(1.03)}
+}
+@keyframes coinpulse2 {
+  0%,100%{box-shadow:0 0 60px rgba(255,215,0,.4),0 0 120px rgba(255,215,0,.15)}
+  50%{box-shadow:0 0 80px rgba(255,215,0,.7),0 0 160px rgba(255,215,0,.3)}
+}
+
+.hero-title {
+  font-size: clamp(42px, 8vw, 88px); font-weight: 900;
+  letter-spacing: -2px; line-height: 1.0; margin-bottom: 16px;
+}
+.hero-title .deb { background: linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero-title .coin { color: rgba(255,255,255,.9); }
+
+.hero-sub {
+  font-size: clamp(15px,2.5vw,20px); color: rgba(255,255,255,.45);
+  max-width: 540px; line-height: 1.6; margin: 0 auto 48px; font-weight: 400;
+}
+
+.hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 80px; }
+.btn-primary {
+  background: linear-gradient(135deg,var(--gold),var(--gold2));
+  color: #000; border: none; padding: 14px 32px; border-radius: 12px;
+  font-size: 15px; font-weight: 800; cursor: pointer; letter-spacing: .3px;
+  transition: all .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,215,0,.4); }
+.btn-ghost {
+  background: var(--glass); border: 1px solid var(--border);
+  backdrop-filter: var(--blur); color: rgba(255,255,255,.7);
+  padding: 14px 32px; border-radius: 12px; font-size: 15px; font-weight: 700;
+  cursor: pointer; letter-spacing: .3px; transition: all .2s;
+}
+.btn-ghost:hover { border-color: rgba(255,215,0,.3); color: var(--gold); transform: translateY(-2px); }
+
+/* hero stats */
+.hero-stats { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+.hstat { text-align: center; }
+.hstat-val { font-size: 28px; font-weight: 900; background: linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hstat-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.3); margin-top: 3px; }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: linear-gradient(90deg,transparent,var(--border),transparent); margin: 0 32px; }
+
+/* ── WHAT IS ── */
+#what {
+  padding: 100px 24px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.section-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+}
+.section-title {
+  font-size: clamp(28px,5vw,48px); font-weight: 900; letter-spacing: -1px;
+  text-align: center; margin-bottom: 16px; max-width: 700px;
+}
+.section-sub {
+  font-size: 16px; color: rgba(255,255,255,.4); text-align: center;
+  max-width: 540px; line-height: 1.7; margin-bottom: 64px;
+}
+.what-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 16px; max-width: 900px; width: 100%;
+}
+.what-card {
+  background: var(--glass); border: 1px solid var(--border);
+  backdrop-filter: var(--blur); border-radius: 16px; padding: 28px;
+  box-shadow: var(--neu-out); transition: all .3s;
+}
+.what-card:hover { border-color: rgba(255,215,0,.2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.6); }
+.what-icon { font-size: 32px; margin-bottom: 14px; }
+.what-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; color: #eee; }
+.what-desc { font-size: 13px; color: rgba(255,255,255,.38); line-height: 1.6; }
+
+/* ── EARN ── */
+#earn { padding: 100px 24px; display: flex; flex-direction: column; align-items: center; background: rgba(255,215,0,.015); }
+.earn-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 12px; max-width: 960px; width: 100%;
+}
+.earn-card {
+  background: var(--glass); border: 1px solid var(--border);
+  backdrop-filter: var(--blur); border-radius: 14px; padding: 22px;
+  display: flex; align-items: flex-start; gap: 14px; transition: all .25s;
+}
+.earn-card:hover { border-color: rgba(255,215,0,.25); background: rgba(255,215,0,.04); }
+.earn-num {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  background: linear-gradient(135deg,var(--gold),var(--gold2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: #000;
+}
+.earn-info-title { font-size: 14px; font-weight: 800; color: #eee; margin-bottom: 4px; }
+.earn-info-desc { font-size: 12px; color: rgba(255,255,255,.35); line-height: 1.5; }
+.earn-amount {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 13px; font-weight: 800; color: var(--gold);
+  background: rgba(255,215,0,.08); border: 1px solid rgba(255,215,0,.15);
+  border-radius: 8px; padding: 3px 9px; white-space: nowrap;
+}
+
+/* ── TOKENOMICS ── */
+#tokenomics { padding: 100px 24px; display: flex; flex-direction: column; align-items: center; }
+.token-wrap { display: flex; gap: 48px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 900px; width: 100%; }
+.donut-wrap { position: relative; flex-shrink: 0; }
+.donut-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  text-align: center;
+}
+.donut-val { font-size: 22px; font-weight: 900; color: var(--gold); }
+.donut-sub { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.3); text-transform: uppercase; }
+.token-legend { display: flex; flex-direction: column; gap: 14px; }
+.tleg-item { display: flex; align-items: center; gap: 12px; }
+.tleg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.tleg-name { font-size: 13px; color: rgba(255,255,255,.7); font-weight: 600; flex: 1; }
+.tleg-pct { font-size: 13px; font-weight: 800; color: #eee; }
+
+/* ── ROADMAP ── */
+#roadmap { padding: 100px 24px; display: flex; flex-direction: column; align-items: center; background: rgba(139,0,255,.02); }
+.road-list { max-width: 640px; width: 100%; display: flex; flex-direction: column; gap: 0; }
+.road-item { display: flex; gap: 20px; }
+.road-left { display: flex; flex-direction: column; align-items: center; }
+.road-dot {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+  border: 2px solid var(--border);
+}
+.road-dot.done { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(255,215,0,.5); }
+.road-dot.active { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 12px rgba(0,245,255,.5); animation: blink 2s ease-in-out infinite; }
+.road-dot.next { background: transparent; border-color: rgba(255,255,255,.2); }
+.road-line { width: 1px; flex: 1; background: var(--border); margin: 4px 0; min-height: 40px; }
+.road-content { padding-bottom: 40px; }
+.road-phase { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: 4px; }
+.road-phase.done { color: var(--gold); }
+.road-phase.active { color: var(--cyan); }
+.road-title { font-size: 17px; font-weight: 800; color: #eee; margin-bottom: 8px; }
+.road-items { display: flex; flex-direction: column; gap: 4px; }
+.road-li { font-size: 13px; color: rgba(255,255,255,.4); display: flex; align-items: center; gap: 8px; }
+.road-li::before { content: '›'; color: rgba(255,215,0,.4); font-weight: 800; }
+.road-li.done-li { color: rgba(255,255,255,.6); }
+.road-li.done-li::before { content: '✓'; color: var(--gold); }
+
+/* ── CTA ── */
+#cta {
+  padding: 120px 24px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.cta-box {
+  background: var(--glass); border: 1px solid rgba(255,215,0,.15);
+  backdrop-filter: var(--blur); border-radius: 24px;
+  padding: 64px 48px; max-width: 600px; width: 100%;
+  box-shadow: 0 0 60px rgba(255,215,0,.06), var(--neu-out);
+}
+.cta-title { font-size: clamp(28px,5vw,44px); font-weight: 900; letter-spacing: -1px; margin-bottom: 14px; }
+.cta-title span { background: linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.cta-sub { font-size: 15px; color: rgba(255,255,255,.4); line-height: 1.6; margin-bottom: 36px; }
+.cta-input-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.cta-input {
+  flex: 1; min-width: 220px; background: rgba(255,255,255,.05);
+  border: 1px solid var(--border); border-radius: 11px;
+  padding: 13px 16px; color: #fff; font-size: 14px; font-family: inherit;
+}
+.cta-input::placeholder { color: rgba(255,255,255,.25); }
+.cta-input:focus { outline: none; border-color: rgba(255,215,0,.4); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; position: relative; z-index: 1;
+}
+.foot-brand { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+.foot-brand span { background: linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.foot-note { font-size: 11px; color: rgba(255,255,255,.2); }
+</style>
+</head>
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-coin">Đ</div>
+    <span class="nav-wordmark">Debcoin</span>
+  </div>
+  <div class="nav-links">
+    <a href="#what">What</a>
+    <a href="#earn">Earn</a>
+    <a href="#tokenomics">Supply</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+  <button class="nav-cta">Get Early Access</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Debello Ecosystem — Native Currency
+  </div>
+
+  <div class="big-coin">
+    <span class="big-coin-letter">Đ</span>
+  </div>
+
+  <h1 class="hero-title">
+    <span class="deb">DEB</span><span class="coin">COIN</span>
+  </h1>
+  <p class="hero-sub">
+    The native currency powering the Debello AI ecosystem.
+    Earn it. Spend it. Build with it.
+  </p>
+
+  <div class="hero-btns">
+    <button class="btn-primary">Get Early Access</button>
+    <button class="btn-ghost">Read the Vision →</button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val">1B</div><div class="hstat-label">Total Supply</div></div>
+    <div class="hstat"><div class="hstat-val">ĐBC</div><div class="hstat-label">Ticker</div></div>
+    <div class="hstat"><div class="hstat-val">Q3 2026</div><div class="hstat-label">Launch Target</div></div>
+    <div class="hstat"><div class="hstat-val">Debello</div><div class="hstat-label">Ecosystem</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHAT IS -->
+<section id="what">
+  <div class="section-label">What is Debcoin</div>
+  <h2 class="section-title">More than a token. A utility layer.</h2>
+  <p class="section-sub">Debcoin (ĐBC) is the internal currency of the Debello AI ecosystem — earned through real usage, spent on real features, and never just speculation.</p>
+
+  <div class="what-grid">
+    <div class="what-card">
+      <div class="what-icon">⚡</div>
+      <div class="what-title">AI Credits</div>
+      <div class="what-desc">Spend ĐBC to unlock advanced Debello AI capabilities — deeper reasoning, longer sessions, priority processing.</div>
+    </div>
+    <div class="what-card">
+      <div class="what-icon">🎯</div>
+      <div class="what-title">Task Rewards</div>
+      <div class="what-desc">Complete tasks, hit streaks, and build habits inside Debello. Every action earns you ĐBC automatically.</div>
+    </div>
+    <div class="what-card">
+      <div class="what-icon">🔓</div>
+      <div class="what-title">Feature Access</div>
+      <div class="what-desc">Hold ĐBC to unlock premium vault features, custom themes, and exclusive Debello tools.</div>
+    </div>
+    <div class="what-card">
+      <div class="what-icon">🤝</div>
+      <div class="what-title">Community Power</div>
+      <div class="what-desc">Stake ĐBC to vote on ecosystem direction, new features, and Debello's roadmap priorities.</div>
+    </div>
+    <div class="what-card">
+      <div class="what-icon">🔁</div>
+      <div class="what-title">Trade & Transfer</div>
+      <div class="what-desc">Send ĐBC between users, trade within the ecosystem, and gift credits to collaborators.</div>
+    </div>
+    <div class="what-card">
+      <div class="what-icon">📊</div>
+      <div class="what-title">Leaderboards</div>
+      <div class="what-desc">ĐBC balance is your reputation score. Top earners get early access to every new Debello release.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EARN -->
+<section id="earn">
+  <div class="section-label">How to Earn</div>
+  <h2 class="section-title">Use Debello. Earn ĐBC.</h2>
+  <p class="section-sub">No mining. No speculation. You earn Debcoin by actually using the ecosystem.</p>
+
+  <div class="earn-grid">
+    <div class="earn-card">
+      <div class="earn-num">1</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Daily AI Sessions</div>
+        <div class="earn-info-desc">Open and use Debello AI each day to earn a base daily reward.</div>
+      </div>
+      <div class="earn-amount">+50 ĐBC/day</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">2</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Complete Tasks</div>
+        <div class="earn-info-desc">Check off items in your Debello task system.</div>
+      </div>
+      <div class="earn-amount">+10 ĐBC each</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">3</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Streak Bonuses</div>
+        <div class="earn-info-desc">7-day streaks trigger multiplier bonuses.</div>
+      </div>
+      <div class="earn-amount">2× – 5×</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">4</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Vault Sync</div>
+        <div class="earn-info-desc">Successfully sync your vault earns a commit bonus.</div>
+      </div>
+      <div class="earn-amount">+25 ĐBC</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">5</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Refer a User</div>
+        <div class="earn-info-desc">Invite someone who activates their vault.</div>
+      </div>
+      <div class="earn-amount">+500 ĐBC</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-num">6</div>
+      <div class="earn-info">
+        <div class="earn-info-title">Early Adopter</div>
+        <div class="earn-info-desc">Join before launch to claim a founding allocation.</div>
+      </div>
+      <div class="earn-amount">+2,500 ĐBC</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <div class="section-label">Supply & Distribution</div>
+  <h2 class="section-title">1,000,000,000 ĐBC. Fixed forever.</h2>
+  <p class="section-sub">No inflation. No surprise mints. The total supply is set at genesis and never changes.</p>
+
+  <div class="token-wrap">
+    <div class="donut-wrap">
+      <svg width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#111" stroke-width="32"/>
+        <!-- Ecosystem Rewards 40% -->
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#ffd700" stroke-width="32"
+          stroke-dasharray="213.6 533.8" stroke-dashoffset="0" transform="rotate(-90 110 110)"/>
+        <!-- Team & Development 20% -->
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#8b00ff" stroke-width="32"
+          stroke-dasharray="106.8 640.7" stroke-dashoffset="-213.6" transform="rotate(-90 110 110)"/>
+        <!-- Community Treasury 20% -->
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#00f5ff" stroke-width="32"
+          stroke-dasharray="106.8 640.7" stroke-dashoffset="-320.4" transform="rotate(-90 110 110)"/>
+        <!-- Early Adopters 10% -->
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#00ff88" stroke-width="32"
+          stroke-dasharray="53.4 694.1" stroke-dashoffset="-427.2" transform="rotate(-90 110 110)"/>
+        <!-- Reserve 10% -->
+        <circle cx="110" cy="110" r="85" fill="none" stroke="#ff6600" stroke-width="32"
+          stroke-dasharray="53.4 694.1" stroke-dashoffset="-480.6" transform="rotate(-90 110 110)"/>
+      </svg>
+      <div class="donut-center">
+        <div class="donut-val">1B</div>
+        <div class="donut-sub">Total ĐBC</div>
+      </div>
+    </div>
+
+    <div class="token-legend">
+      <div class="tleg-item">
+        <div class="tleg-dot" style="background:#ffd700"></div>
+        <div class="tleg-name">Ecosystem Rewards</div>
+        <div class="tleg-pct">40%</div>
+      </div>
+      <div class="tleg-item">
+        <div class="tleg-dot" style="background:#8b00ff"></div>
+        <div class="tleg-name">Team & Development</div>
+        <div class="tleg-pct">20%</div>
+      </div>
+      <div class="tleg-item">
+        <div class="tleg-dot" style="background:#00f5ff"></div>
+        <div class="tleg-name">Community Treasury</div>
+        <div class="tleg-pct">20%</div>
+      </div>
+      <div class="tleg-item">
+        <div class="tleg-dot" style="background:#00ff88"></div>
+        <div class="tleg-name">Early Adopters</div>
+        <div class="tleg-pct">10%</div>
+      </div>
+      <div class="tleg-item">
+        <div class="tleg-dot" style="background:#ff6600"></div>
+        <div class="tleg-name">Reserve</div>
+        <div class="tleg-pct">10%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-label">Roadmap</div>
+  <h2 class="section-title">The path to launch.</h2>
+  <p class="section-sub" style="margin-bottom:56px">Where we are, where we're going.</p>
+
+  <div class="road-list">
+    <div class="road-item">
+      <div class="road-left">
+        <div class="road-dot done"></div>
+        <div class="road-line"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-phase done">Phase 1 — Complete</div>
+        <div class="road-title">Foundation</div>
+        <div class="road-items">
+          <div class="road-li done-li">Debello AI ecosystem built</div>
+          <div class="road-li done-li">Vault sync infrastructure</div>
+          <div class="road-li done-li">Debcoin concept defined</div>
+        </div>
+      </div>
+    </div>
+    <div class="road-item">
+      <div class="road-left">
+        <div class="road-dot active"></div>
+        <div class="road-line"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-phase active">Phase 2 — Now</div>
+        <div class="road-title">Design & Architecture</div>
+        <div class="road-items">
+          <div class="road-li">Tokenomics finalized</div>
+          <div class="road-li">Wallet UI design</div>
+          <div class="road-li">Earn mechanics system</div>
+          <div class="road-li">Early access list open</div>
+        </div>
+      </div>
+    </div>
+    <div class="road-item">
+      <div class="road-left">
+        <div class="road-dot next"></div>
+        <div class="road-line"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-phase">Phase 3 — Q2 2026</div>
+        <div class="road-title">Private Beta</div>
+        <div class="road-items">
+          <div class="road-li">ĐBC wallet live for early adopters</div>
+          <div class="road-li">Earn system integrated into Debello</div>
+          <div class="road-li">Leaderboard launch</div>
+        </div>
+      </div>
+    </div>
+    <div class="road-item">
+      <div class="road-left">
+        <div class="road-dot next"></div>
+        <div class="road-line" style="min-height:0"></div>
+      </div>
+      <div class="road-content">
+        <div class="road-phase">Phase 4 — Q3 2026</div>
+        <div class="road-title">Public Launch</div>
+        <div class="road-items">
+          <div class="road-li">Full ecosystem currency live</div>
+          <div class="road-li">Community governance</div>
+          <div class="road-li">Feature marketplace opens</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-box">
+    <h2 class="cta-title">Get your <span>2,500 ĐBC</span> founding allocation.</h2>
+    <p class="cta-sub">Join the early access list before launch. Founding members receive a bonus allocation and permanent Early Adopter status.</p>
+    <div class="cta-input-row">
+      <input class="cta-input" type="email" placeholder="your@email.com">
+      <button class="btn-primary">Claim Allocation</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-brand">DEB<span>COIN</span> · ĐBC</div>
+  <div class="foot-note">Part of the Debello AI ecosystem. Not a financial instrument.</div>
+</footer>
+
+</body>
+</html>
