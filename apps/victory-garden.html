@@ -155,6 +155,7 @@ textarea.field{resize:vertical;min-height:110px;font-size:11px;line-height:1.5;f
   <button class="tab" onclick="switchTab('inputs',this)">Inputs</button>
   <button class="tab" onclick="switchTab('harvest',this)">Harvest</button>
   <button class="tab" onclick="switchTab('intel',this)">Intel</button>
+  <button class="tab" onclick="switchTab('map',this)">Map</button>
 </div>
 
 <!-- Garden Tab -->
@@ -189,6 +190,14 @@ textarea.field{resize:vertical;min-height:110px;font-size:11px;line-height:1.5;f
     <div class="tree-list" id="tree-list"></div>
   </div>
 </div>
+
+<!-- Map Tab -->
+<div id="view-map" style="display:none">
+  <div style="width:100%;max-width:var(--sq);border-radius:var(--r);overflow:hidden;border:1.5px solid var(--glass-border);box-shadow:var(--neu-out);margin-bottom:12px">
+    <svg id="garden-map" width="100%" viewBox="0 0 380 430" style="display:block"></svg>
+  </div>
+</div>
+<div id="map-tip" style="display:none;position:fixed;z-index:200;pointer-events:none"></div>
 
 <div class="divider"></div>
 
@@ -518,12 +527,165 @@ function renderIntel(){
   </div>`).join('');
 }
 
+const BED_LAYOUT={
+  'b-greens':{ftX:15,ftY:100,ftW:30,ftH:10},
+  'b-beans': {ftX:15,ftY:115,ftW:40,ftH:10},
+  'b-salsa': {ftX:15,ftY:130,ftW:30,ftH:20}
+};
+const TREE_MARKERS=[
+  {id:'ft4',ftX:40, ftY:4,  label:'Pear'},
+  {id:'ft4',ftX:80, ftY:4,  label:''},
+  {id:'ft4',ftX:120,ftY:4,  label:''},
+  {id:'ft1',ftX:204,ftY:55, label:'Peach'},
+  {id:'ft1',ftX:204,ftY:92, label:''},
+  {id:'ft2',ftX:55, ftY:204,label:'Fig'},
+  {id:'ft2',ftX:95, ftY:204,label:''},
+  {id:'ft3',ftX:4,  ftY:80, label:'Plum'},
+  {id:'ft3',ftX:4,  ftY:115,label:''},
+];
+
+function renderMap(){
+  const el=document.getElementById('garden-map');
+  if(!el)return;
+  const W=380,H=430,OX=22,OY=22,PW=332,PH=332;
+  const S=PW/209;
+  const fx=x=>OX+x*S, fy=y=>OY+y*S, fs=n=>n*S;
+  let s='';
+
+  s+=`<defs>
+    <pattern id="dp" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="0.5" fill="rgba(0,200,60,0.04)"/>
+    </pattern>
+    <filter id="gw" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="gs" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  s+=`<rect width="${W}" height="${H}" fill="#020905"/>`;
+  s+=`<rect x="${OX}" y="${OY}" width="${PW}" height="${PH}" fill="url(#dp)"/>`;
+  s+=`<rect x="${OX}" y="${OY}" width="${PW}" height="${PH}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+
+  const FI=5;
+  s+=`<rect x="${OX+FI}" y="${OY+FI}" width="${PW-FI*2}" height="${PH-FI*2}" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="1.2" stroke-dasharray="7,5"/>`;
+  [[OX+FI,OY+FI],[OX+PW-FI,OY+FI],[OX+PW-FI,OY+PH-FI],[OX+FI,OY+PH-FI]].forEach(([cx,cy])=>{
+    s+=`<rect x="${cx-3}" y="${cy-3}" width="6" height="6" fill="rgba(255,255,255,0.15)" rx="1"/>`;
+  });
+
+  s+=`<text x="${OX+PW/2}" y="${OY-6}" text-anchor="middle" fill="rgba(255,255,255,0.1)" font-size="7" letter-spacing="1.5">— 209 FT —</text>`;
+  s+=`<text x="${OX-8}" y="${OY+PH/2}" text-anchor="middle" fill="rgba(255,255,255,0.1)" font-size="7" letter-spacing="1.5" transform="rotate(-90,${OX-8},${OY+PH/2})">— 209 FT —</text>`;
+
+  [{ftX:60,ftY:98, ftW:120,ftH:58,label:'EXPANSION ZONE'},
+   {ftX:15,ftY:78, ftW:80, ftH:16,label:'FUTURE ROW'}
+  ].forEach(z=>{
+    s+=`<rect x="${fx(z.ftX)}" y="${fy(z.ftY)}" width="${fs(z.ftW)}" height="${fs(z.ftH)}" fill="rgba(255,255,255,0.007)" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4" rx="3"/>`;
+    s+=`<text x="${fx(z.ftX+z.ftW/2)}" y="${fy(z.ftY+z.ftH/2)+3}" text-anchor="middle" fill="rgba(255,255,255,0.07)" font-size="7" letter-spacing="2">${z.label}</text>`;
+  });
+
+  s+=`<rect x="${fx(13)}" y="${fy(125)}" width="${fs(44)}" height="${fs(4)}" fill="rgba(150,120,60,0.07)"/>`;
+  for(let i=0;i<6;i++) s+=`<circle cx="${fx(15+i*7)}" cy="${fy(127)}" r="1" fill="rgba(150,120,60,0.15)"/>`;
+
+  G.beds.forEach(bed=>{
+    const L=BED_LAYOUT[bed.id]; if(!L)return;
+    const bx=fx(L.ftX),by=fy(L.ftY),bw=fs(L.ftW),bh=fs(L.ftH);
+    const lastCI=bed.checkins.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+    const h=lastCI?lastCI.health:0;
+    const hc=hColor(h);
+    const isSalsa=bed.category==='salsa';
+    const rgb=isSalsa?'255,102,0':'0,255,136';
+
+    if(h>=4) s+=`<rect x="${bx-4}" y="${by-4}" width="${bw+8}" height="${bh+8}" fill="rgba(${rgb},0.03)" filter="url(#gw)" rx="7"/>`;
+
+    s+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="rgba(${rgb},0.07)" stroke="rgba(${rgb},0.28)" stroke-width="1.2" rx="3" class="map-bed" data-bed="${bed.id}" style="cursor:pointer"/>`;
+
+    const crops=bed.crops.filter(c=>c.status!=='failed');
+    const rows=Math.min(crops.length,4);
+    for(let r=0;r<rows;r++){
+      const ry=by+(r+0.5)*bh/rows;
+      s+=`<line x1="${bx+5}" y1="${ry}" x2="${bx+bw-9}" y2="${ry}" stroke="rgba(${rgb},0.18)" stroke-width="0.8" stroke-dasharray="3,3" style="pointer-events:none"/>`;
+    }
+
+    if(h>0) s+=`<circle cx="${bx+bw-5}" cy="${by+5}" r="3.5" fill="${hc}" opacity="0.9" filter="url(#gs)" style="pointer-events:none"/>`;
+
+    const fsl=Math.min(7.5,bh*0.38);
+    s+=`<text x="${bx+bw/2}" y="${by+bh/2+fsl*0.38}" text-anchor="middle" fill="rgba(${rgb},0.75)" font-size="${fsl}" font-weight="800" letter-spacing="0.6" style="pointer-events:none">${bed.name}</text>`;
+    s+=`<text x="${bx+4}" y="${by+bh-3}" fill="rgba(255,255,255,0.18)" font-size="5.5" style="pointer-events:none">${bed.sqft} sqft</text>`;
+  });
+
+  TREE_MARKERS.forEach(t=>{
+    const tree=G.fruitTrees.find(f=>f.id===t.id); if(!tree)return;
+    const tx=fx(t.ftX),ty=fy(t.ftY);
+    s+=`<circle cx="${tx}" cy="${ty}" r="7" fill="rgba(10,50,15,0.4)" stroke="rgba(255,215,0,0.3)" stroke-width="1"/>`;
+    s+=`<circle cx="${tx}" cy="${ty}" r="2.5" fill="rgba(255,215,0,0.55)" style="pointer-events:none"/>`;
+    if(t.label){
+      const isN=t.ftY<20,isS=t.ftY>190,isW=t.ftX<20,isE=t.ftX>190;
+      const lx=tx+(isW?11:isE?-11:0);
+      const ly=ty+(isN?14:isS?-10:-10);
+      const anc=isW?'start':isE?'end':'middle';
+      s+=`<text x="${lx}" y="${ly}" text-anchor="${anc}" fill="rgba(255,215,0,0.5)" font-size="6.5" letter-spacing="0.5">${t.label}</text>`;
+    }
+  });
+
+  const CX=W-34,CY=46;
+  s+=`<circle cx="${CX}" cy="${CY}" r="18" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>`;
+  s+=`<line x1="${CX}" y1="${CY-13}" x2="${CX}" y2="${CY+13}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+  s+=`<line x1="${CX-13}" y1="${CY}" x2="${CX+13}" y2="${CY}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+  s+=`<polygon points="${CX},${CY-13} ${CX-3.5},${CY-4} ${CX+3.5},${CY-4}" fill="rgba(0,255,136,0.8)"/>`;
+  s+=`<polygon points="${CX},${CY+13} ${CX-3.5},${CY+4} ${CX+3.5},${CY+4}" fill="rgba(255,255,255,0.12)"/>`;
+  s+=`<text x="${CX}" y="${CY-17}" text-anchor="middle" fill="rgba(0,255,136,0.75)" font-size="8" font-weight="700">N</text>`;
+  s+=`<text x="${CX}" y="${CY+25}" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-size="7">S</text>`;
+  s+=`<text x="${CX-21}" y="${CY+2.5}" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-size="7">W</text>`;
+  s+=`<text x="${CX+21}" y="${CY+2.5}" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-size="7">E</text>`;
+
+  const scW=fs(50),scX=OX,scY=OY+PH+15;
+  s+=`<line x1="${scX}" y1="${scY}" x2="${scX+scW}" y2="${scY}" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>`;
+  s+=`<line x1="${scX}" y1="${scY-3}" x2="${scX}" y2="${scY+3}" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>`;
+  s+=`<line x1="${scX+scW}" y1="${scY-3}" x2="${scX+scW}" y2="${scY+3}" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>`;
+  s+=`<text x="${scX+scW/2}" y="${scY+11}" text-anchor="middle" fill="rgba(255,255,255,0.22)" font-size="8">50 ft</text>`;
+
+  const tot=G.beds.reduce((a,b)=>a+(b.sqft||0),0);
+  const pct=Math.round(tot/43560*100);
+  s+=`<text x="${OX+PW}" y="${scY+4}" text-anchor="end" fill="rgba(255,255,255,0.18)" font-size="7.5" letter-spacing="0.5">1 ACRE · ZONE 7b/8a · DFW</text>`;
+  s+=`<text x="${OX+PW}" y="${scY+14}" text-anchor="end" fill="rgba(0,255,136,0.3)" font-size="7.5">${pct}% cultivated · ${tot.toLocaleString()} sqft active</text>`;
+
+  el.innerHTML=s;
+
+  el.querySelectorAll('.map-bed').forEach(node=>{
+    node.addEventListener('click',e=>{
+      e.stopPropagation();
+      showMapTip(node.dataset.bed,e.clientX,e.clientY);
+    });
+  });
+}
+
+function showMapTip(bedId,cx,cy){
+  const bed=bedById(bedId);
+  const tip=document.getElementById('map-tip');
+  if(!bed||!tip)return;
+  const lastCI=bed.checkins.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const h=lastCI?lastCI.health:0;
+  const isSalsa=bed.category==='salsa';
+  const accent=isSalsa?'rgba(255,102,0,0.85)':'rgba(0,255,136,0.85)';
+  const border=isSalsa?'rgba(255,102,0,0.2)':'rgba(0,255,136,0.2)';
+  const sc={planned:'rgba(255,255,255,.3)',germinating:'rgba(255,238,0,.85)',growing:'rgba(0,255,136,.85)',flowering:'rgba(0,245,255,.85)','harvest-ready':'rgba(255,215,0,.85)',harvested:'rgba(180,100,255,.85)',failed:'rgba(255,80,80,.7)'};
+  const rows=bed.crops.map(c=>`<div style="display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="color:${sc[c.status]||'rgba(255,255,255,.3)'};font-size:9px;width:10px">${STATUS_ICON[c.status]||'◌'}</span><span style="font-size:9.5px;color:rgba(255,255,255,0.72);flex:1">${c.name}</span><span style="font-size:7.5px;color:rgba(255,255,255,0.25)">${c.variety||''}</span></div>`).join('');
+  tip.innerHTML=`<div style="background:rgba(5,10,7,0.97);border:1.5px solid ${border};border-radius:13px;padding:14px 16px;min-width:195px;max-width:255px;box-shadow:0 14px 44px rgba(0,0,0,0.9)"><div style="font-size:12px;font-weight:800;color:${accent};margin-bottom:3px;letter-spacing:1px">${bed.name}</div><div style="font-size:8px;color:rgba(255,255,255,0.28);margin-bottom:9px">${bed.sqft} sqft · Health ${h}/5 · ${bed.crops.filter(c=>c.status!=='failed').length} crops</div>${rows}${lastCI?`<div style="margin-top:8px;font-size:8px;color:rgba(255,255,255,0.22);line-height:1.65">${fmtDate(lastCI.date)} — ${lastCI.notes.slice(0,75)}${lastCI.notes.length>75?'…':''}</div>`:''}</div>`;
+  tip.style.display='block';
+  tip.style.left=Math.max(8,Math.min(cx+12,window.innerWidth-270))+'px';
+  tip.style.top=Math.max(8,Math.min(cy-15,window.innerHeight-300))+'px';
+}
+
 function renderAll(){renderStats();renderBeds();renderInputLog();renderHarvestLog();renderIntel();}
 
 function switchTab(name,btn){
-  ['garden','inputs','harvest','intel'].forEach(t=>document.getElementById('view-'+t).style.display=t===name?'':'none');
+  ['garden','inputs','harvest','intel','map'].forEach(t=>document.getElementById('view-'+t).style.display=t===name?'':'none');
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+  if(name==='map')renderMap();
 }
 
 let selH=4;
@@ -628,6 +790,7 @@ function importYAML(){
   if(added>0)document.getElementById('import-text').value='';
 }
 
+document.addEventListener('click',()=>{const t=document.getElementById('map-tip');if(t)t.style.display='none';});
 renderAll();
 </script>
 </body>
