@@ -310,50 +310,84 @@ const SEED = {
   beds:[
     {id:'b-salsa',name:'Salsa Patch',category:'salsa',sqft:600,
      crops:[
-       {id:'c1',name:'Roma Tomato',variety:'Roma VF',planted:'2026-05-15',status:'growing'},
-       {id:'c2',name:'Bell Pepper',variety:'California Wonder',planted:'2026-05-15',status:'germinating'},
-       {id:'c3',name:'Jalapeño',variety:'Early Jalapeño',planted:'2026-05-15',status:'germinating'},
-       {id:'c4',name:'Sweet Onion',variety:'Texas Sweet',planted:'2026-04-20',status:'growing'},
-       {id:'c5',name:'Cilantro',variety:'Slow-Bolt',planted:null,status:'planned'}
+       {id:'c1',name:'Roma Tomato',variety:'Heatmaster',planted:'2026-04-25',status:'flowering'},
+       {id:'c2',name:'Bell Pepper',variety:'Yolo Wonder',planted:'2026-04-25',status:'growing'},
+       {id:'c3',name:'Jalapeño',variety:'Early Jalapeño',planted:'2026-04-25',status:'flowering'},
+       {id:'c4',name:'Sweet Onion',variety:'Texas 1015',planted:'2026-03-01',status:'harvested'},
+       {id:'c5',name:'Tomatillo',variety:'Toma Verde',planted:'2026-05-01',status:'growing'},
+       {id:'c6',name:'Cilantro',variety:'Slow-Bolt Santo',planted:'2026-06-15',status:'germinating'}
      ],
-     inputs:[],
-     checkins:[{id:'ci0',date:'2026-06-20',health:3,notes:'Tomatoes looking healthy. Peppers slow to establish. No pests observed.'}],
-     harvests:[]},
+     inputs:[
+       {id:'i0',date:'2026-05-08',type:'amendment',product:'Agricultural Gypsum',amount:'20 lbs',notes:'Breaking up clay hardpan prior to transplant. Broadcast and worked in 6 inches deep.'},
+       {id:'i1',date:'2026-05-25',type:'fertilizer',product:'Tomato-tone 3-4-6',amount:'1 lb per plant',notes:'Side-dress after establishment. Organic slow-release — pH-friendly for alkaline TX soil.'},
+       {id:'i2',date:'2026-06-10',type:'amendment',product:'Chelated Iron + Zinc',amount:'1 tbsp per gal water',notes:'Yellowing lower leaves on tomatoes — iron chlorosis common in alkaline pH 7.8+ soil.'}
+     ],
+     checkins:[
+       {id:'ci0',date:'2026-05-15',health:4,notes:'Transplants in. Heavy black clay — worked in 4 bags compost and gypsum first. Good initial moisture.'},
+       {id:'ci1',date:'2026-06-01',health:4,notes:'Tomatoes setting well. Bell peppers stalled — 100°F+ slows fruit set on standard varieties. Jalapeños ahead of bells.'},
+       {id:'ci2',date:'2026-06-15',health:3,notes:'Iron chlorosis on tomato lower leaves — pH running 7.8. Applied chelated iron. Bloom clusters forming strong on Heatmaster.'},
+       {id:'ci3',date:'2026-06-24',health:4,notes:'Heatmaster flowering hard — bred to set above 95°F. Jalapeños showing first pods. Onions pulled and curing. Tomatillo filling out.'}
+     ],
+     harvests:[
+       {id:'hv0',date:'2026-06-18',crop:'Texas 1015 Onion',amount:'11 lbs',quality:5,notes:'Final pull before tops fell. Classic TX sweet flavor. Curing in garage on screen for 2 weeks.'}
+     ]},
     {id:'b-beans',name:'Green Bean + Carrot Row',category:'main',sqft:400,
      crops:[
-       {id:'c6',name:'Bush Bean',variety:'Blue Lake 274',planted:'2026-05-20',status:'germinating'},
-       {id:'c7',name:'Carrot',variety:'Nantes',planted:'2026-05-20',status:'germinating'},
-       {id:'c8',name:'Radish',variety:'Cherry Belle',planted:'2026-05-15',status:'growing'}
+       {id:'c7',name:'Bush Bean',variety:'Contender',planted:'2026-05-15',status:'growing'},
+       {id:'c8',name:'Carrot',variety:'Chantenay Red Core',planted:'2026-05-15',status:'growing'},
+       {id:'c9',name:'Okra',variety:'Clemson Spineless 80',planted:'2026-05-01',status:'flowering'},
+       {id:'c10',name:'Radish',variety:'Cherry Belle',planted:'2026-05-15',status:'harvested'}
      ],
-     inputs:[],
-     checkins:[{id:'ci1',date:'2026-06-18',health:4,notes:'Radishes coming in fast. Beans and carrots just sprouting, on track.'}],
-     harvests:[]},
-    {id:'b-greens',name:'Greens Row',category:'main',sqft:300,
+     inputs:[
+       {id:'i3',date:'2026-05-01',type:'amendment',product:'Expanded Shale (Haydite)',amount:'2 cu ft broadcast',notes:'North TX clay amendment. Permanent drainage improvement — expanded shale does not break down.'},
+       {id:'i4',date:'2026-06-01',type:'fertilizer',product:'10-10-10 Balanced Granular',amount:'3 lbs per 100 sqft',notes:'Pre-bloom side-dress on bean and okra rows. Lightly cultivated in, watered immediately.'}
+     ],
+     checkins:[
+       {id:'ci4',date:'2026-06-01',health:4,notes:'Contender beans emerged well. Chantenay carrots germinating — handles clay better than Nantes. Okra absolutely loves this heat.'},
+       {id:'ci5',date:'2026-06-18',health:4,notes:'Radishes pulled at 28 days — right on schedule. Okra hit first bloom at 7 weeks, right on time. Beans running steady.'},
+       {id:'ci6',date:'2026-06-24',health:4,notes:'Okra first pods forming — hit daily-harvest pace within a week. Beans flowering. Chantenay carrots slow in clay but progressing.'}
+     ],
+     harvests:[
+       {id:'hv1',date:'2026-06-12',crop:'Radish',amount:'2.8 lbs',quality:4,notes:'Cherry Belle right at 28 days. Pulled before summer heat softened them. Good yield for row footprint.'}
+     ]},
+    {id:'b-greens',name:'Greens + Summer Transition',category:'main',sqft:300,
      crops:[
-       {id:'c9',name:'Butterhead Lettuce',variety:'Buttercrunch',planted:'2026-05-10',status:'harvest-ready'},
-       {id:'c10',name:'Spinach',variety:'Bloomsdale',planted:'2026-05-10',status:'growing'},
-       {id:'c11',name:'Kale',variety:'Lacinato',planted:'2026-05-15',status:'growing'}
+       {id:'c11',name:'Kale',variety:'Lacinato',planted:'2026-03-01',status:'growing'},
+       {id:'c12',name:'Sweet Potato',variety:'Beauregard',planted:'2026-05-01',status:'growing'},
+       {id:'c13',name:'Butterhead Lettuce',variety:'Buttercrunch',planted:'2026-03-01',status:'harvested'},
+       {id:'c14',name:'Spinach',variety:'Bloomsdale',planted:'2026-03-01',status:'harvested'}
      ],
-     inputs:[],
-     checkins:[{id:'ci2',date:'2026-06-22',health:5,notes:'Lettuce ready to pull. Best performing bed. No issues.'}],
-     harvests:[]}
+     inputs:[
+       {id:'i5',date:'2026-03-10',type:'amendment',product:'Sulfur + Aged Compost',amount:'5 lbs sulfur + 4 bags compost',notes:'Alkaline soil correction — targeting pH 6.8–7.0 for spring greens. Will retest in 60 days.'},
+       {id:'i6',date:'2026-05-15',type:'fertilizer',product:'Sweet Potato Starter 5-10-10',amount:'2 lbs per 100 sqft',notes:'Low nitrogen promotes tuber over foliage. Phosphorus for root development in clay.'}
+     ],
+     checkins:[
+       {id:'ci7',date:'2026-04-15',health:5,notes:'Spring greens thriving. Lettuce and spinach excellent — clay holds moisture perfectly in mild spring. Best window of year.'},
+       {id:'ci8',date:'2026-05-25',health:3,notes:'Spinach and lettuce bolting hard as temps hit 92°F — expected for late May TX. Harvested remaining. Transitioning to summer crops.'},
+       {id:'ci9',date:'2026-06-24',health:4,notes:'Beauregard sweet potatoes vining strong — loves TX summer heat and clay base. Kale heat-stressed but alive. Row converting well.'}
+     ],
+     harvests:[
+       {id:'hv2',date:'2026-05-10',crop:'Butterhead Lettuce',amount:'3.1 lbs',quality:5,notes:'Peak spring harvest before bolt. Buttery, no bitterness. Perfect TX spring timing — last pull before temps climbed.'},
+       {id:'hv3',date:'2026-05-22',crop:'Spinach',amount:'1.8 lbs',quality:4,notes:'Final cut before full bolt. Bloomsdale held 2 weeks longer than expected into warm weather.'}
+     ]}
   ],
   fruitTrees:[
-    {id:'ft1',species:'Apple',variety:'Honeycrisp',status:'planned',planted:null,location:'North fence line',notes:'3–4 trees, 20 ft spacing'},
-    {id:'ft2',species:'Peach',variety:'Elberta',status:'planned',planted:null,location:'East boundary',notes:'Full sun, heat tolerant, high yield'},
-    {id:'ft3',species:'Fig',variety:'Brown Turkey',status:'planned',planted:null,location:'South wall',notes:'Low maintenance, drought tolerant once established'}
+    {id:'ft1',species:'Peach',variety:'Contender or Reliance',status:'planned',planted:null,location:'South-facing slope, east boundary',notes:'Best fruit tree for N. TX — DFW averages 900–1000 chill hours, Contender needs 1050 (borderline great). Plant Nov–Feb. Heavy producer year 3+.'},
+    {id:'ft2',species:'Fig',variety:'Brown Turkey / Texas Everbearing',status:'planned',planted:null,location:'South wall, protected from north wind',notes:'Near-perfect N. TX tree. Drought tolerant yr 2+, 20–30 lbs/season. No spray program needed. Brown Turkey is bulletproof in Zone 7b/8a.'},
+    {id:'ft3',species:'Plum',variety:'Methley (self-fertile)',status:'planned',planted:null,location:'West fence line',notes:'Only 250 chill hours needed — perfect for TX. Self-pollinating, no pair required. June ripener. Resistant to black knot disease.'},
+    {id:'ft4',species:'Pear',variety:'Kieffer',status:'planned',planted:null,location:'North fence line, windbreak position',notes:'Kieffer is fire-blight resistant — critical in humid TX springs. Drought tolerant. Excellent for preserves. Handles alkaline clay well.'}
   ],
-  meta:{acreage:1,soilType:'',started:'2026-05-01'}
+  meta:{acreage:1,soilType:'Houston Black Clay (Vertisol) · pH 7.6–8.0 · Zone 7b/8a · DFW',started:'2026-03-01'}
 };
 
 const SALSA_INTEL = [
-  {name:'Roma Tomato',variety:'Roma VF or San Marzano',why:'Dense, low-moisture flesh — best for cooked salsa and sauce. 12–15 lbs/plant per season.'},
-  {name:'Jalapeño',variety:'Early Jalapeño',why:'Reliable heat, early producer. Roasts well for fire-roasted salsa. 2–4 lbs/plant.'},
-  {name:'Bell Pepper',variety:'California Wonder',why:'Sweetness to balance heat. Versatile raw or roasted. Strong performer in most soils.'},
-  {name:'Sweet Onion',variety:'Texas Sweet or Walla Walla',why:'Mild enough to eat raw. High yield per sqft. Cures well for long-term storage.'},
-  {name:'Garlic',variety:'Hardneck Rocambole',why:'Complex flavor, best for salsa depth. Plant fall, harvest early summer. Easy to store all year.'},
-  {name:'Tomatillo',variety:'Verde',why:'Required for salsa verde. Self-seeds after first year. Plant 2+ for cross-pollination.'},
-  {name:'Cilantro',variety:'Slow-Bolt (Santo)',why:'Succession-plant every 3 weeks in hot climates to prevent bolting. Essential fresh.'}
+  {name:'Roma Tomato',variety:'Heatmaster or Solar Fire',why:'Heat-set variety — sets fruit above 95°F when Celebrity and Big Boy stall. Standard Roma VF fails in DFW July heat. Heatmaster averages 12–20 lbs/plant. #1 priority for TX salsa garden.'},
+  {name:'Texas 1015 Onion',variety:'Texas 1015 Supersweet',why:'Bred specifically for South Texas at Texas A&M — mild enough to eat raw. Plant Sep–Mar, harvest May–Jun. Stores 3–4 months. Best sweet onion available for TX climate bar none.'},
+  {name:'Jalapeño',variety:'Early Jalapeño or TAM Mild Jalapeño',why:'North TX workhorse — thrives in DFW summer heat. TAM variety has 1/10 the heat for crowd-friendly salsa. 2–4 lbs per plant. Prolific producer through October.'},
+  {name:'Tomatillo',variety:'Toma Verde',why:'Handles TX heat better than most tomatoes. Salsa verde staple — plant 2+ for cross-pollination. Self-seeds after year 1. Harvest when husk fills completely tight.'},
+  {name:'Bell Pepper',variety:'Aristotle or Yolo Wonder',why:'Aristotle sets fruit in heat significantly better than California Wonder. Afternoon shade or shade cloth in July–Aug keeps production up when temps exceed 95°F.'},
+  {name:'Garlic',variety:'Creole or Purple Stripe types',why:'Creole/Southern varieties bred for heat — outperform Rocambole hardneck in TX. Plant Oct–Nov, harvest May–Jun. One bed of 50 bulbs stores all year. Do not skip.'},
+  {name:'Cilantro',variety:'Slow-Bolt Santo or Calypso',why:'Succession-plant every 3 weeks during Sep–Nov and Feb–Apr only. Bolts in 3–4 weeks above 80°F. Never plant Jun–Aug in TX; use flat-leaf parsley as summer substitute.'}
 ];
 
 function load(){
