@@ -6,335 +6,112 @@
 <title>Deb-Coin · DCX</title>
 <style>
 :root {
-  --bg:           #050508;
-  --glass-bg:     rgba(255,255,255,0.03);
-  --glass-border: rgba(255,255,255,0.08);
-  --blur:         blur(24px);
-
-  --cyan:   #00f5ff;
-  --mag:    #ff00ff;
-  --purple: #8b00ff;
-  --green:  #00ff88;
-  --orange: #ff6600;
-  --blue:   #0080ff;
-  --yellow: #ffee00;
-  --gold:   #ffd700;
-
-  --neu-out: 6px 6px 14px rgba(0,0,0,0.85), -3px -3px 8px rgba(255,255,255,0.025);
-  --neu-in:  inset 4px 4px 10px rgba(0,0,0,0.85), inset -2px -2px 5px rgba(255,255,255,0.025);
-
-  --sq:  min(88vw, 440px);
-  --r:   18px;
-  --r-s: 12px;
+  --bg:#050508;--glass-bg:rgba(255,255,255,0.03);--glass-border:rgba(255,255,255,0.08);--blur:blur(24px);
+  --cyan:#00f5ff;--mag:#ff00ff;--purple:#8b00ff;--green:#00ff88;--orange:#ff6600;--blue:#0080ff;--yellow:#ffee00;--gold:#ffd700;
+  --neu-out:6px 6px 14px rgba(0,0,0,0.85),-3px -3px 8px rgba(255,255,255,0.025);
+  --neu-in:inset 4px 4px 10px rgba(0,0,0,0.85),inset -2px -2px 5px rgba(255,255,255,0.025);
+  --sq:min(88vw,440px);--r:18px;--r-s:12px;
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 16px 80px;
-  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
-  color: #fff;
-  overflow-x: hidden;
-}
-
-/* ── orbs ── */
-.orb { position:fixed;border-radius:50%;filter:blur(100px);opacity:.065;pointer-events:none;animation:drift 24s ease-in-out infinite; }
-.o1  { width:500px;height:500px;background:var(--gold);top:-180px;left:-180px; }
-.o2  { width:340px;height:340px;background:var(--purple);bottom:-90px;right:-90px;animation-delay:-9s; }
-.o3  { width:220px;height:220px;background:var(--cyan);top:50%;left:35%;animation-delay:-16s; }
-@keyframes drift {
-  0%,100%{transform:translate(0,0)scale(1)}
-  33%{transform:translate(36px,-26px)scale(1.1)}
-  66%{transform:translate(-20px,34px)scale(.92)}
-}
-
-/* ── wordmark ── */
-.wordmark {
-  width:100%;max-width:var(--sq);
-  display:flex;align-items:center;gap:14px;
-  margin-bottom:28px;
-}
-.wm-coin {
-  width:48px;height:48px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,#b8860b,var(--gold),#ffeaa7,var(--gold));
-  display:grid;place-items:center;
-  font-size:20px;font-weight:900;color:#000;
-  box-shadow:0 0 28px rgba(255,215,0,.5),0 0 60px rgba(255,215,0,.2);
-  animation:coinGlow 3s ease-in-out infinite;
-}
-@keyframes coinGlow {
-  0%,100%{box-shadow:0 0 28px rgba(255,215,0,.5),0 0 60px rgba(255,215,0,.2)}
-  50%{box-shadow:0 0 40px rgba(255,215,0,.8),0 0 80px rgba(255,215,0,.35)}
-}
-.wm-text { display:flex;flex-direction:column;gap:2px; }
-.wm-title {
-  font-size:20px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
-  background:linear-gradient(135deg,var(--gold),#fff8dc,var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.wm-sub { font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3); }
-
-/* ── panel (the square card) ── */
-.panel {
-  width:100%;max-width:var(--sq);
-  border-radius:var(--r);
-  background:rgba(10,10,20,.65);
-  backdrop-filter:var(--blur);
-  border:1.5px solid var(--glass-border);
-  box-shadow:var(--neu-out);
-  padding:20px;
-  margin-bottom:14px;
-  position:relative;overflow:hidden;
-}
-.panel-label {
-  font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(255,255,255,.28);
-  margin-bottom:14px;
-}
-
-/* ── ticker ── */
-.ticker-grid {
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-}
-.t-cell { display:flex;flex-direction:column;gap:4px; }
-.t-val {
-  font-size:26px;font-weight:900;letter-spacing:-1px;
-  background:linear-gradient(135deg,var(--gold),#fff8dc);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  line-height:1;
-}
-.t-val.cyan { background:linear-gradient(135deg,var(--cyan),#e0ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
-.t-val.green { background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
-.t-lbl { font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3); }
-.t-delta {
-  font-size:10px;font-weight:700;
-  color:var(--green);
-}
-.t-delta.neg { color:#ff4466; }
-
-/* ── TVM live ── */
-.tvm-row {
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;
-  border-radius:var(--r-s);
-  background:rgba(255,215,0,.05);
-  border:1px solid rgba(255,215,0,.15);
-  margin-bottom:10px;
-}
-.tvm-window { font-size:11px;font-weight:600;color:rgba(255,255,255,.55); }
-.tvm-mult {
-  font-size:28px;font-weight:900;
-  background:linear-gradient(135deg,var(--gold),#fff8dc);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.tvm-tag {
-  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  padding:4px 8px;border-radius:6px;
-  background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);
-  color:var(--gold);
-}
-
-/* ── log form ── */
-.log-form { display:flex;flex-direction:column;gap:10px; }
-.field-row { display:flex;gap:8px; }
-.field {
-  flex:1;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--glass-border);
-  border-radius:var(--r-s);
-  padding:10px 13px;
-  color:#fff;font-size:13px;font-family:inherit;
-  outline:none;
-  transition:border-color .2s;
-}
-.field:focus { border-color:rgba(255,215,0,.4); }
-.field::placeholder { color:rgba(255,255,255,.2); }
-.field-label { font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px; }
-.field-group { display:flex;flex-direction:column; }
-
-.btn-log {
-  width:100%;padding:13px;border-radius:var(--r-s);
-  background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.08));
-  border:1.5px solid rgba(255,215,0,.35);
-  color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  cursor:pointer;font-family:inherit;
-  transition:all .2s;
-}
-.btn-log:hover { background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(255,215,0,.12));border-color:rgba(255,215,0,.6); }
-.btn-log:active { transform:scale(.98); }
-
-/* ── preview calc ── */
-.calc-preview {
-  display:flex;justify-content:space-between;align-items:center;
-  padding:10px 14px;border-radius:var(--r-s);
-  background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);
-}
-.calc-line { font-size:10px;color:rgba(255,255,255,.4); }
-.calc-result { font-size:18px;font-weight:900;color:var(--green); }
-
-/* ── stacks ── */
-.stacks-row { display:flex;gap:8px;margin-top:10px; }
-.stack-chip {
-  flex:1;padding:8px 10px;border-radius:8px;
-  background:var(--glass-bg);border:1px solid var(--glass-border);
-  display:flex;flex-direction:column;gap:3px;
-  cursor:pointer;transition:all .2s;text-align:center;
-}
-.stack-chip.on { background:rgba(0,128,255,.1);border-color:rgba(0,128,255,.35); }
-.stack-chip.on .sc-name { color:var(--blue); }
-.sc-name { font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);transition:color .2s; }
-.sc-val { font-size:10px;font-weight:700;color:rgba(255,255,255,.5); }
-
-/* ── density calendar ── */
-.density-grid {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:4px;
-}
-.density-header {
-  display:grid;grid-template-columns:repeat(7,1fr);
-  gap:4px;margin-bottom:4px;
-}
-.d-head { font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.25);text-align:center; }
-.d-cell {
-  aspect-ratio:1;border-radius:5px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
-  display:grid;place-items:center;
-  font-size:7px;color:rgba(255,255,255,.2);
-  cursor:pointer;
-  transition:all .15s;
-  position:relative;
-}
-.d-cell:hover { border-color:rgba(255,215,0,.3);transform:scale(1.1); }
-.d-cell.has-coins { background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.2); }
-.d-cell.hot      { background:rgba(255,215,0,.18);border-color:rgba(255,215,0,.45); }
-.d-cell.blazed   { background:rgba(255,215,0,.32);border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.3); }
-.d-cell.today    { border-color:var(--cyan) !important; }
-
-/* ── session list ── */
-.session-list { display:flex;flex-direction:column;gap:8px; }
-.session-row {
-  display:flex;align-items:center;gap:12px;
-  padding:10px 13px;border-radius:var(--r-s);
-  background:rgba(255,255,255,.03);border:1px solid var(--glass-border);
-}
-.s-coin {
-  width:32px;height:32px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,#b8860b,var(--gold));
-  display:grid;place-items:center;
-  font-size:12px;font-weight:900;color:#000;
-  box-shadow:0 0 10px rgba(255,215,0,.4);
-}
-.s-info { flex:1;min-width:0; }
-.s-desc { font-size:11px;font-weight:600;color:rgba(255,255,255,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.s-meta { font-size:9px;color:rgba(255,255,255,.3);margin-top:2px; }
-.s-val { font-size:14px;font-weight:900;color:var(--gold);white-space:nowrap; }
-.s-tvm { font-size:9px;color:rgba(255,215,0,.5);text-align:right; }
-
-/* ── constellation ── */
-#constellation {
-  width:100%;border-radius:var(--r-s);
-  background:rgba(5,5,15,.9);
-  border:1px solid rgba(255,255,255,.06);
-}
-
-/* ── tabs ── */
-.tabs {
-  display:flex;gap:6px;
-  width:100%;max-width:var(--sq);
-  margin-bottom:14px;
-}
-.tab {
-  flex:1;padding:9px 0;border-radius:10px;
-  background:var(--glass-bg);border:1px solid var(--glass-border);
-  color:rgba(255,255,255,.35);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  cursor:pointer;font-family:inherit;
-  transition:all .2s;
-}
-.tab.on {
-  background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.35);
-  color:var(--gold);
-}
-
-/* ── empty state ── */
-.empty {
-  text-align:center;padding:28px 0;
-  color:rgba(255,255,255,.2);font-size:11px;letter-spacing:.5px;
-}
-
-/* ── divider ── */
-.divider {
-  width:100%;max-width:var(--sq);height:1px;
-  background:linear-gradient(90deg,transparent,var(--glass-border),transparent);
-  margin:6px 0 14px;
-}
-
-/* ── back link ── */
-.back {
-  width:100%;max-width:var(--sq);
-  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.2);text-decoration:none;
-  margin-bottom:20px;
-  display:flex;align-items:center;gap:6px;
-}
-.back:hover { color:rgba(255,255,255,.45); }
-
-/* ── toast ── */
-.toast {
-  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);
-  border-radius:10px;padding:10px 20px;
-  font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);
-  transition:transform .3s ease;
-  white-space:nowrap;z-index:999;
-}
-.toast.show { transform:translateX(-50%) translateY(0); }
-
-/* ── modal ── */
-.modal-bg {
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
-  z-index:100;align-items:center;justify-content:center;
-}
-.modal-bg.show { display:flex; }
-.modal {
-  width:min(90vw,400px);border-radius:var(--r);
-  background:rgba(10,10,22,.95);border:1.5px solid rgba(255,215,0,.2);
-  padding:22px;box-shadow:0 0 60px rgba(255,215,0,.15);
-}
-.modal-title { font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px; }
-.modal-body { display:flex;flex-direction:column;gap:10px; }
-.modal-session-row {
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.07);
-}
-.ms-desc { font-size:11px;color:rgba(255,255,255,.7); }
-.ms-val  { font-size:12px;font-weight:700;color:var(--gold); }
-.modal-close {
-  width:100%;padding:10px;margin-top:14px;border-radius:10px;
-  background:var(--glass-bg);border:1px solid var(--glass-border);
-  color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  cursor:pointer;font-family:inherit;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 80px;font-family:-apple-system,'SF Pro Display','Segoe UI',sans-serif;color:#fff;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.065;pointer-events:none;animation:drift 24s ease-in-out infinite}
+.o1{width:500px;height:500px;background:var(--gold);top:-180px;left:-180px}
+.o2{width:340px;height:340px;background:var(--purple);bottom:-90px;right:-90px;animation-delay:-9s}
+.o3{width:220px;height:220px;background:var(--cyan);top:50%;left:35%;animation-delay:-16s}
+@keyframes drift{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(36px,-26px)scale(1.1)}66%{transform:translate(-20px,34px)scale(.92)}}
+.wordmark{width:100%;max-width:var(--sq);display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.wm-coin{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#b8860b,var(--gold),#ffeaa7,var(--gold));display:grid;place-items:center;font-size:20px;font-weight:900;color:#000;box-shadow:0 0 28px rgba(255,215,0,.5);animation:coinGlow 3s ease-in-out infinite}
+@keyframes coinGlow{0%,100%{box-shadow:0 0 28px rgba(255,215,0,.5),0 0 60px rgba(255,215,0,.2)}50%{box-shadow:0 0 40px rgba(255,215,0,.8),0 0 80px rgba(255,215,0,.35)}}
+.wm-text{display:flex;flex-direction:column;gap:2px}
+.wm-title{font-size:20px;font-weight:900;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,var(--gold),#fff8dc,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.wm-sub{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.panel{width:100%;max-width:var(--sq);border-radius:var(--r);background:rgba(10,10,20,.65);backdrop-filter:var(--blur);border:1.5px solid var(--glass-border);box-shadow:var(--neu-out);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.panel-label{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:14px}
+.ticker-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.t-cell{display:flex;flex-direction:column;gap:4px}
+.t-val{font-size:26px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.t-val.cyan{background:linear-gradient(135deg,var(--cyan),#e0ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.t-val.green{background:linear-gradient(135deg,var(--green),#e0ffe8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.t-lbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.reconcile-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.12);margin-top:14px}
+.r-label{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,255,136,.6)}
+.r-val{font-size:11px;font-weight:700;color:var(--green)}
+.tvm-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:var(--r-s);background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.15);margin-bottom:10px}
+.tvm-window{font-size:11px;font-weight:600;color:rgba(255,255,255,.55)}
+.tvm-mult{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tvm-tag{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);color:var(--gold)}
+.log-form{display:flex;flex-direction:column;gap:10px}
+.field-row{display:flex;gap:8px}
+.field{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:var(--r-s);padding:10px 13px;color:#fff;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.field:focus{border-color:rgba(255,215,0,.4)}
+.field::placeholder{color:rgba(255,255,255,.2)}
+.field-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.field-group{display:flex;flex-direction:column}
+.btn-log{width:100%;padding:13px;border-radius:var(--r-s);background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.08));border:1.5px solid rgba(255,215,0,.35);color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-log:hover{background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(255,215,0,.12));border-color:rgba(255,215,0,.6)}
+.btn-log:active{transform:scale(.98)}
+.calc-preview{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:var(--r-s);background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15)}
+.calc-line{font-size:10px;color:rgba(255,255,255,.4);flex:1;margin-right:10px}
+.calc-result{font-size:18px;font-weight:900;color:var(--green);white-space:nowrap}
+.stacks-row{display:flex;gap:8px;margin-top:2px}
+.stack-chip{flex:1;padding:8px 10px;border-radius:8px;background:var(--glass-bg);border:1px solid var(--glass-border);display:flex;flex-direction:column;gap:3px;cursor:pointer;transition:all .2s;text-align:center}
+.stack-chip.on{background:rgba(0,128,255,.1);border-color:rgba(0,128,255,.35)}
+.stack-chip.on .sc-name{color:var(--blue)}
+.sc-name{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);transition:color .2s}
+.sc-val{font-size:10px;font-weight:700;color:rgba(255,255,255,.5)}
+.tabs{display:flex;gap:6px;width:100%;max-width:var(--sq);margin-bottom:14px}
+.tab{flex:1;padding:9px 0;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:rgba(255,255,255,.35);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all .2s}
+.tab.on{background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.35);color:var(--gold)}
+.density-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.d-head{font-size:7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.25);text-align:center}
+.density-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.d-cell{aspect-ratio:1;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);display:grid;place-items:center;font-size:7px;color:rgba(255,255,255,.2);cursor:pointer;transition:all .15s}
+.d-cell:hover{border-color:rgba(255,215,0,.3);transform:scale(1.1)}
+.d-cell.has-coins{background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.2)}
+.d-cell.hot{background:rgba(255,215,0,.18);border-color:rgba(255,215,0,.45)}
+.d-cell.blazed{background:rgba(255,215,0,.32);border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.3)}
+.d-cell.today{border-color:var(--cyan) !important}
+.legend{display:flex;gap:14px;margin-top:12px;justify-content:center;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-sq{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.leg-lbl{font-size:8px;color:rgba(255,255,255,.25)}
+.session-list{display:flex;flex-direction:column;gap:8px}
+.session-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--r-s);background:rgba(255,255,255,.03);border:1px solid var(--glass-border)}
+.s-coin{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#b8860b,var(--gold));display:grid;place-items:center;font-size:10px;font-weight:900;color:#000;box-shadow:0 0 10px rgba(255,215,0,.4)}
+.s-info{flex:1;min-width:0}
+.s-desc{font-size:11px;font-weight:600;color:rgba(255,255,255,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-meta{font-size:9px;color:rgba(255,255,255,.3);margin-top:2px}
+.s-right{text-align:right;flex-shrink:0}
+.s-val{font-size:13px;font-weight:900;color:var(--gold)}
+.s-tvm{font-size:9px;color:rgba(255,215,0,.5)}
+.s-delete{font-size:10px;color:rgba(255,255,255,.12);cursor:pointer;padding:2px 4px;border-radius:4px;display:block;margin-top:2px}
+.s-delete:hover{color:#ff4466}
+#constellation{width:100%;border-radius:var(--r-s);background:rgba(5,5,15,.9);border:1px solid rgba(255,255,255,.06)}
+.import-toggle{width:100%;max-width:var(--sq);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-s);background:var(--glass-bg);border:1px solid var(--glass-border);cursor:pointer;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
+.import-toggle:hover{border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.5)}
+.import-panel{display:none;width:100%;max-width:var(--sq);margin-bottom:14px}
+.import-panel.open{display:block}
+textarea.field{resize:vertical;min-height:120px;font-size:11px;line-height:1.5;font-family:'SF Mono',monospace}
+.empty{text-align:center;padding:28px 0;color:rgba(255,255,255,.2);font-size:11px;letter-spacing:.5px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:10px;padding:10px 20px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);transition:transform .3s ease;white-space:nowrap;z-index:999}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{width:min(90vw,420px);border-radius:var(--r);background:rgba(10,10,22,.95);border:1.5px solid rgba(255,215,0,.2);padding:22px;box-shadow:0 0 60px rgba(255,215,0,.15);max-height:80vh;overflow-y:auto}
+.modal-title{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.modal-body{display:flex;flex-direction:column;gap:8px}
+.modal-session-row{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);gap:10px}
+.ms-desc{font-size:11px;color:rgba(255,255,255,.7);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms-val{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
+.modal-close{width:100%;padding:10px;margin-top:14px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit}
+.back{width:100%;max-width:var(--sq);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);text-decoration:none;margin-bottom:20px;display:flex;align-items:center;gap:6px}
+.back:hover{color:rgba(255,255,255,.45)}
+.divider{width:100%;max-width:var(--sq);height:1px;background:linear-gradient(90deg,transparent,var(--glass-border),transparent);margin:4px 0 14px}
 </style>
 </head>
 <body>
-
-<div class="orb o1"></div>
-<div class="orb o2"></div>
-<div class="orb o3"></div>
-
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 <a class="back" href="../index.html">← back</a>
-
-<!-- wordmark -->
 <div class="wordmark">
   <div class="wm-coin">Đ</div>
   <div class="wm-text">
@@ -343,146 +120,110 @@ body {
   </div>
 </div>
 
-<!-- TICKER -->
 <div class="panel">
   <div class="panel-label">DCX Index</div>
   <div class="ticker-grid">
-    <div class="t-cell">
-      <div class="t-val" id="vi-display">—</div>
-      <div class="t-lbl">Value Index</div>
-      <div class="t-delta" id="vi-delta"></div>
-    </div>
-    <div class="t-cell">
-      <div class="t-val cyan" id="fp-display">—</div>
-      <div class="t-lbl">Florin Price</div>
-      <div class="t-delta" id="fp-delta"></div>
-    </div>
-    <div class="t-cell">
-      <div class="t-val green" id="units-display">—</div>
-      <div class="t-lbl">Coins Minted</div>
-    </div>
+    <div class="t-cell"><div class="t-val" id="vi-display">—</div><div class="t-lbl">Value Index</div></div>
+    <div class="t-cell"><div class="t-val cyan" id="fp-display">—</div><div class="t-lbl">Florin Price</div></div>
+    <div class="t-cell"><div class="t-val green" id="units-display">—</div><div class="t-lbl">Coins Minted</div></div>
+  </div>
+  <div class="reconcile-bar">
+    <div class="r-label">Build Log Reconciled Through</div>
+    <div class="r-val" id="reconcile-date">—</div>
   </div>
 </div>
 
-<!-- TVM LIVE -->
 <div class="panel">
   <div class="panel-label">Time-Value Multiplier · Now</div>
   <div class="tvm-row">
     <div>
       <div class="tvm-window" id="tvm-window">—</div>
-      <div style="font-size:9px;color:rgba(255,255,255,.25);margin-top:4px;" id="tvm-desc">—</div>
+      <div style="font-size:9px;color:rgba(255,255,255,.25);margin-top:4px" id="tvm-desc">—</div>
     </div>
     <div class="tvm-mult" id="tvm-mult">—</div>
     <div class="tvm-tag" id="tvm-tier">—</div>
   </div>
 </div>
 
-<!-- LOG A SESSION -->
 <div class="panel">
   <div class="panel-label">Mint a Coin · Log Session</div>
   <div class="log-form">
-
     <div class="field-group">
       <div class="field-label">What did you build / do?</div>
-      <input class="field" id="f-desc" type="text" placeholder="e.g. Built Deb-Coin dashboard, 2h deep work">
+      <input class="field" id="f-desc" type="text" placeholder="e.g. Built landing page, 2h deep work">
     </div>
-
     <div class="field-row">
-      <div class="field-group" style="flex:1">
-        <div class="field-label">Base Output (florins)</div>
-        <input class="field" id="f-base" type="number" placeholder="100" min="1" max="10000" oninput="updateCalc()">
-      </div>
-      <div class="field-group" style="flex:1">
-        <div class="field-label">Date</div>
-        <input class="field" id="f-date" type="date">
-      </div>
+      <div class="field-group" style="flex:1"><div class="field-label">Base Output (florins)</div><input class="field" id="f-base" type="number" placeholder="10" min="1" oninput="updateCalc()"></div>
+      <div class="field-group" style="flex:1"><div class="field-label">Date</div><input class="field" id="f-date" type="date"></div>
     </div>
-
     <div class="field-row">
-      <div class="field-group" style="flex:1">
-        <div class="field-label">Start Time</div>
-        <input class="field" id="f-start" type="time" oninput="updateCalc()">
-      </div>
-      <div class="field-group" style="flex:1">
-        <div class="field-label">End Time (opt)</div>
-        <input class="field" id="f-end" type="time">
-      </div>
+      <div class="field-group" style="flex:1"><div class="field-label">Start Time</div><input class="field" id="f-start" type="time" oninput="updateCalc()"></div>
+      <div class="field-group" style="flex:1"><div class="field-label">End Time (opt)</div><input class="field" id="f-end" type="time"></div>
     </div>
-
-    <!-- stacks -->
-    <div class="field-label" style="margin-bottom:0">Stacks (additive bonuses)</div>
+    <div class="field-label" style="margin-bottom:0">Stacks</div>
     <div class="stacks-row">
-      <div class="stack-chip" id="stack-build" onclick="toggleStack('build')">
-        <div class="sc-name">Building</div>
-        <div class="sc-val">+2×</div>
-      </div>
-      <div class="stack-chip" id="stack-research" onclick="toggleStack('research')">
-        <div class="sc-name">Research</div>
-        <div class="sc-val">+1×</div>
-      </div>
+      <div class="stack-chip" id="stack-build" onclick="toggleStack('build')"><div class="sc-name">Building</div><div class="sc-val">+2×</div></div>
+      <div class="stack-chip" id="stack-research" onclick="toggleStack('research')"><div class="sc-name">Research</div><div class="sc-val">+1×</div></div>
     </div>
-
-    <!-- live preview -->
     <div class="calc-preview">
       <div class="calc-line" id="calc-line">Enter base output to preview</div>
       <div class="calc-result" id="calc-result">Đ —</div>
     </div>
-
     <button class="btn-log" onclick="logSession()">⬛ MINT COIN</button>
   </div>
 </div>
 
-<!-- VIEWS -->
 <div class="tabs">
   <button class="tab on" onclick="switchView('density',this)">Density</button>
   <button class="tab" onclick="switchView('sessions',this)">Sessions</button>
   <button class="tab" onclick="switchView('constellation',this)">Cosmos</button>
 </div>
 
-<!-- DENSITY VIEW -->
 <div class="panel" id="view-density">
-  <div class="panel-label">Coin Density · Last 10 Weeks</div>
-  <div class="density-header">
-    <div class="d-head">S</div><div class="d-head">M</div><div class="d-head">T</div>
-    <div class="d-head">W</div><div class="d-head">T</div><div class="d-head">F</div>
-    <div class="d-head">S</div>
-  </div>
+  <div class="panel-label">Coin Density · Last 12 Weeks</div>
+  <div class="density-header"><div class="d-head">S</div><div class="d-head">M</div><div class="d-head">T</div><div class="d-head">W</div><div class="d-head">T</div><div class="d-head">F</div><div class="d-head">S</div></div>
   <div class="density-grid" id="density-grid"></div>
-  <div style="display:flex;gap:16px;margin-top:12px;justify-content:center">
-    <div style="display:flex;align-items:center;gap:5px">
-      <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)"></div>
-      <span style="font-size:8px;color:rgba(255,255,255,.25)">quiet</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:5px">
-      <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2)"></div>
-      <span style="font-size:8px;color:rgba(255,255,255,.25)">active</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:5px">
-      <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.4)"></div>
-      <span style="font-size:8px;color:rgba(255,255,255,.25)">hot</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:5px">
-      <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,215,0,.32);border:1px solid gold;box-shadow:0 0 8px rgba(255,215,0,.3)"></div>
-      <span style="font-size:8px;color:rgba(255,255,255,.25)">blazed</span>
-    </div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-sq" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)"></div><span class="leg-lbl">quiet</span></div>
+    <div class="leg-item"><div class="leg-sq" style="background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2)"></div><span class="leg-lbl">active</span></div>
+    <div class="leg-item"><div class="leg-sq" style="background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.45)"></div><span class="leg-lbl">hot</span></div>
+    <div class="leg-item"><div class="leg-sq" style="background:rgba(255,215,0,.32);border:1px solid gold;box-shadow:0 0 8px rgba(255,215,0,.3)"></div><span class="leg-lbl">blazed</span></div>
   </div>
 </div>
 
-<!-- SESSIONS VIEW -->
 <div class="panel" id="view-sessions" style="display:none">
-  <div class="panel-label">All Sessions · <span id="session-count">0</span> coins minted</div>
-  <div class="session-list" id="session-list">
-    <div class="empty">No sessions logged yet. Mint your first coin above.</div>
-  </div>
+  <div class="panel-label">All Sessions · <span id="session-count">0</span> coins · <span id="session-total">Đ0</span></div>
+  <div class="session-list" id="session-list"><div class="empty">No sessions yet.</div></div>
 </div>
 
-<!-- CONSTELLATION VIEW -->
 <div class="panel" id="view-constellation" style="display:none">
   <div class="panel-label">Deb-Coin Cosmos</div>
-  <canvas id="constellation" height="320"></canvas>
+  <canvas id="constellation" height="340"></canvas>
 </div>
 
-<!-- DAY MODAL -->
+<div class="divider"></div>
+<div class="import-toggle" onclick="toggleImport()">
+  <span>Import Build Logs (YAML paste)</span>
+  <span id="import-arrow">▾</span>
+</div>
+<div class="import-panel" id="import-panel">
+  <div class="panel">
+    <div class="panel-label">Paste one or more Build Log YAML blocks</div>
+    <div class="log-form">
+      <textarea class="field" id="import-text" placeholder="---
+title: &quot;Session name&quot;
+date: 2026-06-24
+startTime: &quot;22:00&quot;
+endTime: &quot;23:30&quot;
+worth: 10
+tvm: 6
+---"></textarea>
+      <button class="btn-log" onclick="importLogs()">⬛ IMPORT ENTRIES</button>
+      <div id="import-result" style="font-size:10px;color:var(--green);text-align:center;min-height:14px"></div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="day-modal" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-title" id="modal-title">—</div>
@@ -490,379 +231,353 @@ body {
     <button class="modal-close" onclick="document.getElementById('day-modal').classList.remove('show')">Close</button>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════
-const STORE_KEY = 'debcoin_v1';
+// ══════════════════════════════════════════
+// COMPLETE SEED — All 75 Build Log sessions
+// Reconciled through 2026-06-21 · Đ2,325 total
+// ══════════════════════════════════════════
+const SEED = [
+  // ── June 4 ──
+  {id:'s060420',date:'2026-06-04',start:'20:00',end:'21:30',desc:'Journal capture system',base:6,tvm:2.5,totalMult:2.5,value:15},
+  {id:'s060421',date:'2026-06-04',start:'21:30',end:'22:15',desc:'ALA ≠ ASU untangle',base:6,tvm:2.5,totalMult:2.5,value:15},
+  {id:'s060422',date:'2026-06-04',start:'22:15',end:'23:15',desc:'ALA bell schedule widget',base:9,tvm:5,totalMult:5,value:45},
+  // ── June 5 ──
+  {id:'s060509',date:'2026-06-05',start:'09:00',end:'10:30',desc:'Pulse heatmap + views',base:9,tvm:1,totalMult:1,value:9},
+  {id:'s060510a',date:'2026-06-05',start:'10:30',end:'12:00',desc:'Personal heatmap + Ledger',base:11,tvm:1,totalMult:1,value:11},
+  {id:'s060510b',date:'2026-06-05',start:'10:30',end:'12:10',desc:'Science 7 Video Library — full year, 49 verified shorts',base:16,tvm:3,totalMult:3,value:48},
+  {id:'s060511',date:'2026-06-05',start:'11:30',end:'12:15',desc:'Madewell Daily — Unit 1 complete (multi-agent)',base:12,tvm:3,totalMult:3,value:36},
+  {id:'s060512a',date:'2026-06-05',start:'12:15',end:'12:30',desc:'Madewell Daily — Unit 2 (Cells)',base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060512b',date:'2026-06-05',start:'12:30',end:'12:50',desc:'Madewell Daily — Unit 3 (Human Body Systems)',base:12,tvm:3,totalMult:3,value:36},
+  {id:'s060512c',date:'2026-06-05',start:'12:50',end:'13:10',desc:'Madewell Daily — Unit 4 (Growth & Development)',base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060513a',date:'2026-06-05',start:'13:00',end:'13:45',desc:'Signal triage inbox',base:5,tvm:1,totalMult:1,value:5},
+  {id:'s060513b',date:'2026-06-05',start:'13:10',end:'13:35',desc:"Madewell Daily — Unit 5 (Cycling of Earth's Materials)",base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060513c',date:'2026-06-05',start:'13:35',end:'13:55',desc:'Madewell Daily — Unit 6 (Plate Tectonics)',base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060513d',date:'2026-06-05',start:'13:45',end:'15:00',desc:'Dynamic categories + scorekeeping model',base:7,tvm:1,totalMult:1,value:7},
+  {id:'s060515',date:'2026-06-05',start:'15:00',end:'16:00',desc:"Today's Board",base:6,tvm:1,totalMult:1,value:6},
+  {id:'s060516',date:'2026-06-05',start:'16:00',end:'16:30',desc:"Real schedules + Nikki's board",base:5,tvm:1,totalMult:1,value:5},
+  // ── June 6 (massive night — Đ720) ──
+  {id:'s060601',date:'2026-06-06',start:'01:00',end:'01:45',desc:'Value Engine implant',base:5,tvm:12,totalMult:12,value:60},
+  {id:'s060601b',date:'2026-06-06',start:'01:45',end:'03:00',desc:'Widget consolidation + TVM ledgers',base:11,tvm:13,totalMult:13,value:143},
+  {id:'s060603',date:'2026-06-06',start:'03:00',end:'03:30',desc:'Buy Window — purchase-timing flags',base:3,tvm:15,totalMult:15,value:45},
+  {id:'s060603b',date:'2026-06-06',start:'03:30',end:'04:15',desc:'Close the value loop — savings → Value Index',base:6,tvm:15,totalMult:15,value:90},
+  {id:'s060604',date:'2026-06-06',start:'04:15',end:'04:55',desc:'Today card live highlight + full home balance sheet',base:5,tvm:15,totalMult:15,value:75},
+  {id:'s060604b',date:'2026-06-06',start:'04:55',end:'05:30',desc:'Class Hub — per-course operating surface',base:4,tvm:15,totalMult:15,value:60},
+  {id:'s060605',date:'2026-06-06',start:'05:30',end:'06:05',desc:'Class Hub rollout + generator hardening',base:6,tvm:3.5,totalMult:3.5,value:21},
+  {id:'s060606',date:'2026-06-06',start:'06:05',end:'06:50',desc:'Class nav + back-home wayfinding',base:7,tvm:3.5,totalMult:3.5,value:25},
+  {id:'s060606b',date:'2026-06-06',start:'06:50',end:'07:00',desc:'The Madewell Daily — issue #1 prototype',base:5,tvm:3.5,totalMult:3.5,value:18},
+  {id:'s060607',date:'2026-06-06',start:'07:00',end:'07:20',desc:'Madewell Daily — Unit 7 (Natural Hazards)',base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060607b',date:'2026-06-06',start:'07:20',end:'07:35',desc:'Madewell Daily — Unit 8 (Weather)',base:11,tvm:3,totalMult:3,value:33},
+  {id:'s060607c',date:'2026-06-06',start:'07:30',end:'08:20',desc:'The Madewell Daily — two-page edition',base:6,tvm:3.5,totalMult:3.5,value:21},
+  {id:'s060607d',date:'2026-06-06',start:'07:40',end:'08:00',desc:'Madewell Daily — Unit 9 (Climate) + FULL YEAR COMPLETE',base:18,tvm:3,totalMult:3,value:54},
+  {id:'s060608',date:'2026-06-06',start:'08:20',end:'09:00',desc:'Madewell Daily — real art + single dense page',base:5,tvm:3.5,totalMult:3.5,value:18},
+  {id:'s060609',date:'2026-06-06',start:'09:00',end:'10:00',desc:'Madewell Daily — Week 2 generated (multi-agent)',base:8,tvm:3,totalMult:3,value:24},
+  // ── June 7 ──
+  {id:'s060707',date:'2026-06-07',start:'07:32',end:'08:10',desc:'ALA Madewell admin docs',base:6,tvm:3.5,totalMult:3.5,value:21},
+  {id:'s060708',date:'2026-06-07',start:'08:10',end:'08:25',desc:'PLC and Uniform templates',base:3,tvm:3.5,totalMult:3.5,value:11},
+  {id:'s060708b',date:'2026-06-07',start:'08:25',end:'08:42',desc:'Behavior Standing widget',base:6,tvm:3.5,totalMult:3.5,value:21},
+  {id:'s060709',date:'2026-06-07',start:'09:40',end:'10:30',desc:'Reading Reflection Week 3',base:5,tvm:3,totalMult:3,value:15},
+  {id:'s060710',date:'2026-06-07',start:'10:30',end:'11:45',desc:'DMP3 Digital Storytelling',base:8,tvm:3,totalMult:3,value:24},
+  {id:'s060711',date:'2026-06-07',start:'11:45',end:'12:25',desc:'SED 510 SLO 1-3',base:7,tvm:3,totalMult:3,value:21},
+  {id:'s060712',date:'2026-06-07',start:'12:25',end:'12:41',desc:'MastersHub publishing',base:3,tvm:3,totalMult:3,value:9},
+  {id:'s060712b',date:'2026-06-07',start:'12:30',end:'12:41',desc:'MastersHub link cleanup',base:3,tvm:3,totalMult:3,value:9},
+  {id:'s060715',date:'2026-06-07',start:'15:07',end:'15:30',desc:'EDA 505 Module 3',base:7,tvm:3,totalMult:3,value:21},
+  {id:'s060715b',date:'2026-06-07',start:'15:30',end:'15:57',desc:'Build Log reconciler',base:6,tvm:3,totalMult:3,value:18},
+  // ── June 8 ──
+  {id:'s060819',date:'2026-06-08',start:'19:36',end:'19:56',desc:'Lesson Faces · Science Hub',base:8,tvm:4.5,totalMult:4.5,value:36},
+  // ── June 10 ──
+  {id:'s061014',date:'2026-06-10',start:'14:30',end:'15:00',desc:'Pokémon Donut Calculator',base:5,tvm:3,totalMult:3,value:15},
+  // ── June 11 ──
+  {id:'s061111',date:'2026-06-11',start:'11:34',end:'21:14',desc:'Bellwork accountability engine',base:8,tvm:3,totalMult:3,value:24},
+  {id:'s061113',date:'2026-06-11',start:'13:27',end:'19:38',desc:'Macropad page-aware launcher',base:7,tvm:3,totalMult:3,value:21},
+  // ── June 12 ──
+  {id:'s061202',date:'2026-06-12',start:'02:42',end:'02:46',desc:'Workflow-args post-mortem',base:2,tvm:13,totalMult:13,value:26},
+  {id:'s061209',date:'2026-06-12',start:'09:30',end:'10:15',desc:'Daily print legibility + density',base:3,tvm:1,totalMult:1,value:3},
+  {id:'s061211',date:'2026-06-12',start:'11:16',end:'11:30',desc:'Build Log currency reconcile',base:2,tvm:1,totalMult:1,value:2},
+  {id:'s061211b',date:'2026-06-12',start:'11:34',end:'11:50',desc:'Madewell folder consolidation',base:2,tvm:1,totalMult:1,value:2},
+  {id:'s061222',date:'2026-06-12',start:'22:37',end:'02:18',desc:'ALA Vistancia campus model + Driveline',base:12,tvm:7,totalMult:7,value:84},
+  // ── June 13 (deep night — Đ470) ──
+  {id:'s061302',date:'2026-06-13',start:'02:12',end:'02:25',desc:'Build Log currency reconcile',base:2,tvm:13,totalMult:13,value:26},
+  {id:'s061302b',date:'2026-06-13',start:'02:15',end:'04:30',desc:'Campus assembled from FreeCAD traces',base:9,tvm:3,totalMult:3,value:27},
+  {id:'s061302c',date:'2026-06-13',start:'02:25',end:'04:21',desc:'Deb-Coin density page',base:9,tvm:15,totalMult:15,value:135},
+  {id:'s061304',date:'2026-06-13',start:'04:25',end:'04:50',desc:'Deb-Coin ticker',base:6,tvm:15,totalMult:15,value:90},
+  {id:'s061304b',date:'2026-06-13',start:'04:30',end:'05:05',desc:'Filled campus map approved',base:6,tvm:3,totalMult:3,value:18},
+  {id:'s061304c',date:'2026-06-13',start:'04:55',end:'05:30',desc:'Deb-Coin constellation',base:7,tvm:15,totalMult:15,value:105},
+  {id:'s061315',date:'2026-06-13',start:'15:05',end:'15:35',desc:'Roster toolkit designed',base:4,tvm:2,totalMult:2,value:8},
+  {id:'s061317',date:'2026-06-13',start:'17:41',end:'18:06',desc:'Macropad → FreeCAD layer card',base:3,tvm:2,totalMult:2,value:6},
+  {id:'s061320',date:'2026-06-13',start:'20:41',end:'22:30',desc:'Campus foundation + live FreeCAD',base:9,tvm:5,totalMult:5,value:45},
+  {id:'s061323',date:'2026-06-13',start:'23:45',end:'23:58',desc:'Currency reconcile (evening)',base:2,tvm:5,totalMult:5,value:10},
+  // ── June 14 ──
+  {id:'s061416',date:'2026-06-14',start:'16:53',end:'17:45',desc:'Madewell Module 4 + DMP4',base:4,tvm:3,totalMult:3,value:12},
+  {id:'s061417',date:'2026-06-14',start:'17:45',end:'19:09',desc:'Madewell SLO migration + SLO 4',base:6,tvm:3,totalMult:3,value:18},
+  {id:'s061419',date:'2026-06-14',start:'19:57',end:'22:59',desc:'Mid-Course LD narrated deck',base:7,tvm:5,totalMult:5,value:35},
+  // ── June 15 ──
+  {id:'s061514',date:'2026-06-15',start:'14:08',end:'18:12',desc:'Campus drafting — roads + roundabout',base:5,tvm:3,totalMult:3,value:15},
+  // ── June 16 ──
+  {id:'s061610',date:'2026-06-16',start:'10:05',end:'18:11',desc:'Campus drafting — parking + lot reshape',base:4,tvm:3,totalMult:3,value:12},
+  {id:'s061622',date:'2026-06-16',start:'22:04',end:'22:22',desc:'Currency reconcile',base:2,tvm:5,totalMult:5,value:10},
+  // ── June 17 ──
+  {id:'s061710',date:'2026-06-17',start:'10:00',end:'11:25',desc:'Daily PDFs + print rebalance',base:5,tvm:3,totalMult:3,value:15},
+  {id:'s061711',date:'2026-06-17',start:'11:30',end:'17:20',desc:'Lesson system — one LP → Board · Worksheet · Plan · Bell Work',base:13,tvm:4,totalMult:4,value:52},
+  {id:'s061717',date:'2026-06-17',start:'17:20',end:'17:55',desc:'W2-D1 live on the hub + turn-in unified',base:4,tvm:4,totalMult:4,value:16},
+  {id:'s061718',date:'2026-06-17',start:'18:00',end:'23:10',desc:'Week 2 built out + answer walkthrough',base:9,tvm:5,totalMult:5,value:45},
+  // ── June 18 ──
+  {id:'s061808',date:'2026-06-18',start:'08:32',end:'08:58',desc:'Madewell hub widgets + Week 2 page',base:4,tvm:2,totalMult:2,value:8},
+  // ── June 20 ──
+  {id:'s062009',date:'2026-06-20',start:'09:30',end:'12:50',desc:'Madewell Week 1 — pure-onboarding launch built',base:15,tvm:3,totalMult:3,value:45},
+  {id:'s062018',date:'2026-06-20',start:'18:10',end:'21:37',desc:'Stratosyn Ambient — live desktop wallpaper, both displays',base:13,tvm:3,totalMult:3,value:39},
+  // ── June 21 ──
+  {id:'s062117',date:'2026-06-21',start:'17:30',end:'20:35',desc:'Madewell Module 5 + SLO 5',base:7,tvm:4,totalMult:4,value:28},
+  {id:'s062120',date:'2026-06-21',start:'20:40',end:'22:20',desc:'Colton ASU Module 5 — EDA 505 + ELL 515',base:8,tvm:4,totalMult:4,value:32},
+];
 
-function load() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {sessions:[],unitsInCirculation:0,valueIndex:0}; }
-  catch { return {sessions:[],unitsInCirculation:0,valueIndex:0}; }
+const STORE_KEY = 'debcoin_v3';
+const SEED_DATE = '2026-06-21';
+const SEED_TOTAL = SEED.reduce((a,s)=>a+s.value,0);
+
+function load(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||null;}catch{return null;}}
+function save(d){localStorage.setItem(STORE_KEY,JSON.stringify(d));}
+
+function initData(){
+  const ex=load();
+  if(ex) return ex;
+  const sessions=[...SEED].sort((a,b)=>b.date.localeCompare(a.date)||b.start.localeCompare(a.start));
+  const d={sessions,valueIndex:SEED_TOTAL,unitsInCirculation:SEED.length,seedDate:SEED_DATE};
+  save(d); return d;
 }
-function save(data) { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
-let data = load();
-let stacks = { build: false, research: false };
+let data=initData();
+let stacks={build:false,research:false};
 
-// ═══════════════════════════════════════
-// TVM ENGINE
-// ═══════════════════════════════════════
-function getTVM(hour, min) {
-  const h = hour + min / 60;
-  if (h >= 2  && h < 5)  return { mult: 13, tier: 'ELITE',    window: '2 AM – 5 AM',    desc: 'World asleep · max signal' };
-  if (h >= 0  && h < 2)  return { mult: 8.5,tier: 'DEEP',     window: 'Midnight – 2 AM', desc: 'Deep work · high dedication' };
-  if (h >= 22 && h < 24) return { mult: 5,  tier: 'LATE',     window: '10 PM – Midnight',desc: 'Late dedication' };
-  if (h >= 19 && h < 22) return { mult: 2.5,tier: 'AFTER-HRS',window: '7 PM – 10 PM',   desc: 'After-hours personal investment' };
-  if ((h >= 17 && h < 19) || (h >= 7 && h < 9))
-    return { mult: 1.5, tier: 'COMMUTER', window: '7–9 AM · 5–7 PM', desc: 'Transition effort' };
-  return { mult: 1, tier: 'STANDARD', window: '9 AM – 5 PM', desc: 'Standard market hours' };
+// TVM
+function getTVM(h,m){
+  const t=h+m/60;
+  if(t>=2&&t<5)  return {mult:13,tier:'ELITE',     window:'2 AM – 5 AM',    desc:'World asleep · max signal'};
+  if(t>=0&&t<2)  return {mult:8.5,tier:'DEEP',     window:'Midnight – 2 AM',desc:'Deep work · high dedication'};
+  if(t>=22)      return {mult:5,  tier:'LATE',      window:'10 PM – Midnight',desc:'Late dedication'};
+  if(t>=19)      return {mult:2.5,tier:'AFTER-HRS', window:'7 PM – 10 PM',  desc:'After-hours investment'};
+  if((t>=17&&t<19)||(t>=7&&t<9)) return {mult:1.5,tier:'COMMUTER',window:'7–9 AM · 5–7 PM',desc:'Transition effort'};
+  return {mult:1,tier:'STANDARD',window:'9 AM – 5 PM',desc:'Standard market hours'};
+}
+function getTVMForTime(s){
+  if(!s){const n=new Date();return getTVM(n.getHours(),n.getMinutes());}
+  const[h,m]=s.split(':').map(Number);return getTVM(h,m);
+}
+function calcValue(base,timeStr,sB,sR){
+  const tvm=getTVMForTime(timeStr);
+  let mult=tvm.mult;
+  if(sB) mult=Math.min(15,mult+2);
+  if(sR) mult=Math.min(15,mult+1);
+  return {value:Math.round(base*mult),tvm,totalMult:mult};
 }
 
-function getTVMForTime(timeStr) {
-  if (!timeStr) {
-    const now = new Date();
-    return getTVM(now.getHours(), now.getMinutes());
-  }
-  const [h, m] = timeStr.split(':').map(Number);
-  return getTVM(h, m);
+function updateLiveTVM(){
+  const n=new Date(),t=getTVM(n.getHours(),n.getMinutes());
+  document.getElementById('tvm-window').textContent=t.window;
+  document.getElementById('tvm-desc').textContent=t.desc;
+  document.getElementById('tvm-mult').textContent=t.mult+'×';
+  document.getElementById('tvm-tier').textContent=t.tier;
 }
 
-function calcValue(base, timeStr, stackBuild, stackResearch) {
-  const tvm = getTVMForTime(timeStr);
-  let mult = tvm.mult;
-  if (stackBuild) mult = Math.min(15, mult + 2);
-  if (stackResearch) mult = Math.min(15, mult + 1);
-  return { value: Math.round(base * mult), tvm, totalMult: mult };
-}
-
-// ═══════════════════════════════════════
-// LIVE TVM PANEL
-// ═══════════════════════════════════════
-function updateLiveTVM() {
-  const now = new Date();
-  const t = getTVM(now.getHours(), now.getMinutes());
-  document.getElementById('tvm-window').textContent = t.window;
-  document.getElementById('tvm-desc').textContent   = t.desc;
-  document.getElementById('tvm-mult').textContent   = t.mult + '×';
-  document.getElementById('tvm-tier').textContent   = t.tier;
-}
-
-// ═══════════════════════════════════════
-// STACKS
-// ═══════════════════════════════════════
-function toggleStack(key) {
-  stacks[key] = !stacks[key];
-  document.getElementById('stack-' + key).classList.toggle('on', stacks[key]);
+function toggleStack(k){
+  stacks[k]=!stacks[k];
+  document.getElementById('stack-'+k).classList.toggle('on',stacks[k]);
   updateCalc();
 }
 
-// ═══════════════════════════════════════
-// CALC PREVIEW
-// ═══════════════════════════════════════
-function updateCalc() {
-  const base = parseFloat(document.getElementById('f-base').value);
-  const time = document.getElementById('f-start').value;
-  if (!base || base <= 0) {
-    document.getElementById('calc-line').textContent = 'Enter base output to preview';
-    document.getElementById('calc-result').textContent = 'Đ —';
-    return;
-  }
-  const { value, tvm, totalMult } = calcValue(base, time, stacks.build, stacks.research);
-  const parts = [`${base} × ${totalMult}×`];
-  if (stacks.build || stacks.research) parts[0] += ` (${tvm.mult}× TVM${stacks.build?'+2×build':''}${stacks.research?'+1×research':''})`;
-  document.getElementById('calc-line').textContent = parts[0];
-  document.getElementById('calc-result').textContent = 'Đ ' + value.toLocaleString();
+function updateCalc(){
+  const base=parseFloat(document.getElementById('f-base').value);
+  const time=document.getElementById('f-start').value;
+  if(!base||base<=0){document.getElementById('calc-line').textContent='Enter base output to preview';document.getElementById('calc-result').textContent='Đ —';return;}
+  const {value,tvm,totalMult}=calcValue(base,time,stacks.build,stacks.research);
+  let ln=`${base} × ${totalMult}×`;
+  if(stacks.build||stacks.research) ln+=` (${tvm.mult}× TVM${stacks.build?'+2×build':''}${stacks.research?'+1×res':''})`;
+  document.getElementById('calc-line').textContent=ln;
+  document.getElementById('calc-result').textContent='Đ '+value.toLocaleString();
 }
 
-// ═══════════════════════════════════════
-// LOG SESSION
-// ═══════════════════════════════════════
-function logSession() {
-  const desc = document.getElementById('f-desc').value.trim();
-  const base = parseFloat(document.getElementById('f-base').value);
-  const date = document.getElementById('f-date').value;
-  const start = document.getElementById('f-start').value;
-  const end   = document.getElementById('f-end').value;
-
-  if (!desc) { toast('Add a description first'); return; }
-  if (!base || base <= 0) { toast('Enter a base output value'); return; }
-  if (!date) { toast('Pick a date'); return; }
-
-  const { value, tvm, totalMult } = calcValue(base, start, stacks.build, stacks.research);
-
-  const session = {
-    id: Date.now().toString(),
-    date, start, end, desc, base,
-    tvm: tvm.mult, stackBuild: stacks.build, stackResearch: stacks.research,
-    totalMult, value
-  };
-
-  data.sessions.unshift(session);
-  data.valueIndex += value;
-  data.unitsInCirculation += 1;
+function logSession(){
+  const desc=document.getElementById('f-desc').value.trim();
+  const base=parseFloat(document.getElementById('f-base').value);
+  const date=document.getElementById('f-date').value;
+  const start=document.getElementById('f-start').value;
+  const end=document.getElementById('f-end').value;
+  if(!desc){toast('Add a description first');return;}
+  if(!base||base<=0){toast('Enter a base output value');return;}
+  if(!date){toast('Pick a date');return;}
+  const {value,tvm,totalMult}=calcValue(base,start,stacks.build,stacks.research);
+  const s={id:'u'+Date.now(),date,start,end,desc,base,tvm:tvm.mult,stackBuild:stacks.build,stackResearch:stacks.research,totalMult,value};
+  data.sessions.unshift(s);
+  data.valueIndex+=value;
+  data.unitsInCirculation+=1;
   save(data);
-
-  toast('Đ +' + value.toLocaleString() + ' minted');
-  clearForm();
-  render();
+  toast('Đ +'+value.toLocaleString()+' minted');
+  clearForm(); render();
 }
 
-function clearForm() {
-  document.getElementById('f-desc').value = '';
-  document.getElementById('f-base').value = '';
-  document.getElementById('f-start').value = '';
-  document.getElementById('f-end').value = '';
-  stacks.build = false; stacks.research = false;
+function clearForm(){
+  ['f-desc','f-base','f-end'].forEach(id=>document.getElementById(id).value='');
+  const n=new Date();
+  document.getElementById('f-start').value=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  stacks.build=false;stacks.research=false;
   document.getElementById('stack-build').classList.remove('on');
   document.getElementById('stack-research').classList.remove('on');
-  document.getElementById('calc-line').textContent = 'Enter base output to preview';
-  document.getElementById('calc-result').textContent = 'Đ —';
+  document.getElementById('calc-line').textContent='Enter base output to preview';
+  document.getElementById('calc-result').textContent='Đ —';
 }
 
-// ═══════════════════════════════════════
-// RENDER TICKER
-// ═══════════════════════════════════════
-function renderTicker() {
-  const vi = data.valueIndex;
-  const units = data.unitsInCirculation;
-  const fp = units > 0 ? (vi / units) : 0;
-
-  document.getElementById('vi-display').textContent    = vi.toLocaleString();
-  document.getElementById('fp-display').textContent    = fp.toFixed(2);
-  document.getElementById('units-display').textContent = units;
+function deleteSession(id){
+  const s=data.sessions.find(x=>x.id===id);
+  if(!s) return;
+  data.sessions=data.sessions.filter(x=>x.id!==id);
+  data.valueIndex=Math.max(0,data.valueIndex-s.value);
+  data.unitsInCirculation=Math.max(0,data.unitsInCirculation-1);
+  save(data); render(); toast('Coin removed');
 }
 
-// ═══════════════════════════════════════
-// DENSITY CALENDAR
-// ═══════════════════════════════════════
-function renderDensity() {
-  const grid = document.getElementById('density-grid');
-  grid.innerHTML = '';
-
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  // build a map: dateStr -> total value
-  const dayMap = {};
-  data.sessions.forEach(s => {
-    dayMap[s.date] = (dayMap[s.date] || 0) + s.value;
+// Import
+function toggleImport(){
+  const p=document.getElementById('import-panel'),a=document.getElementById('import-arrow');
+  p.classList.toggle('open');a.textContent=p.classList.contains('open')?'▴':'▾';
+}
+function parseYAMLBlock(text){
+  const obj={};
+  text.split('\n').forEach(line=>{
+    const m=line.match(/^(\w+):\s*"?([^"#\n]*?)"?\s*$/);
+    if(m) obj[m[1].trim()]=m[2].trim();
   });
+  return obj;
+}
+function importLogs(){
+  const raw=document.getElementById('import-text').value.trim();
+  if(!raw){toast('Paste some YAML first');return;}
+  const blocks=raw.split(/^---+\s*$/m).map(b=>b.trim()).filter(b=>b.length>5);
+  let imported=0,skipped=0;
+  for(const block of blocks){
+    const y=parseYAMLBlock(block);
+    if(!y.date||(!y.worth&&!y.value)){skipped++;continue;}
+    const existing=data.sessions.find(s=>s.date===y.date&&s.desc===(y.title||''));
+    if(existing){skipped++;continue;}
+    const base=parseFloat(y.worth||y.base||0),tvm=parseFloat(y.tvm||1);
+    const value=Math.round(base*tvm);
+    if(!base||value<=0){skipped++;continue;}
+    data.sessions.unshift({id:'imp_'+y.date+'_'+Math.random().toString(36).slice(2,6),date:y.date,start:y.startTime||'',end:y.endTime||'',desc:y.title||'Imported session',base,tvm,totalMult:tvm,value,imported:true});
+    data.valueIndex+=value;data.unitsInCirculation+=1;imported++;
+  }
+  data.sessions.sort((a,b)=>b.date.localeCompare(a.date)||b.start.localeCompare(a.start));
+  save(data);
+  document.getElementById('import-result').textContent=imported?`${imported} imported · ${skipped} skipped`:`Nothing new (${skipped} already exist or invalid)`;
+  if(imported>0){toast('Đ +'+imported+' coins from logs');render();}
+}
 
-  // max value for heat scaling
-  const vals = Object.values(dayMap);
-  const maxVal = vals.length ? Math.max(...vals) : 1;
+// Render
+function renderTicker(){
+  document.getElementById('vi-display').textContent=data.valueIndex.toLocaleString();
+  const fp=data.unitsInCirculation>0?(data.valueIndex/data.unitsInCirculation):0;
+  document.getElementById('fp-display').textContent=fp.toFixed(1);
+  document.getElementById('units-display').textContent=data.unitsInCirculation;
+  document.getElementById('reconcile-date').textContent=data.seedDate||'—';
+}
 
-  // go back 10 weeks from start of this week (Sunday)
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  const start = new Date(startOfWeek);
-  start.setDate(start.getDate() - 9 * 7);
-
-  for (let i = 0; i < 70; i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    const key = d.toISOString().slice(0,10);
-    const val = dayMap[key] || 0;
-    const isToday = d.getTime() === today.getTime();
-
-    const cell = document.createElement('div');
-    cell.className = 'd-cell';
-    if (isToday) cell.classList.add('today');
-    if (val > 0) {
-      const ratio = val / maxVal;
-      if (ratio > 0.75) cell.classList.add('blazed');
-      else if (ratio > 0.4) cell.classList.add('hot');
-      else cell.classList.add('has-coins');
-    }
-    cell.textContent = d.getDate();
-    cell.title = key + (val ? ' · Đ' + val.toLocaleString() : '');
-    cell.onclick = () => openDayModal(key, d);
+function renderDensity(){
+  const grid=document.getElementById('density-grid');
+  grid.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  const dayMap={};
+  data.sessions.forEach(s=>{dayMap[s.date]=(dayMap[s.date]||0)+s.value;});
+  const vals=Object.values(dayMap),maxVal=vals.length?Math.max(...vals):1;
+  const startOfWeek=new Date(today);startOfWeek.setDate(today.getDate()-today.getDay());
+  const start=new Date(startOfWeek);start.setDate(start.getDate()-11*7);
+  for(let i=0;i<84;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const key=d.toISOString().slice(0,10),val=dayMap[key]||0,isToday=d.getTime()===today.getTime();
+    const cell=document.createElement('div');
+    cell.className='d-cell';
+    if(isToday) cell.classList.add('today');
+    if(val>0){const r=val/maxVal;cell.classList.add(r>0.75?'blazed':r>0.4?'hot':'has-coins');}
+    cell.textContent=d.getDate();
+    cell.onclick=()=>openDayModal(key,d);
     grid.appendChild(cell);
   }
 }
 
-// ═══════════════════════════════════════
-// SESSIONS LIST
-// ═══════════════════════════════════════
-function renderSessions() {
-  const list = document.getElementById('session-list');
-  document.getElementById('session-count').textContent = data.sessions.length;
-
-  if (!data.sessions.length) {
-    list.innerHTML = '<div class="empty">No sessions logged yet. Mint your first coin above.</div>';
-    return;
-  }
-
-  list.innerHTML = data.sessions.slice(0, 50).map((s, i) => `
+function renderSessions(){
+  const list=document.getElementById('session-list');
+  const total=data.sessions.reduce((a,s)=>a+s.value,0);
+  document.getElementById('session-count').textContent=data.sessions.length;
+  document.getElementById('session-total').textContent='Đ'+total.toLocaleString();
+  if(!data.sessions.length){list.innerHTML='<div class="empty">No sessions yet.</div>';return;}
+  list.innerHTML=data.sessions.map((s,i)=>`
     <div class="session-row">
-      <div class="s-coin">${i+1 <= 9 ? '0'+(i+1) : (i+1)}</div>
+      <div class="s-coin">${String(data.sessions.length-i).padStart(2,'0')}</div>
       <div class="s-info">
         <div class="s-desc">${s.desc}</div>
-        <div class="s-meta">${s.date}${s.start ? ' · '+s.start : ''} · base Đ${s.base.toLocaleString()}</div>
+        <div class="s-meta">${s.date}${s.start?' · '+s.start:''} · base Đ${s.base}</div>
       </div>
-      <div>
+      <div class="s-right">
         <div class="s-val">Đ${s.value.toLocaleString()}</div>
         <div class="s-tvm">${s.totalMult}×</div>
+        <span class="s-delete" onclick="deleteSession('${s.id}')">✕</span>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ═══════════════════════════════════════
-// CONSTELLATION
-// ═══════════════════════════════════════
-function renderConstellation() {
-  const canvas = document.getElementById('constellation');
-  const W = canvas.offsetWidth;
-  canvas.width = W;
-  const H = 320;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, W, H);
-
-  // starfield bg
-  for (let i = 0; i < 80; i++) {
-    const x = Math.random() * W, y = Math.random() * H;
-    const r = Math.random() * 1.2;
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${0.05 + Math.random()*0.15})`;
-    ctx.fill();
-  }
-
-  if (!data.sessions.length) {
-    ctx.font = '12px -apple-system';
-    ctx.fillStyle = 'rgba(255,255,255,.15)';
-    ctx.textAlign = 'center';
-    ctx.fillText('Mint coins to grow your cosmos', W/2, H/2);
-    return;
-  }
-
-  const maxVal = Math.max(...data.sessions.map(s => s.value));
-
-  // seed positions deterministically from session id
-  const stars = data.sessions.map((s, i) => {
-    const seed = parseInt(s.id) % 1000;
-    const angle = (seed / 1000) * Math.PI * 2;
-    const dist = 30 + ((seed * 137) % 100) / 100 * (Math.min(W, H) * 0.4);
-    return {
-      x: W/2 + Math.cos(angle + i * 0.4) * dist,
-      y: H/2 + Math.sin(angle + i * 0.4) * dist,
-      r: 2 + (s.value / maxVal) * 8,
-      alpha: 0.4 + (s.value / maxVal) * 0.6,
-      s
-    };
+function renderConstellation(){
+  const canvas=document.getElementById('constellation');
+  const W=canvas.offsetWidth;canvas.width=W;const H=340;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  for(let i=0;i<100;i++){const x=Math.random()*W,y=Math.random()*H,r=Math.random()*1.1;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${0.04+Math.random()*0.12})`;ctx.fill();}
+  if(!data.sessions.length){ctx.font='12px -apple-system';ctx.fillStyle='rgba(255,255,255,.15)';ctx.textAlign='center';ctx.fillText('Mint coins to grow your cosmos',W/2,H/2);return;}
+  const maxVal=Math.max(...data.sessions.map(s=>s.value));
+  const cx=W/2,cy=H/2;
+  const stars=data.sessions.map((s,i)=>{
+    const hash=s.id.split('').reduce((a,c)=>a+c.charCodeAt(0),i*31);
+    const angle=(hash%360/360)*Math.PI*2+(i*0.39);
+    const dist=20+(hash%80)/80*(Math.min(W,H)*0.42);
+    return {x:cx+Math.cos(angle)*dist,y:cy+Math.sin(angle)*dist,r:1.5+(s.value/maxVal)*9,alpha:0.35+(s.value/maxVal)*0.65,s};
   });
-
-  // draw connections for nearby stars
-  stars.forEach((a, i) => {
-    stars.slice(i+1, i+4).forEach(b => {
-      const dx = a.x-b.x, dy = a.y-b.y;
-      const dist = Math.sqrt(dx*dx+dy*dy);
-      if (dist < 120) {
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = `rgba(255,215,0,${0.04 + 0.08*(1-dist/120)})`;
-        ctx.lineWidth = 1; ctx.stroke();
-      }
-    });
-  });
-
-  // draw stars
-  stars.forEach(star => {
-    // glow
-    const grd = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.r * 4);
-    grd.addColorStop(0, `rgba(255,215,0,${star.alpha})`);
-    grd.addColorStop(1, 'rgba(255,215,0,0)');
-    ctx.beginPath(); ctx.arc(star.x, star.y, star.r*4, 0, Math.PI*2);
-    ctx.fillStyle = grd; ctx.fill();
-
-    // core
-    ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,240,150,${star.alpha})`; ctx.fill();
+  stars.forEach((a,i)=>stars.slice(i+1,i+5).forEach(b=>{
+    const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(255,215,0,${0.03+0.07*(1-d/100)})`;ctx.lineWidth=1;ctx.stroke();}
+  }));
+  stars.forEach(star=>{
+    const g=ctx.createRadialGradient(star.x,star.y,0,star.x,star.y,star.r*4);
+    g.addColorStop(0,`rgba(255,215,0,${star.alpha})`);g.addColorStop(1,'rgba(255,215,0,0)');
+    ctx.beginPath();ctx.arc(star.x,star.y,star.r*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,240,150,${star.alpha})`;ctx.fill();
   });
 }
 
-// ═══════════════════════════════════════
-// DAY MODAL
-// ═══════════════════════════════════════
-function openDayModal(dateKey, dateObj) {
-  const sessions = data.sessions.filter(s => s.date === dateKey);
-  const title = document.getElementById('modal-title');
-  const body = document.getElementById('modal-body');
-
-  title.textContent = dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-
-  if (!sessions.length) {
-    body.innerHTML = '<div class="empty">No coins minted this day.</div>';
-  } else {
-    const total = sessions.reduce((a,s) => a+s.value, 0);
-    body.innerHTML = sessions.map(s => `
-      <div class="modal-session-row">
-        <div class="ms-desc">${s.desc}</div>
-        <div class="ms-val">Đ${s.value.toLocaleString()} <span style="font-size:9px;opacity:.5">${s.totalMult}×</span></div>
-      </div>
-    `).join('') + `
-      <div style="display:flex;justify-content:space-between;padding:8px 10px;border-top:1px solid rgba(255,255,255,.07);margin-top:4px">
-        <span style="font-size:10px;color:rgba(255,255,255,.3)">TOTAL</span>
-        <span style="font-size:14px;font-weight:900;color:var(--gold)">Đ${total.toLocaleString()}</span>
-      </div>
-    `;
-  }
-
+function openDayModal(dateKey,dateObj){
+  const sessions=data.sessions.filter(s=>s.date===dateKey);
+  document.getElementById('modal-title').textContent=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const body=document.getElementById('modal-body');
+  if(!sessions.length){body.innerHTML='<div class="empty">No coins minted this day.</div>';return;}
+  const total=sessions.reduce((a,s)=>a+s.value,0);
+  body.innerHTML=sessions.map(s=>`<div class="modal-session-row"><div class="ms-desc">${s.desc}</div><div class="ms-val">Đ${s.value.toLocaleString()} <span style="font-size:9px;opacity:.5">${s.totalMult}×</span></div></div>`).join('')
+    +`<div style="display:flex;justify-content:space-between;padding:8px 10px;border-top:1px solid rgba(255,255,255,.07);margin-top:4px"><span style="font-size:10px;color:rgba(255,255,255,.3)">TOTAL</span><span style="font-size:14px;font-weight:900;color:var(--gold)">Đ${total.toLocaleString()}</span></div>`;
   document.getElementById('day-modal').classList.add('show');
 }
-function closeModal(e) {
-  if (e.target === document.getElementById('day-modal'))
-    document.getElementById('day-modal').classList.remove('show');
+function closeModal(e){if(e.target===document.getElementById('day-modal'))document.getElementById('day-modal').classList.remove('show');}
+
+function switchView(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');
+  ['density','sessions','constellation'].forEach(v=>{document.getElementById('view-'+v).style.display=v===name?'':'none';});
+  if(name==='constellation') renderConstellation();
 }
 
-// ═══════════════════════════════════════
-// VIEW SWITCHER
-// ═══════════════════════════════════════
-function switchView(name, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  btn.classList.add('on');
-  ['density','sessions','constellation'].forEach(v => {
-    document.getElementById('view-'+v).style.display = v===name ? '' : 'none';
-  });
-  if (name === 'constellation') renderConstellation();
-}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-// ═══════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
+function render(){renderTicker();renderDensity();renderSessions();}
 
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-function render() {
-  renderTicker();
-  renderDensity();
-  renderSessions();
-}
-
-function init() {
-  // set today's date as default
-  const now = new Date();
-  document.getElementById('f-date').valueAsDate = now;
-  document.getElementById('f-start').value =
-    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-
-  updateLiveTVM();
-  setInterval(updateLiveTVM, 60000);
-
+function init(){
+  const n=new Date();
+  document.getElementById('f-date').valueAsDate=n;
+  document.getElementById('f-start').value=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  updateLiveTVM();setInterval(updateLiveTVM,60000);
   render();
 }
-
 init();
 </script>
 </body>
